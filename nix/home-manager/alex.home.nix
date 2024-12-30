@@ -1,7 +1,6 @@
 { pkgs, ... }: 
 {
   home.packages = with pkgs; [
-    openldap
     k9s
     jwt-cli
     fish
@@ -16,33 +15,9 @@
     lsof
     code-server
     vim
-    vscode-fhs
-    gnome-software
-    gnome-tweaks
-    nvtopPackages.nvidia
     htop
     dotnetCorePackages.dotnet_9.sdk
-    nerd-fonts.fira-code
-    nerd-fonts.droid-sans-mono
   ];
-  fonts.fontconfig.enable = true;
-
-  dconf.enable = true;
-  dconf.settings = {
-    "org/gnome/desktop/interface" = {
-      color-scheme = "prefer-dark";
-    };
-    "org/gnome/desktop/wm/keybindings" = {
-      toggle-maximized=["<Super>m"];
-    };
-  };
-  gtk = {
-    enable = true;
-    theme = {
-      name = "Adwaita-dark";
-      package = pkgs.gnome-themes-extra;
-    };
-  };
   home.sessionVariables = {
     EDITOR = "vim";
   };
