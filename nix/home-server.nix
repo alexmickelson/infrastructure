@@ -11,27 +11,16 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "home-server"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
   networking.networkmanager.enable = true;
   
   networking.nat.enable = true;
   
   boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
   boot.kernel.sysctl."net.ipv6.conf.all.forwarding" = 1;
-  # Set your time zone.
   time.timeZone = "America/Denver";
-
-  # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
-
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_US.UTF-8";
     LC_IDENTIFICATION = "en_US.UTF-8";
@@ -44,7 +33,6 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
     variant = "";
@@ -68,7 +56,6 @@
       openldap
       k9s
       jwt-cli
-      thefuck
       fish
       kubectl
       lazydocker
@@ -83,9 +70,6 @@
     ];
     programs.fish = {
       enable = true;
-      shellAliases = {
-        dang="fuck";
-      };
       shellInit = ''
 function commit
   git add --all
@@ -107,8 +91,6 @@ export EDITOR="$VISUAL"
 export DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 set -x LIBVIRT_DEFAULT_URI qemu:///system
-
-thefuck --alias | source
      '';
     };
     home.file = {
@@ -168,12 +150,7 @@ k9s:
   };
   home-manager.useGlobalPkgs = true;
 
-
-  # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
     vim
     wget
@@ -276,8 +253,6 @@ k9s:
       useTemplate = [ "backup" ];
     };
   }; 
-
-
 
   services.github-runners = {
     infrastructure = {
