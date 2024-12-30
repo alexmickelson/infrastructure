@@ -1,8 +1,5 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports =
@@ -310,6 +307,8 @@ k9s:
         #NoNewPrivileges = false;
         ProtectHome = false;
         #RuntimeDirectoryPreserve = "yes";
+        Restart = lib.mkForce  "always";
+        #RuntimeMaxSec = "7d";
       };
       extraPackages = with pkgs; [
         docker
@@ -321,11 +320,13 @@ k9s:
       ];
     };
   };
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
+  # services.cron = {
+  #   enable = true;
+  #   systemCronJobs = [
+  #     "*/5 * * * *      root    date >> /tmp/cron.log"
+  #   ];
+  # };
+  
   networking.firewall.enable = false;
   # networking.firewall.trustedInterfaces = [ "docker0" ]; 
 
