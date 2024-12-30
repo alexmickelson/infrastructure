@@ -16,6 +16,7 @@
     lzop
     lsof
     code-server
+    vim
   ];
   programs.fish = {
     enable = true;
