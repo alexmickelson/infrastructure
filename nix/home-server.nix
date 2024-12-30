@@ -50,8 +50,10 @@
     extraGroups = [ "networkmanager" "wheel" "docker" "users" "libvirtd" "cdrom" ];
     shell = pkgs.fish;
   };
-  home-manager.users.alex = import ./home-manager/alex.home.nix { 
-    pkgs = import <nixpkgs> {};
+  home-manager.users.alex = { ...}: {
+    imports = [
+      ./home-manager/alex.home.nix
+    ];
   };
   home-manager.useGlobalPkgs = true;
 
