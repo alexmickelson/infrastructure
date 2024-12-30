@@ -96,4 +96,4 @@ k9s:
   home.sessionVariables = {
     EDITOR = "vim";
   };
-};
+}
