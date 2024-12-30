@@ -19,7 +19,6 @@
     vscode-fhs
     gnome-software
     gnome-tweaks
-    # (nerd-fonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
     nvtopPackages.nvidia
     htop
     dotnetCorePackages.dotnet_9.sdk
@@ -36,6 +35,16 @@
     "org/gnome/desktop/wm/keybindings" = {
       toggle-maximized=["<Super>m"];
     };
+  };
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
+    };
+  };
+  home.sessionVariables = {
+    EDITOR = "vim";
   };
   programs.fish = {
     enable = true;
@@ -112,8 +121,5 @@ k9s:
   namespace:
     lockFavorites: false
     '';
-  };
-  home.sessionVariables = {
-    EDITOR = "vim";
   };
 }
