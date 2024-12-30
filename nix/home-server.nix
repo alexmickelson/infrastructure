@@ -51,6 +51,7 @@
     shell = pkgs.fish;
   };
   home-manager.users.alex = { ...}: {
+    home.stateVersion = "24.05";
     imports = [
       ./home-manager/alex.home.nix
     ];

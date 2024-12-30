@@ -87,10 +87,14 @@
       dotnetCorePackages.dotnet_9.sdk
     ];
     fonts.fontconfig.enable = true;
-
+    
+    dconf.enable = true;
     dconf.settings = {
       "org/gnome/desktop/interface" = {
         color-scheme = "prefer-dark";
+      };
+      "org/gnome/desktop/wm/keybindings" = {
+        toggle-maximized=["<Super>m"];
       };
     };
     gtk = {
@@ -102,9 +106,6 @@
     };
     programs.fish = {
       enable = true;
-      shellAliases = {
-        dang="fuck";
-      };
       shellInit = ''
 function commit
   git add --all
@@ -126,8 +127,6 @@ export EDITOR="$VISUAL"
 export DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 set -x LIBVIRT_DEFAULT_URI qemu:///system
-
-thefuck --alias | source
      '';
     };
     home.file = {

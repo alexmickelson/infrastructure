@@ -1,6 +1,5 @@
 { pkgs, ... }: 
 {
-  home.stateVersion = "24.05";
   home.packages = with pkgs; [
     openldap
     k9s
@@ -17,7 +16,24 @@
     lsof
     code-server
     vim
+    vscode-fhs
+    gnome-software
+    gnome-tweaks
+    (pkgs.nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
+    nvtopPackages.nvidia
+    htop
+    dotnetCorePackages.dotnet_9.sdk
   ];
+  fonts.fontconfig.enable = true;
+  dconf.enable = true;
+  dconf.settings = {
+    "org/gnome/desktop/interface" = {
+      color-scheme = "prefer-dark";
+    };
+    "org/gnome/desktop/wm/keybindings" = {
+      toggle-maximized=["<Super>m"];
+    };
+  };
   programs.fish = {
     enable = true;
     shellInit = ''
