@@ -19,7 +19,7 @@
     vscode-fhs
     gnome-software
     gnome-tweaks
-    (pkgs.nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
+    (nerd-fonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
     nvtopPackages.nvidia
     htop
     dotnetCorePackages.dotnet_9.sdk
