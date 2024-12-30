@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  cups:
+    image: olbat/cupsd:stable-2024-01-19 # admin user/password: print/print
+    container_name: cups
+    privileged: true
+    volumes:
+      - "/dev/bus/usb:/dev/bus/usb" # keep this under volumes, not devices
+      - "/run/dbus:/run/dbus"
+      - "./cupsd.conf:/etc/cups/cupsd.conf:ro"
+        #- "./data/printers.conf:/etc/cups/printers.conf:ro"
+    ports:
+      - "631:631/tcp" # CUPS
+    restart: "always"
+  
+  cups-webpage:
+    buid: server
+    ports:
+    - 6311:6311

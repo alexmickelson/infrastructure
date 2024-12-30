@@ -1,0 +1,256 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin
+    container_name: jellyfin
+    user: 1000:1000
+    network_mode: "host"
+    volumes:
+      - /data/jellyfin/config:/config
+      - /data/jellyfin/cache:/cache
+      - /data/media/music/tagged:/music
+      - /data/media/movies:/movies
+      - /data/media/tvshows:/tvshows
+    restart: "unless-stopped"
+    environment:
+      - JELLYFIN_PublishedServerUrl=https://jellyfin.alexmickelson.guru
+
+  nextcloud:
+    build:
+      context: nextcloud
+    container_name: nextcloud
+    environment:
+      - TZ=America/Denver
+      - OVERWRITEPROTOCOL=https
+      - MYSQL_PASSWORD=slkdnflksnelkfnsdweoinv
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_HOST=nextcloud-db
+    volumes:
+      - /data/nextcloud/html:/var/www/html
+      - /data/media/music:/music
+      - /data/media/movies:/movies
+      - /data/media/tvshows:/tvshows
+      - /data/media/shared:/shared
+      - /data/media/audiobooks:/audiobooks
+    restart: unless-stopped
+    networks:
+      - proxy
+    
+  nextcloud-cron:
+    build:
+      context: nextcloud
+    container_name: nextcloud-cron
+    environment:
+      - TZ=America/Denver
+      - OVERWRITEPROTOCOL=https
+      - MYSQL_PASSWORD=slkdnflksnelkfnsdweoinv
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_HOST=nextcloud-db
+    volumes:
+      - /data/nextcloud/html:/var/www/html
+      - /data/media/music:/music
+      - /data/media/movies:/movies
+      - /data/media/tvshows:/tvshows
+      - /data/media/shared:/shared
+      - /data/media/audiobooks:/audiobooks
+    restart: unless-stopped
+    entrypoint: /cron.sh
+    depends_on:
+      - nextcloud
+    networks:
+      - proxy
+
+  nextcloud-db:
+    image: mariadb:10.6
+    container_name: nextcloud_db
+    # mysql -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE
+    restart: always
+    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
+    volumes:
+      - /data/nextcloud-db/:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=klsdnofinsodkflksen34tesrg
+      - MYSQL_PASSWORD=slkdnflksnelkfnsdweoinv
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+    networks:
+      - proxy
+
+  homeassistant:
+    container_name: homeassistant
+    image: homeassistant/home-assistant:stable
+    volumes:
+      - /data/homeAssistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /dev/serial/by-id:/dev/serial/by-id
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+      - /dev/ttyUSB1:/dev/ttyUSB1
+    environment:
+      - TZ=America/Denver
+    restart: always
+    network_mode: host
+
+  # octoprint:
+  #   image: octoprint/octoprint
+  #   container_name: octoprint
+  #   restart: unless-stopped
+  #   # ports:
+  #   #   - 80:80
+  #   # devices:
+  #   # # use `python -m serial.tools.miniterm` to see what the name is of the printer, this requires pyserial
+  #   #  - /dev/ttyACM0:/dev/ttyACM0
+  #   #  - /dev/video0:/dev/video0
+  #   volumes:
+  #     - /data/octoprint:/octoprint
+  #   # uncomment the lines below to ensure camera streaming is enabled when
+  #   # you add a video device
+  #   environment:
+  #     - ENABLE_MJPG_STREAMER=true
+  #     - MJPG_SREAMER_INPUT=-n -r 1280x720 -f 30
+
+  prometheus:
+    image: bitnami/prometheus:2
+    container_name: prometheus
+    restart: unless-stopped
+    environment:
+      - HOMEASSISTANT_TOKEN=${HOMEASSISTANT_TOKEN}
+    volumes:
+      - ./prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
+      - /data/prometheus:/opt/bitnami/prometheus/data
+    # command:
+    #   - '--config.file=/etc/prometheus/prometheus.yml'
+    #   - '--storage.tsdb.path=/prometheus'
+    #   - '--web.console.libraries=/etc/prometheus/console_libraries'
+    #   - '--web.console.templates=/etc/prometheus/consoles'
+    #   - '--web.enable-lifecycle'
+    # expose:
+    #   - 9090
+    networks:
+      - proxy
+
+  grafana:
+    image: grafana/grafana:main
+    container_name: grafana
+    restart: always
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+    volumes:
+      - /data/grafana:/var/lib/grafana
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/robots.txt"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 3s
+    networks:
+      - proxy
+
+  # acpupsd_exporter:
+  #   image: sfudeus/apcupsd_exporter:master_1.19
+  #   container_name: apcupsd_exporter
+  #   restart: always
+  #   extra_hosts:
+  #     - host.docker.internal:host-gateway
+  #   command: -apcupsd.addr host.docker.internal:3551
+  #   ports:
+  #     - 0.0.0.0:9162:9162
+  # docker run -it --rm  -p 9162:9162 --net=host sfudeus/apcupsd_exporter:master_1.19
+
+  reverse-proxy:
+    image: ghcr.io/linuxserver/swag
+    container_name: reverse-proxy
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Denver
+      - URL=alexmickelson.guru
+      - SUBDOMAINS=wildcard
+      - VALIDATION=dns
+      - DNSPLUGIN=cloudflare
+    volumes:
+      - ./nginx.conf:/config/nginx/site-confs/default.conf
+      - /data/swag:/config
+      - /data/cloudflare/cloudflare.ini:/config/dns-conf/cloudflare.ini
+    ports:
+      - 0.0.0.0:80:80
+      - 0.0.0.0:443:443
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    networks:
+      - proxy
+
+
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    restart: unless-stopped
+    ports:
+      - 13378:80
+    volumes:
+      - /data/media/audiobooks:/audiobooks
+      # - </path/to/podcasts>:/podcasts
+      - /data/audiobookshelf/config:/config
+      - /data/audiobookshelf/metadata:/metadata
+    networks:
+      - proxy
+
+  docker-registry:
+    image: registry:2
+    container_name: docker-registry
+    restart: unless-stopped
+    ports:
+    - "5000:5000"
+    environment:
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
+      REGISTRY_HTTP_TLS_CERTIFICATE: /etc/docker/certs.d/server.alexmickelson.guru/cert.pem
+      REGISTRY_HTTP_TLS_KEY: /etc/docker/certs.d/server.alexmickelson.guru/key.pem
+    volumes:
+      - /data/docker-registry:/data
+      - /data/swag/keys/letsencrypt/fullchain.pem:/etc/docker/certs.d/server.alexmickelson.guru/cert.pem
+      - /data/swag/keys/letsencrypt/privkey.pem:/etc/docker/certs.d/server.alexmickelson.guru/key.pem
+    depends_on:
+      - reverse-proxy
+    networks:
+      - proxy
+  # github-actions-exporter:
+  #   # ports:
+  #   #   - 9999:9999
+  #   image: ghcr.io/labbs/github-actions-exporter
+  #   environment:
+  #     - GITHUB_REPOS=alexmickelson/infrastructure
+  #     - GITHUB_TOKEN=${MY_GITHUB_TOKEN}
+
+
+  # pihole:
+  #   container_name: pihole
+  #   image: pihole/pihole:latest
+  #   # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
+  #   ports:
+  #     # - "0.0.0.0:53:53/tcp"
+  #     # - "0.0.0.0:53:53/udp"
+  #     # - "127.0.0.1:53:53/tcp"
+  #     # - "127.0.0.1:53:53/udp"
+  #     - "100.122.128.107:53:53/tcp"
+  #     - "100.122.128.107:53:53/udp"
+  # #     # - "67:67/udp" # Only required if you are using Pi-hole as your DHCP server
+  #     - "8580:80"
+  #   environment:
+  #     TZ: 'America/Denver'
+  #     # WEBPASSWORD: 'set a secure password here or it will be random'
+  #   volumes:
+  #     - '/data/pihole/etc-pihole:/etc/pihole'
+  #     - '/data/pihole/etc-dnsmasq.d:/etc/dnsmasq.d'
+  #   #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+  #   cap_add:
+  #     - NET_ADMIN # Required if you are using Pi-hole as your DHCP server, else not needed
+  #   restart: unless-stopped
+
+networks:
+  proxy: 
+    external:
+      name: proxy

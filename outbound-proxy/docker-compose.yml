@@ -1,0 +1,31 @@
+services:
+  tailscale-outbound:
+    build: .
+    hostname: tailscale-outbound
+    env_file:
+      - .env # TS_AUTHKEY
+    environment:
+      # - TS_EXTRA_ARGS=--advertise-tags=tag:container
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+      - TS_OUTBOUND_HTTP_PROXY_LISTEN=:1055
+      - TS_SOCKS5_SERVER=:1055
+    volumes:
+      - tailscale-data:/var/lib/tailscale
+      # - ./ts-serve-config.json:/config/config.json
+      - /dev/net/tun:/dev/net/tun
+      # - $HOME/.ssh:/root/.ssh:ro
+    restart: unless-stopped
+    ports:
+    - 1055:1055
+    privileged: true
+    # cap_add:
+    # - NET_ADMIN
+    # - sys_module
+  # nginx:
+  #   image: nginx
+  #   depends_on:
+  #     - tailscale-outbound
+  #   network_mode: service:tailscale-outbound
+volumes:
+  tailscale-data:

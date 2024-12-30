@@ -1,0 +1,10 @@
+.gitsecret/keys/random_seed
+!*.secret
+home-pi/dns/cloudflare.env
+linode/wireguard/wg-easy.env
+home-pi/plex.env
+*.env
+**/*.env
+__pycache__/
+.mypy_cache/
+.venv/

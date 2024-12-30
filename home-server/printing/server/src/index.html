@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Document Upload</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        background: #09373e;
+        color: #85bfc8;
+      }
+      #form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      form {
+        border: 1px solid #ccc;
+        padding: 20px;
+        background: #05252a;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        margin-bottom: 20px;
+        text-align: center;
+      }
+      input[type="file"] {
+        display: none; /* Hide the file input */
+      }
+      input[type="submit"] {
+        padding: 10px 20px;
+        border: none;
+        background: #007bff;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      input[type="submit"]:hover {
+        background: #0056b3;
+      }
+
+      #dropzone {
+        border: 2px dashed #ccc;
+        padding: 20px;
+        width: 300px;
+        text-align: center;
+        color: #ccc;
+        cursor: pointer;
+      }
+
+      #dropzone.dragover {
+        border-color: #000;
+        color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Upload Document</h2>
+    <br />
+    <section id="form-container">
+      <form
+        id="printForm"
+        action="/print/"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <div id="dropzone">Drop file to upload or click to select</div>
+        <input type="file" id="fileInput" />
+        <br />
+        <input type="submit" value="Upload Document" name="submit" />
+      </form>
+    </section>
+    <script>
+      var stagedFile = undefined;
+      const formElement = document.getElementById("printForm");
+      const fileInputElement = document.getElementById("fileInput");
+
+      formElement.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append("file", stagedFile);
+
+        const response = await fetch("/print/", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+        console.log(data);
+      });
+
+      document
+        .getElementById("dropzone")
+        .addEventListener("dragover", function (event) {
+          event.preventDefault(); // Prevent default behavior (Prevent file from being opened)
+          event.stopPropagation();
+          event.target.classList.add("dragover"); // Optional: add a style change
+        });
+
+      document
+        .getElementById("dropzone")
+        .addEventListener("dragleave", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          event.target.classList.remove("dragover"); // Optional: revert style change
+        });
+
+      document
+        .getElementById("dropzone")
+        .addEventListener("drop", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          event.target.classList.remove("dragover"); // Optional: revert style change
+
+          // Process files
+          var files = event.dataTransfer.files;
+          handleFiles(files);
+        });
+
+      // Handle file selection when clicked
+      document
+        .getElementById("dropzone")
+        .addEventListener("click", function () {
+          fileInputElement.click(); // Trigger the hidden file input's click
+        });
+
+      fileInputElement.addEventListener("change", function (event) {
+        const files = event.target.files;
+        handleFiles(files);
+      });
+
+      const handleFiles = (files) => {
+        stagedFile = files[0];
+        renderStagedFile();
+      };
+
+      const renderStagedFile = () => {
+        const element = document.getElementById("dropzone");
+        if (!stagedFile) {
+          element.textContent = "Drop file to upload or click to select";
+        } else {
+          element.textContent = `FILE: ${stagedFile.name}`;
+        }
+      };
+    </script>
+  </body>
+</html>

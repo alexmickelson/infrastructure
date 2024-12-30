@@ -1,0 +1,50 @@
+# https://jellyfin.alexmickelson.guru/api-docs/swagger/index.html
+# https://gist.github.com/nielsvanvelzen/ea047d9028f676185832e51ffaf12a6f
+GET https://jellyfin.alexmickelson.guru/Users/b30951b36b37400498dbfd182d49a42e/Items
+  ?SortBy=SortName&SortOrder=Ascending
+  &IncludeItemTypes=Playlist
+  &Recursive=true
+  &Fields=PrimaryImageAspectRatio,SortName,CanDelete
+  &StartIndex=0
+  &api_key={{$dotenv JELLYFIN_TOKEN}}
+
+
+###
+GET https://jellyfin.alexmickelson.guru/Users/b30951b36b37400498dbfd182d49a42e/Items
+  ?IncludeItemTypes=Playlist
+  &Recursive=true
+  &ParentId=7e64e319657a9516ec78490da03edccb
+  &api_key={{$dotenv JELLYFIN_TOKEN}}
+
+###
+# get items from unindexed playlist
+GET https://jellyfin.alexmickelson.guru/Playlists/2f191b23f0a49e70d6f90e9d82e408c6/Items
+  ?Fields=PrimaryImageAspectRatio
+  &EnableImageTypes=Primary,Backdrop,Banner,Thumb
+  &UserId=b30951b36b37400498dbfd182d49a42e
+  &api_key={{$dotenv JELLYFIN_TOKEN}}
+
+### remove item from unindexed
+DELETE https://jellyfin.alexmickelson.guru/Playlists/2f191b23f0a49e70d6f90e9d82e408c6/Items
+  ?EntryIds=186f4d63492b405b97865ff9a99ef3ab
+  &userId=b30951b36b37400498dbfd182d49a42e
+Authorization: MediaBrowser Client="scriptclient", Device="script", DeviceId="asdfasdfasdfasdfasdf", Version="1.0.0", Token="f313e2045fc34ce3ac510ce9ba2be1fc"
+
+### get all playlists
+GET https://jellyfin.alexmickelson.guru/Users/b30951b36b37400498dbfd182d49a42e/Items
+  ?api_key={{$dotenv JELLYFIN_TOKEN}}
+  &ParentId=29772619d609592f4cdb3fc34a6ec97d
+
+### get token by user/pass
+POST https://jellyfin.alexmickelson.guru/Users/AuthenticateByName
+Content-Type: application/json
+Authorization: MediaBrowser Client="scriptclient", Device="script", DeviceId="asdfasdfasdfasdfasdf", Version="1.0.0", Token=""
+
+{
+  "Username": "alex",
+  "Pw": "{{$dotenv JELLYFIN_PASSWORD}}"
+}
+
+### 
+POST https://jellyfin.alexmickelson.guru/Sessions/Logout
+Authorization: MediaBrowser Client="scriptclient", Device="script", DeviceId="asdfasdfasdfasdfasdf", Version="1.0.0", Token="c704c71900cc41d2a454a4f3b5132778"

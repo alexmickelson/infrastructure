@@ -1,0 +1,52 @@
+version: "3.8"
+services:
+  swag:
+    image: ghcr.io/linuxserver/swag
+    container_name: swag-proxy
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Denver
+      - URL=alexmickelson.guru
+      - SUBDOMAINS=wildcard
+      - VALIDATION=dns
+      - DNSPLUGIN=cloudflare
+    volumes:
+      - ./nginx/default.conf:/config/nginx/site-confs/default
+      - /data/swag:/config
+      - /var/www/html:/var/www/html:ro
+    ports:
+      - 443:443
+      - 80:80 #optional
+    restart: unless-stopped
+    networks:
+      linode-web:
+      proxy:
+
+  pihole:
+    container_name: pihole
+    image: pihole/pihole
+    ports:
+      - 0.0.0.0:53:53/tcp
+      - 0.0.0.0:53:53/udp
+      # - 67:67/udp # dhcp
+        #- "80:80/tcp"
+    environment:
+      TZ: 'America/Denver'
+      VIRTUAL_HOST: alexmickelson.guru
+      WEBPASSWORD: chaos-concise-nickname
+    volumes:
+      - /data/pihole/etc-pihole/:/etc/pihole/
+      - /data/pihole/etc-dnsmasq.d/:/etc/dnsmasq.d/
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    networks:
+      linode-web:
+
+networks: 
+  linode-web:
+  proxy:
+    external: true

@@ -1,0 +1,9 @@
+discord
+yt_dlp
+PyNaCl
+python-dotenv
+websockets
+ffmpeg
+pydantic
+mutagen
+fastapi

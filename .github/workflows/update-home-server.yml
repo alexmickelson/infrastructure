@@ -1,0 +1,51 @@
+name: Update home server containers
+on: [push, workflow_dispatch]
+jobs:
+  update-repo:
+    runs-on: [home-server]
+    steps:
+      - name: checkout repo
+        working-directory: /home/github/infrastructure
+        run: |
+          if [ -d "infrastructure" ]; then
+            cd infrastructure
+              echo "Infrastructure folder exists. Resetting to the most recent commit."
+              git reset --hard HEAD
+              git pull https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} $(git rev-parse --abbrev-ref HEAD)
+          else
+            git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          fi
+  update-infrastructure:
+    runs-on: [home-server]
+    needs: update-repo 
+    steps:
+      - name: update home server containers
+        env:
+          MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+          HOMEASSISTANT_TOKEN: ${{ secrets.HOMEASSISTANT_TOKEN }}
+          GRAFANA_PASSWORD: ${{ secrets.GRAFANA_PASSWORD }}
+          CLOUDFLARE_CONFIG: ${{ secrets.CLOUDFLARE_CONFIG }}
+        working-directory: /home/github/infrastructure/infrastructure
+        run: |
+          # git secret reveal -f
+          pwd
+          # echo "$CLOUDFLARE_CONFIG" > /data/cloudflare/cloudflare.ini
+          cd home-server
+          docker pull nextcloud:production
+          docker compose pull
+          docker compose build
+          docker compose up -d
+          # docker restart reverse-proxy
+          # docker exec reverse-proxy nginx -t
+          # docker exec reverse-proxy nginx -s reload
+
+  update-pihole:
+    runs-on: [home-server]
+    needs: update-repo
+    steps:
+      - working-directory: /home/github/infrastructure/infrastructure
+        run: |
+          cd dns
+          docker compose pull
+          docker compose up -d
+

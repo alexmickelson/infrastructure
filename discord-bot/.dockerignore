@@ -1,0 +1,7 @@
+.vscode/
+virtualenv/
+songs/
+.mypy_cache/
+Dockerfile
+node_modules/
+venv/
