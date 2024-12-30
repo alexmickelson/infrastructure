@@ -25,8 +25,8 @@
     dotnetCorePackages.dotnet_9.sdk
   ];
   fonts.packages = with pkgs; [
-    nerd-fonts.FiraCode
-    nerd-fonts.DroidSansMono
+    nerd-fonts.fira-code
+    nerd-fonts.droid-sans-mono
   ];
   fonts.fontconfig.enable = true;
 
