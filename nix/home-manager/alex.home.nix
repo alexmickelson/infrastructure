@@ -20,11 +20,13 @@
     gnome-software
     gnome-tweaks
     # (nerd-fonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
-    nerd-fonts.FiraCode
-    nerd-fonts.DroidSansMono
     nvtopPackages.nvidia
     htop
     dotnetCorePackages.dotnet_9.sdk
+  ];
+  fonts.packages = with pkgs; [
+    nerd-fonts.FiraCode
+    nerd-fonts.DroidSansMono
   ];
   fonts.fontconfig.enable = true;
 
