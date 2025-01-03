@@ -32,6 +32,11 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
+  systemd.targets.sleep.enable = false;
+  systemd.targets.suspend.enable = false;
+  systemd.targets.hibernate.enable = false;
+  systemd.targets.hybrid-sleep.enable = false;
+
   services.xserver.xkb = {
     layout = "us";
     variant = "";
@@ -58,8 +63,7 @@
     description = "alex";
     extraGroups = [ "networkmanager" "wheel" "docker" "libvirtd" ];
     shell = pkgs.fish;
-    packages = with pkgs; [
-    ];
+    packages = with pkgs; [ ];
   };
   home-manager.users.alex = { pgks, ...}: {
     home.stateVersion = "24.11";

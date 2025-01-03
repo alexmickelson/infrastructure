@@ -5,8 +5,10 @@
     gnome-software
     gnome-tweaks
     nvtopPackages.nvidia
-    nerd-fonts.fira-code
-    nerd-fonts.droid-sans-mono
+    # nerd-fonts.fira-code
+    # nerd-fonts.droid-sans-mono
+    # fira-code
+    (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
   ];
   fonts.fontconfig.enable = true;
   dconf.enable = true;
