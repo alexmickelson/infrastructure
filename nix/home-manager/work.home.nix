@@ -110,8 +110,21 @@ k9s:
       critical: 90
       warn: 70
   namespace:
-    lockFavorites: false
-    '';
+    lockFavorites: false'';
+
+    ".local/share/applications/teams.desktop".text = ''#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Name=Teams
+Exec=flatpak 'run' '--command=brave' 'com.brave.Browser' '--profile-directory=Default' '--app-id=cifhbcnohmdccbgoicgdjpfamggdegmo'
+# on other computer...
+# Exec=flatpak 'run' '--command=brave' 'com.brave.Browser' '--profile-directory=Default' '--app="https://teams.microsoft.com/v2/"'
+Keywords=teams;microsoft;chat;
+Icon=brave-cifhbcnohmdccbgoicgdjpfamggdegmo-Default
+NoDisplay=false
+StartupWMClass=crx_cifhbcnohmdccbgoicgdjpfamggdegmo
+X-Flatpak-Part-Of=com.brave.Browser
+TryExec=/home/alexm/.local/share/flatpak/exports/bin/com.brave.Browser'';
   };
 
   home.sessionVariables = {
@@ -136,4 +149,6 @@ k9s:
   };
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+
+
 }
