@@ -127,6 +127,7 @@
   virtualisation.libvirtd.enable = true;
   powerManagement.powertop.enable = true;
   powerManagement.enable = true;
+  powerManagement.cpuFreqGovernor = "powersave";
 
   # zfs stuff
   boot.supportedFilesystems = [ "zfs" ];
