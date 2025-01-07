@@ -9,5 +9,6 @@ __pycache__/
 .mypy_cache/
 .venv/
 
+result
 result/
 **result/
