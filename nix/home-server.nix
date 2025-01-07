@@ -125,6 +125,7 @@
 
   # virtualization stuff
   virtualisation.libvirtd.enable = true;
+  powerManagement.powertop.enable = true;
 
   # zfs stuff
   boot.supportedFilesystems = [ "zfs" ];
