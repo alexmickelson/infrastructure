@@ -8,3 +8,7 @@ home-pi/plex.env
 __pycache__/
 .mypy_cache/
 .venv/
+
+result
+result/
+**result/
