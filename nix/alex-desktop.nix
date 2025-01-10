@@ -138,15 +138,15 @@
     powerManagement.enable = false;
     powerManagement.finegrained = false;
   }; 
-  services.xserver.deviceSection = ''
-    Option         "TripleBuffer" "on"
-    Option         "Coolbits" "28"
-  '';
+  # services.xserver.deviceSection = ''
+  #   Option         "TripleBuffer" "on"
+  #   Option         "Coolbits" "28"
+  # '';
 
-  services.xserver.screenSection = ''
-    Option         "metamodes" "nvidia-auto-select +0+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
-    Option         "AllowIndirectGLXProtocol" "off"
-  '';
+  # services.xserver.screenSection = ''
+  #   Option         "metamodes" "nvidia-auto-select +0+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
+  #   Option         "AllowIndirectGLXProtocol" "off"
+  # '';
   # hardware.opengl = {
   #   enable = true;
   #   driSupport32Bit = true;
