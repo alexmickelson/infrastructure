@@ -10,6 +10,7 @@
     # fira-code
     (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
     kubernetes-helm
+    busybox
   ];
   fonts.fontconfig.enable = true;
   dconf.enable = true;

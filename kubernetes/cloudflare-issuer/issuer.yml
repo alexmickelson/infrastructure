@@ -1,8 +1,8 @@
 # issuer.yml
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: ClusterIssuer # global across namespaces
 metadata:
-  name: ca-issuer
+  name: cloudflare-issuer
 spec:
   acme:
     email: alexmickelson96@gmail.com

@@ -15,7 +15,7 @@ helm install \
 <https://medium.com/@kevinlutzer9/managed-ssl-certs-for-a-private-kubernetes-cluster-with-cloudflare-cert-manager-and-lets-encrypt-7987ba19044f>
 
 ```bash
-kubectl create secret generic cloudflare-api-key-secret --from-literal=api-key=<TOKEN>
+kubectl create -n cert-manager secret generic cloudflare-api-key-secret --from-literal=api-key=<TOKEN>
 ```
 
 
