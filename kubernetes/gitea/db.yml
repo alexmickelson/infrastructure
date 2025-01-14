@@ -2,16 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: projects
-  name: gitea_db
+  name: gitea-db
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gitea_db
+      app: gitea-db
   template:
     metadata:
       labels:
-        app: gitea_db
+        app: gitea-db
     spec:
       containers:
         - name: postgres
@@ -22,7 +22,7 @@ spec:
             - name: POSTGRES_USER
               value: "gitea"
             - name: POSTGRES_PASSWORD
-              value: "${POSTGRES_PASSWORD}"
+              value: wauiofnasufnweaiufbsdklfjb23456
             - name: POSTGRES_DB
               value: "gitea"
           volumeMounts:
@@ -37,15 +37,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: gitea_db
+  name: gitea-db-svc
   namespace: projects
   labels:
-    app: gitea_db
+    app: gitea-db
 spec:
   ports:
     - protocol: TCP
       port: 5432
       targetPort: 5432
   selector:
-    app: gitea_db
+    app: gitea-db
   type: ClusterIP

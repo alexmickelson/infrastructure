@@ -1,0 +1,18 @@
+# issuer.yml
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: ca-issuer
+spec:
+  acme:
+    email: alexmickelson96@gmail.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: issuer-key
+    solvers:
+    - dns01:
+        cloudflare:
+          email: alexmickelson96@gmail.com
+          apiTokenSecretRef:
+            name: cloudflare-api-key-secret
+            key: api-key

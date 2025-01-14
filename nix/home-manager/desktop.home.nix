@@ -9,6 +9,7 @@
     # nerd-fonts.droid-sans-mono
     # fira-code
     (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
+    kubernetes-helm
   ];
   fonts.fontconfig.enable = true;
   dconf.enable = true;
