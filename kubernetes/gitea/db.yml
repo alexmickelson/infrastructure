@@ -33,20 +33,19 @@ spec:
           hostPath:
             path: /data/gitea/postgres
             type: DirectoryOrCreate
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres
+  name: gitea_db
   namespace: projects
   labels:
-    app: postgres
+    app: gitea_db
 spec:
   ports:
     - protocol: TCP
       port: 5432
       targetPort: 5432
   selector:
-    app: postgres
+    app: gitea_db
   type: ClusterIP

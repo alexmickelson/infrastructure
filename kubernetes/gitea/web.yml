@@ -1,23 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gitea
+  name: gitea_web
   namespace: projects
-  labels:
-    app: gitea
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gitea
+      app: gitea_web
   template:
     metadata:
       labels:
-        app: gitea
+        app: gitea_web
     spec:
       containers:
         - name: gitea
-          image: docker.io/gitea/gitea:1.23.1
+          image: docker.io/gitea/gitea:1.23
           ports:
             - containerPort: 3000
             - containerPort: 22
@@ -51,7 +49,7 @@ spec:
       volumes:
         - name: gitea-data
           hostPath:
-            path: /mnt/data/gitea
+            path: /data/gitea/data
             type: DirectoryOrCreate
         - name: timezone
           hostPath:
@@ -64,20 +62,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: gitea
+  name: gitea_web
   namespace: projects
-  labels:
-    app: gitea
 spec:
   type: NodePort
   ports:
     - name: http
       port: 3000
       targetPort: 3000
-      nodePort: 32000
     - name: ssh
       port: 22
       targetPort: 22
-      nodePort: 32222
   selector:
-    app: gitea
+    app: gitea_web
