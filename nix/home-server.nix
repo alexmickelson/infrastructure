@@ -5,6 +5,7 @@
   imports =
     [
       <home-manager/nixos>
+      ./modules/k3s.nix
     ];
 
   # Bootloader.
