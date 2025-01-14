@@ -89,6 +89,7 @@
     tmux
     libguestfs-with-appliance
     iperf
+    nfs-utils
   ];
   services.tailscale.enable = true;
   services.openssh.enable = true;
@@ -164,7 +165,7 @@
     device = "/dev/disk/by-uuid/437358fd-b9e4-46e2-bd45-f6b368acaac1";
     fsType = "ext4";
   };
-  boot.supportedFilesystems = [ "zfs" ];
+  boot.supportedFilesystems = [ "zfs" "nfs" ];
   boot.zfs.forceImportRoot = false;
   networking.hostId = "eafe9999";
   boot.zfs.extraPools = [ "data" "data2" ];
