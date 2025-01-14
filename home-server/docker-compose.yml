@@ -199,24 +199,22 @@ services:
     networks:
       - proxy
 
-  docker-registry:
-    image: registry:2
-    container_name: docker-registry
-    restart: unless-stopped
-    ports:
-    - "5000:5000"
-    environment:
-      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
-      REGISTRY_HTTP_TLS_CERTIFICATE: /etc/docker/certs.d/server.alexmickelson.guru/cert.pem
-      REGISTRY_HTTP_TLS_KEY: /etc/docker/certs.d/server.alexmickelson.guru/key.pem
-    volumes:
-      - /data/docker-registry:/data
-      - /data/swag/keys/letsencrypt/fullchain.pem:/etc/docker/certs.d/server.alexmickelson.guru/cert.pem
-      - /data/swag/keys/letsencrypt/privkey.pem:/etc/docker/certs.d/server.alexmickelson.guru/key.pem
-    depends_on:
-      - reverse-proxy
-    networks:
-      - proxy
+  # docker-registry:
+  #   image: registry:2
+  #   container_name: docker-registry
+  #   restart: unless-stopped
+  #   ports:
+  #   - "5000:5000"
+  #   environment:
+  #     REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
+  #     REGISTRY_HTTP_TLS_CERTIFICATE: /etc/docker/certs.d/server.alexmickelson.guru/cert.pem
+  #     REGISTRY_HTTP_TLS_KEY: /etc/docker/certs.d/server.alexmickelson.guru/key.pem
+  #   volumes:
+  #     - /data/docker-registry:/data
+  #   depends_on:
+  #     - reverse-proxy
+  #   networks:
+  #     - proxy
   # github-actions-exporter:
   #   # ports:
   #   #   - 9999:9999
