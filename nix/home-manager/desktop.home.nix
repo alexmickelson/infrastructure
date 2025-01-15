@@ -11,6 +11,8 @@
     (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
     kubernetes-helm
     busybox
+    elixir_1_18
+    inotify-tools
   ];
   fonts.fontconfig.enable = true;
   dconf.enable = true;
