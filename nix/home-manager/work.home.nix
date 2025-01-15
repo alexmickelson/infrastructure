@@ -27,6 +27,8 @@
     nmap
     iperf
     makemkv
+    elixir_1_18
+    inotify-tools
   ];
   programs.fish = {
     enable = true;
@@ -122,6 +124,7 @@ Exec=flatpak 'run' '--command=brave' 'com.brave.Browser' '--profile-directory=De
 Keywords=teams;microsoft;chat;
 Icon=brave-cifhbcnohmdccbgoicgdjpfamggdegmo-Default
 NoDisplay=false
+SingleMainWindow=true
 StartupWMClass=crx_cifhbcnohmdccbgoicgdjpfamggdegmo
 X-Flatpak-Part-Of=com.brave.Browser
 TryExec=/home/alexm/.local/share/flatpak/exports/bin/com.brave.Browser'';
