@@ -99,6 +99,15 @@
   services.flatpak.enable = true;
   hardware.steam-hardware.enable = true;
 
+  programs.gamescope = {
+    enable = true;
+    capSysNice = true;
+  };
+  programs.steam = {
+    enable = true;
+    gamescopeSession.enable = true;
+  };
+
   #services.sunshine = {
   #  enable = true;
   #  autoStart = false;

@@ -12,7 +12,7 @@
     kubernetes-helm
     busybox
     elixir_1_18
-    inotify-tools
+    inotify-tools # needed for elixir hot-reloading
   ];
   fonts.fontconfig.enable = true;
   dconf.enable = true;
