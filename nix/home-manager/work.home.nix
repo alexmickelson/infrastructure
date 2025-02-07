@@ -29,6 +29,7 @@
     makemkv
     elixir_1_18
     inotify-tools
+    ghostty
   ];
   programs.fish = {
     enable = true;
