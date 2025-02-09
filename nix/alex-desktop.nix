@@ -86,6 +86,7 @@
     git
     zfs
     gcc-unwrapped
+    iputils
     tmux
     libguestfs-with-appliance
     iperf

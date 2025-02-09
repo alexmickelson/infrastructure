@@ -16,6 +16,7 @@
     code-server
     vim
     htop
+    iputils
     dotnetCorePackages.dotnet_9.sdk
   ];
   home.sessionVariables = {
