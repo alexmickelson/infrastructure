@@ -18,6 +18,10 @@
     htop
     iputils
     dotnetCorePackages.dotnet_9.sdk
+    python312
+    gcc
+    gnumake
+    dig
   ];
   home.sessionVariables = {
     EDITOR = "vim";
@@ -26,7 +30,7 @@
     enable = true;
     shellInit = ''
 function commit
-  git add --all
+  git add --allr
   git commit -m "$argv"
   git push
 end

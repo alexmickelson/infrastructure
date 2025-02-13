@@ -61,6 +61,8 @@ kind: Service
 metadata:
   name: gitea-web-svc
   namespace: projects
+  annotations:
+    tailscale.com/expose: "true" # exposes IP directly
 spec:
   type: NodePort
   ports:
@@ -79,7 +81,7 @@ metadata:
   name: gitea
   namespace: projects
   annotations:
-    cert-manager.io/cluster-issuer: cloudflare-issuer
+    cert-manager.io/cluster-issuer: cloudflare-issuer # not really working with tailscale
 spec:
   ingressClassName: tailscale
   tls:
