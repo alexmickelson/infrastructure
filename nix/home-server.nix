@@ -134,7 +134,7 @@
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.forceImportRoot = false;
   networking.hostId = "eafe9551";
-  boot.zfs.extraPools = [ "data-ssd" "backup" ];
+  boot.zfs.extraPools = [ "data-ssd" "backup" "vms" ];
   services.sanoid = {
     enable = true;
     templates.production = {
