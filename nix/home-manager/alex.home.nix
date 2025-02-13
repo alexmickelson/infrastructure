@@ -30,7 +30,7 @@
     enable = true;
     shellInit = ''
 function commit
-  git add --allr
+  git add --all
   git commit -m "$argv"
   git push
 end
