@@ -150,6 +150,10 @@
       source = pkgs.OVMF.fd + "/FV/OVMF_VARS.fd";
     };
   };
+  nvram = [ 
+    "/run/libvirt/nix-ovmf/AAVMF_CODE.fd:/run/libvirt/nix-ovmf/AAVMF_VARS.fd", 
+    "/run/libvirt/nix-ovmf/OVMF_CODE.fd:/run/libvirt/nix-ovmf/OVMF_VARS.fd" 
+  ]
 
   powerManagement.powertop.enable = true;
   powerManagement.enable = true;
