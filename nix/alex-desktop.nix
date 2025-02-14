@@ -146,34 +146,21 @@
   #  capSysAdmin = true;
   #};
 
-  hardware.nvidia = {
-    modesetting.enable = true;
-    open = false;
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.production;
-    powerManagement.enable = false;
-    powerManagement.finegrained = false;
-  }; 
-  # services.xserver.deviceSection = ''
-  #   Option         "TripleBuffer" "on"
-  #   Option         "Coolbits" "28"
-  # '';
-
-  # services.xserver.screenSection = ''
-  #   Option         "metamodes" "nvidia-auto-select +0+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
-  #   Option         "AllowIndirectGLXProtocol" "off"
-  # '';
-  # hardware.opengl = {
-  #   enable = true;
-  #   driSupport32Bit = true;
+  # hardware.nvidia = {
+  #   modesetting.enable = true;
+  #   open = false;
+  #   nvidiaSettings = true;
+  #   package = config.boot.kernelPackages.nvidiaPackages.production;
+  #   powerManagement.enable = false;
+  #   powerManagement.finegrained = false;
   # };
+  # virtualisation.docker.enableNvidia = true;
+  # hardware.nvidia-container-toolkit.enable = true;
+  # services.xserver.videoDrivers = [ "nvidia" ];
   hardware.graphics = {
     enable32Bit = true;
     enable = true;
   };
-  virtualisation.docker.enableNvidia = true;
-  hardware.nvidia-container-toolkit.enable = true;
-  services.xserver.videoDrivers = [ "nvidia" ];
 
   fileSystems."/steam-data" =
   { 
