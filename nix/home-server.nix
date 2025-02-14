@@ -141,6 +141,15 @@
       };
     };
   };
+  environment.etc = {
+    "FV/OVMF_CODE.fd" = {
+      source = pkgs.OVMF.fd + "/FV/OVMF_CODE.fd";
+    };
+
+    "FV/OVMF_VARS.fd" = {
+      source = pkgs.OVMF.fd + "/FV/OVMF_VARS.fd";
+    };
+  };
 
   powerManagement.powertop.enable = true;
   powerManagement.enable = true;
