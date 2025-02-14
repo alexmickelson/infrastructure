@@ -142,15 +142,15 @@
     };
   };
   environment.etc = {
-    "FV/OVMF_CODE.fd" = {
-      source = pkgs.OVMF.fd + "/FV/OVMF_CODE.fd";
+    "ovmf/edk2-x86_64-secure-code.fd" = {
+      source = config.virtualisation.libvirtd.qemu.package + "/share/qemu/edk2-x86_64-secure-code.fd";
     };
 
-    "FV/OVMF_VARS.fd" = {
-      source = pkgs.OVMF.fd + "/FV/OVMF_VARS.fd";
+    "ovmf/edk2-i386-vars.fd" = {
+      source = config.virtualisation.libvirtd.qemu.package + "/share/qemu/edk2-i386-vars.fd";
     };
   };
-
+  
   powerManagement.powertop.enable = true;
   powerManagement.enable = true;
   powerManagement.cpuFreqGovernor = "powersave";
