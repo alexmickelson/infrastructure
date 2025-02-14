@@ -74,6 +74,7 @@
     github-runner
     sanoid
     virtiofsd
+    OVMF
     tmux
   ];
 
