@@ -141,6 +141,8 @@
       };
     };
   };
+
+  # not working yet, in theory simplifies xml for vm
   environment.etc = {
     "ovmf/edk2-x86_64-secure-code.fd" = {
       source = config.virtualisation.libvirtd.qemu.package + "/share/qemu/edk2-x86_64-secure-code.fd";
@@ -150,7 +152,7 @@
       source = config.virtualisation.libvirtd.qemu.package + "/share/qemu/edk2-i386-vars.fd";
     };
   };
-  
+
   powerManagement.powertop.enable = true;
   powerManagement.enable = true;
   powerManagement.cpuFreqGovernor = "powersave";
