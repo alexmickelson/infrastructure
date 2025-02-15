@@ -19,8 +19,8 @@ in { pkgs, lib, config, ... }: {
 
     kernelParams = [
       "intel_iommu=on"
-    ] ++ 
-      # isolate the GPU
       ("vfio-pci.ids=" + lib.concatStringsSep "," gpuIDs);
+    ]
+     
   };
 }
