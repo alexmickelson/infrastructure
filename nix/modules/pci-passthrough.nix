@@ -19,7 +19,7 @@ in { pkgs, lib, config, ... }: {
 
     kernelParams = [
       "intel_iommu=on"
-    ] ++ lib.optional cfg.enable
+    ] ++ 
       # isolate the GPU
       ("vfio-pci.ids=" + lib.concatStringsSep "," gpuIDs);
   };
