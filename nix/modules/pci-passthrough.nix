@@ -20,7 +20,7 @@ in { pkgs, lib, config, ... }: {
     kernelParams = [
       "intel_iommu=on"
       ("vfio-pci.ids=" + lib.concatStringsSep "," gpuIDs)
-    ]
+    ];
      
   };
 }
