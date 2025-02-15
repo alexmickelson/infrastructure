@@ -142,6 +142,13 @@
       };
     };
   };
+  networking.interfaces.enp5s0.useDHCP = true;
+  networking.interfaces.br0.useDHCP = true;
+  networking.bridges = {
+    "br0" = {
+      interfaces = [ "enp5s0" ];
+    };
+  };
 
   # not working yet, in theory simplifies xml for vm
   environment.etc = {
