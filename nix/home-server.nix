@@ -6,6 +6,7 @@
     [
       <home-manager/nixos>
       ./modules/k3s.nix
+      ./modules/pci-passthrough.nix
     ];
 
   # Bootloader.
