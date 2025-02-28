@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  squeezelite:
+    image: giof71/squeezelite
+    container_name: squeezelite
+    network_mode: host
+    environment:
+      - SQUEEZELITE_NAME=home-desktop
+      - SQUEEZELITE_AUDIO_DEVICE=hw:CARD=Generic,DEV=0
+      # aplay -l
+    devices:
+      - /dev/snd
+    restart: unless-stopped
