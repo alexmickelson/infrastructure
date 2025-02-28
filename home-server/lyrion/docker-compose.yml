@@ -16,4 +16,5 @@ services:
     environment:
       - TZ=America/Denver
       - HTTP_PORT=9000
+      EXTRA_ARGS=--advertiseaddr=server.alexmickelson.guru
     restart: always
