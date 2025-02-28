@@ -100,11 +100,11 @@ services:
     network_mode: host
     volumes:
       - /data/music-assistant-server/data:/data/
-    cap_add:
-      - SYS_ADMIN
-      - DAC_READ_SEARCH
-    security_opt:
-      - apparmor:unconfined
+    # cap_add:
+    #   - SYS_ADMIN
+    #   - DAC_READ_SEARCH
+    # security_opt:
+    #   - apparmor:unconfined
     environment:
       - LOG_LEVEL=info
 

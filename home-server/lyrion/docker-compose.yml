@@ -1,0 +1,18 @@
+services:
+  lyrion:
+    container_name: lyrion
+    image: lmscommunity/lyrionmusicserver
+    volumes:
+      - /data/lyrion/config:/config:rw
+      - /data/media/music/tagged:/music:ro
+      - /data/lyrion/playlist:/playlist:rw
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    ports:
+      - 9000:9000/tcp
+      - 9090:9090/tcp
+      - 3483:3483/tcp
+      - 3483:3483/udp
+    environment:
+      - HTTP_PORT=9000
+    restart: always
