@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-db
+  labels:
+    app: nextcloud-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud-db
+  template:
+    metadata:
+      labels:
+        app: nextcloud-db
+    spec:
+      containers:
+        - name: mariadb
+          image: mariadb:latest
+          args:
+            [
+              "--transaction-isolation=READ-COMMITTED",
+              "--log-bin=binlog",
+              "--binlog-format=ROW",
+            ]
+          environment:
+            MYSQL_ROOT_PASSWORD: your_root_password
+            MYSQL_DATABASE: nextcloud
+            MYSQL_USER: nextcloud
+            MYSQL_PASSWORD: slkdnflksnelkfnsdweoinv
+          volumes:
+            - name: nextcloud-db-data
+              hostPath:
+                path: /data/nextcloud-db
+                type: DirectoryOrCreate
+          ports:
+            - containerPort: 3306

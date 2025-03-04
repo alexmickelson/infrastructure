@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-cron
+  labels:
+    app: nextcloud-cron
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud-cron
+  template:
+    metadata:
+      labels:
+        app: nextcloud-cron
+    spec:
+      containers:
+        - name: nextcloud
+          image: nextcloud:latest
+          command: [ "/cron.sh" ]
+          environment:
+            - TZ=America/Denver
+            - OVERWRITEPROTOCOL=https
+            - MYSQL_PASSWORD=slkdnflksnelkfnsdweoinv
+            - MYSQL_DATABASE=nextcloud
+            - MYSQL_USER=nextcloud
+            - MYSQL_HOST=nextcloud-db
+          volumes:
+            - name: nextcloud-www
+              hostPath:
+                path: /data/nextcloud/html
+                type: DirectoryOrCreate
+            - name: music
+              hostPath:
+                path: /data/media/music
+                type: DirectoryOrCreate
+            - name: movies
+              hostPath:
+                path: /data/media/movies
+                type: DirectoryOrCreate
+            - name: tvshows
+              hostPath:
+                path: /data/media/tvshows
+                type: DirectoryOrCreate
+            - name: shared
+              hostPath:
+                path: /data/media/shared
+                type: DirectoryOrCreate
+            - name: audiobooks
+              hostPath:
+                path: /data/media/audiobooks
+                type: DirectoryOrCreate
+          ports:
+            - containerPort: 80
+              name: http

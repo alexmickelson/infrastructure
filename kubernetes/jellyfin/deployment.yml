@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+  namespace: projects
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      containers:
+        - name: jellyfin
+          image: jellyfin/jellyfin
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+            - name: cache-volume
+              mountPath: /cache
+            - name: music-volume
+              mountPath: /music
+            - name: movies-volume
+              mountPath: /movies
+            - name: tvshows-volume
+              mountPath: /tvshows
+          ports:
+            - containerPort: 8096
+              name: jellyfin
+          env:
+            - name: JELLYFIN_PublishedServerUrl
+              value: "https://jellyfin.alexmickelson.guru"
+      volumes:
+        - name: config-volume
+          hostPath:
+            path: /data/jellyfin/config
+        - name: cache-volume
+          hostPath:
+            path: /data/jellyfin/cache
+        - name: music-volume
+          hostPath:
+            path: /data/jellyfin/music
+        - name: movies-volume
+          hostPath:
+            path: /data/jellyfin/movies
+        - name: tvshows-volume
+          hostPath:
+            path: /data/jellyfin/tvshows
+      restartPolicy: Always
