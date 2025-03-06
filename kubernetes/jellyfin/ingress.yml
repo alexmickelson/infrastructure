@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jellyfin-ingress
+  namespace: projects
+spec:
+  rules:
+    - host: jellyfin.alexmickelson.guru
+      http:
+        paths:
+          - path: /
+            backend:
+              service: jellyfin
+              port: 8096

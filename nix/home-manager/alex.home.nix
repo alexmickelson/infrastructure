@@ -56,6 +56,7 @@ set -x LIBVIRT_DEFAULT_URI qemu:///system
     ".config/lazydocker/config.yml".text = ''
 gui:
   returnImmediately: true
+  screenMode: "half"
     '';
     ".config/k9s/config.yaml".text = ''
 k9s:
