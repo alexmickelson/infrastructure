@@ -143,7 +143,7 @@ services:
       - ./prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
       - /data/prometheus:/opt/bitnami/prometheus/data
     ports:
-      - 9090:9090
+      - 9091:9090
     # command:
     #   - '--config.file=/etc/prometheus/prometheus.yml'
     #   - '--storage.tsdb.path=/prometheus'

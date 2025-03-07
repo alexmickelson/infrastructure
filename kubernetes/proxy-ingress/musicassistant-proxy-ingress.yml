@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: prometheus-ingress
+  name: musicassistant-ingress
   namespace: projects
   annotations:
     cert-manager.io/cluster-issuer: cloudflare-issuer
@@ -9,24 +9,24 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts: 
-    - prometheus.alexmickelson.guru
-    secretName: prometheus-tls-cert
+    - sound.alexmickelson.guru
+    secretName: sound-tls-cert
   rules:
-  - host: prometheus.alexmickelson.guru
+  - host: sound.alexmickelson.guru
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: prometheus-service
+            name: musicassistant-service
             port:
-              number: 9091
+              number: 8095
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: prometheus-service
+  name: musicassistant-service
   namespace: projects
 spec:
   type: ExternalName
