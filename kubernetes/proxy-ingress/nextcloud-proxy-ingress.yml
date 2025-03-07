@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: jellyfin-proxy-ingress
+  name: nextcloud-ingress
   namespace: projects
   annotations:
     cert-manager.io/cluster-issuer: cloudflare-issuer
@@ -9,24 +9,24 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts: 
-    - jellyfin.alexmickelson.guru
-    secretName: ha-tls-cert
+    - next.alexmickelson.guru
+    secretName: nextcloud-tls-cert
   rules:
-  - host: jellyfin.alexmickelson.guru
+  - host: next.alexmickelson.guru
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: jellyfin-service
+            name: nextcloud-service
             port:
-              number: 8096
+              number: 9001
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: jellyfin-service
+  name: nextcloud-service
   namespace: projects
 spec:
   type: ExternalName

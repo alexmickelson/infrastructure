@@ -37,6 +37,8 @@ services:
       - /data/media/shared:/shared
       - /data/media/audiobooks:/audiobooks
     restart: unless-stopped
+    ports:
+      - 9001:80
     networks:
       - proxy
     
