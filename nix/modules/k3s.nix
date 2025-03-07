@@ -9,4 +9,12 @@
     "--disable=traefik"
     "--tls-san 100.122.128.107"
   ];
+  networking.firewall.allowedTCPPorts = [
+    443
+    80
+  ];
+  networking.firewall.allowedUDPPorts = [
+    443
+    80
+  ];
 }

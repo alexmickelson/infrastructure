@@ -1,0 +1,9 @@
+controller:
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
+  # kind: DaemonSet
+  # hostPort:
+  #   enabled: true
+  #   ports:
+  #     http: 80
+  #     https: 443
