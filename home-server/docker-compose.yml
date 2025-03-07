@@ -142,6 +142,8 @@ services:
     volumes:
       - ./prometheus.yml:/opt/bitnami/prometheus/conf/prometheus.yml
       - /data/prometheus:/opt/bitnami/prometheus/data
+    ports:
+      - 9090:9090
     # command:
     #   - '--config.file=/etc/prometheus/prometheus.yml'
     #   - '--storage.tsdb.path=/prometheus'
@@ -170,6 +172,8 @@ services:
       start_period: 3s
     networks:
       - proxy
+    ports:
+      - 3000:3000
 
   # acpupsd_exporter:
   #   image: sfudeus/apcupsd_exporter:master_1.19
