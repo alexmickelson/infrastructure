@@ -31,8 +31,8 @@ jobs:
           pwd
           # echo "$CLOUDFLARE_CONFIG" > /data/cloudflare/cloudflare.ini
           cd home-server
-          docker pull nextcloud:production
-          docker compose pull
+          docker pull -q nextcloud:production
+          docker compose pull -q
           docker compose build
           docker compose up -d
           # docker restart reverse-proxy

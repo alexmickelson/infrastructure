@@ -30,3 +30,11 @@ Currently clouflare domains cannot be CNAME'd to tailscale domains:
 - <https://github.com/tailscale/tailscale/issues/7650>
 - related, different IP addresses: <https://tailscale.com/blog/choose-your-ip#natural-solutions>
 
+
+## Kubernetes ingress controller
+
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0/deploy/static/provider/baremetal/deploy.yaml
+``
+
+I'll need to create a custom service to bring in port 80 and 443 later
