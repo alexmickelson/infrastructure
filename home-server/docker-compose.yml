@@ -205,8 +205,10 @@ services:
       - /data/swag:/config
       - /data/cloudflare/cloudflare.ini:/config/dns-conf/cloudflare.ini
     ports:
-      - 0.0.0.0:80:80
-      - 0.0.0.0:443:443
+      # - 0.0.0.0:80:80
+      # - 0.0.0.0:443:443
+      - 0.0.0.0:7080:80
+      - 0.0.0.0:70443:443
     extra_hosts:
       - host.docker.internal:host-gateway
     networks:
