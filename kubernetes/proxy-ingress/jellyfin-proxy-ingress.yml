@@ -10,7 +10,7 @@ spec:
   tls:
   - hosts: 
     - jellyfin.alexmickelson.guru
-    secretName: ha-tls-cert
+    secretName: jellyfin-tls-cert
   rules:
   - host: jellyfin.alexmickelson.guru
     http:

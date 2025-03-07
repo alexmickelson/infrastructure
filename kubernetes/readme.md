@@ -33,16 +33,9 @@ Currently clouflare domains cannot be CNAME'd to tailscale domains:
 
 ## Kubernetes ingress controller
 
-```
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0/deploy/static/provider/baremetal/deploy.yaml
-``
 
-I'll need to create a custom service to bring in port 80 and 443 later
+I had to modify the base ingress to allow for use on 80 and 443. There should be a way to do this with helm, but I can never quite get it to work
 
-```
-helm upgrade --install ingress-nginx ingress-nginx \
-  --repo https://kubernetes.github.io/ingress-nginx \
-  --namespace ingress-nginx \
-  --create-namespace \
-  -f values.yml
-```
+this is the original: https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0/deploy/static/provider/baremetal/deploy.yaml
+
+the `ingress-nginx-controller` was changed to a daemonset rather than an deployment
