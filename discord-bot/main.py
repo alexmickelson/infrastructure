@@ -50,7 +50,7 @@ async def send_response_message(
 ):
     await websocket.send(response.model_dump_json())
 
-async def websocket_handler(websocket: websockets.WebSocketServerProtocol, path: str):
+async def websocket_handler(websocket: websockets.WebSocketServerProtocol):
     connected_clients.add(websocket)
     try:
         async for message in websocket:
@@ -107,7 +107,7 @@ async def pause(ctx: commands.Context):
 
 async def start_websocket_server():
     print("Starting WebSocket server...")
-    async with websockets.serve(websocket_handler, "0.0.0.0", 5678):
+    async with websockets.serve(websocket_handler, "0.0.0.0", 5678, ):
         await asyncio.Future()
 
 
