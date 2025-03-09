@@ -1,29 +1,22 @@
-from enum import Enum
 import os
 from pprint import pprint
-from typing import Optional, Set
+from typing import Set
 import discord
 from discord.ext import commands
-from threading import Thread
 from dotenv import load_dotenv
 from fastapi.concurrency import asynccontextmanager
 from pydantic import BaseModel
 import asyncio
 import websockets
 import json
-import time
-from src.models import BotResponse, BotStatus, MessageType, PlaybackInformation
+from src.models import BotResponse
 from src.my_voice_client import get_voice_client, set_voice_client
 from src.playback_service import (
-    get_filename_and_starttime,
-    get_status,
     handle_message,
     handle_new_song_on_queue,
     pause_song,
-    play_current_song,
-    start_time_now,
 )
-from src.song_queue import add_to_queue, get_current_metadata, handle_song_end, has_current_song, move_to_last_song_in_queue
+from src.song_queue import add_to_queue
 
 load_dotenv()
 
@@ -97,20 +90,10 @@ async def stop(ctx: commands.Context):
 async def pause(ctx: commands.Context):
     pause_song()
 
-# def run_websocket():
-#     print("started websocket")
-#     loop = asyncio.new_event_loop()
-#     asyncio.set_event_loop(loop)
-#     start_server = websockets.serve(websocket_handler, "0.0.0.0", 5678)
-#     loop.run_until_complete(start_server)
-#     loop.run_forever()
-
 async def start_websocket_server():
     print("Starting WebSocket server...")
     async with websockets.serve(websocket_handler, "0.0.0.0", 5678, ):
         await asyncio.Future()
-
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
