@@ -81,6 +81,10 @@ async def play(ctx: commands.Context, url: str):
     add_to_queue(url)
     handle_new_song_on_queue()
 
+@bot.command(name="url")
+async def url(ctx: commands.Context):
+    await ctx.send("http://server.alexmickelson.guru:5677/")
+
 @bot.command(pass_context=True)
 async def stop(ctx: commands.Context):
     voice_client = get_voice_client()
