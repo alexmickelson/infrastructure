@@ -1,4 +1,4 @@
-FROM node:20 as build-stage
+FROM node:20 AS build-stage
 
 WORKDIR /app
 
@@ -8,7 +8,7 @@ RUN npm install
 COPY client/ ./
 RUN npm run build
 
-FROM python:3.10
+FROM python:3.12
 RUN apt-get update && apt-get install -y ffmpeg
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt

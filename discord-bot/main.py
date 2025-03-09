@@ -93,20 +93,24 @@ async def stop(ctx: commands.Context):
 async def pause(ctx: commands.Context):
     pause_song()
 
-def run_websocket():
-    print("started websocket")
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    start_server = websockets.serve(websocket_handler, "0.0.0.0", 5678)
-    loop.run_until_complete(start_server)
-    loop.run_forever()
+# def run_websocket():
+#     print("started websocket")
+#     loop = asyncio.new_event_loop()
+#     asyncio.set_event_loop(loop)
+#     start_server = websockets.serve(websocket_handler, "0.0.0.0", 5678)
+#     loop.run_until_complete(start_server)
+#     loop.run_forever()
 
+async def start_websocket_server():
+    print("Starting WebSocket server...")
+    async with websockets.serve(websocket_handler, "0.0.0.0", 5678):
+        await asyncio.Future()
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    Thread(target=run_websocket).start()
-    Thread(target=lambda: bot.run(os.getenv("DISCORD_SECRET"))).start()
+    asyncio.create_task(start_websocket_server())
+    asyncio.create_task(bot.start(os.getenv("DISCORD_SECRET")))
     yield
 
 app = FastAPI(lifespan=lifespan)
