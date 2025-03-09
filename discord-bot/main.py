@@ -111,11 +111,21 @@ async def start_websocket_server():
         await asyncio.Future()
 
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    asyncio.create_task(start_websocket_server())
-    asyncio.create_task(bot.start(os.getenv("DISCORD_SECRET")))
+    # Start WebSocket and Discord bot in managed background tasks
+    websocket_task = asyncio.create_task(start_websocket_server())
+    bot_task = asyncio.create_task(bot.start(os.getenv("DISCORD_SECRET")))
+
+    app.state.websocket_task = websocket_task
+    app.state.bot_task = bot_task
+
     yield
+
+    app.state.websocket_task.cancel()
+    app.state.bot_task.cancel()
+    await asyncio.gather(app.state.websocket_task, app.state.bot_task, return_exceptions=True)
 
 app = FastAPI(lifespan=lifespan)
 
