@@ -22,12 +22,12 @@
     ffmpeg
     pnpm
     jq
-    rustup
-    lldb
+    # rustup
+    # lldb
     nmap
     iperf
     makemkv
-    elixir_1_18
+    # elixir_1_18
     inotify-tools
     # (builtins.getFlake "github:ghostty-org/ghostty").packages.${pkgs.system}.default
     # ghostty
@@ -71,6 +71,7 @@ set -x LIBVIRT_DEFAULT_URI qemu:///system
     ".config/lazydocker/config.yml".text = ''
 gui:
   returnImmediately: true
+  screenMode: "half"
     '';
     ".config/k9s/config.yaml".text = ''
 k9s:
