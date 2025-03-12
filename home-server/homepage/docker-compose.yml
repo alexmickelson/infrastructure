@@ -5,5 +5,5 @@ homepage:
     - /data/homepage:/app/config
     - /var/run/docker.sock:/var/run/docker.sock # pass local proxy
   ports:
-    - 3000:3000
+    - 3001:3000
   restart: unless-stopped
