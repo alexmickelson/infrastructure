@@ -1,0 +1,9 @@
+homepage:
+  image: ghcr.io/gethomepage/homepage:latest
+  container_name: homepage
+  volumes:
+    - /data/homepage:/app/config
+    - /var/run/docker.sock:/var/run/docker.sock # pass local proxy
+  ports:
+    - 3000:3000
+  restart: unless-stopped
