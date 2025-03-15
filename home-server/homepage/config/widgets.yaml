@@ -10,7 +10,7 @@
 - search:
     provider: duckduckgo
     target: _blank
-widget:
+- widget:
   type: jellyfin
   url: http://jellyfin.host.or.ip
   key: apikeyapikeyapikeyapikeyapikey
