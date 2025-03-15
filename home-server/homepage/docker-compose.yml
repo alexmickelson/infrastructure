@@ -4,7 +4,7 @@ services:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
     volumes:
-      # - ./config:/app/config
+      - /data/homepage:/app/config
       - ./config/bookmarks.yaml:/app/config/bookmarks.yaml
       - ./config/custom.css:/app/config/custom.css
       - ./config/custom.js:/app/config/custom.js
