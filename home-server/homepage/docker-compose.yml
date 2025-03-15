@@ -1,7 +1,7 @@
 
 services:
   homepage:
-    image: ghcr.io/gethomepage/homepage:1.0.2
+    image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
     volumes:
       - /data/homepage:/app/config
