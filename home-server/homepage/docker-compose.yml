@@ -4,7 +4,7 @@ services:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
     volumes:
-      - /data/homepage:/app/config
+      - ./config:/app/config
       - /var/run/docker.sock:/var/run/docker.sock # pass local proxy
     ports:
       - 3001:3000
