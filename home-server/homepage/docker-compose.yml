@@ -9,5 +9,5 @@ services:
     ports:
       - 3001:3000
     environment:
-      - HOMEPAGE_ALLOWED_HOSTS=server.alexmickelson.guru:3001
+      - HOMEPAGE_ALLOWED_HOSTS=server.alexmickelson.guru:3001,home.alexmickelson.guru
     restart: unless-stopped
