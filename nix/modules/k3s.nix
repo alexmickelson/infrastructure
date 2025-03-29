@@ -7,6 +7,7 @@
   services.k3s.extraFlags = toString [
     # "--debug" # Optionally add additional args to k3s
     "--disable=traefik"
+    "--bind-address 100.122.128.107"
     "--tls-san 100.122.128.107"
   ];
   networking.firewall.allowedTCPPorts = [

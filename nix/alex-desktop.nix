@@ -50,13 +50,7 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
   };
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
 
   users.users.alex = {
     isNormalUser = true;
@@ -76,6 +70,10 @@
   home-manager.backupFileExtension = "backup";
 
   programs.firefox.enable = true;
+  services.fwupd.enable = true;
+  hardware.enableAllFirmware = true;
+  hardware.firmware = with pkgs; [ linux-firmware ];
+  
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
     vim
