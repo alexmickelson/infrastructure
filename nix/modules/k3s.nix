@@ -11,7 +11,7 @@
       "--bind-address 100.122.128.107"
       "--tls-san 100.122.128.107"
     ];
-    serverAddr = "https://100.122.128.107:6443"
+    serverAddr = "https://100.122.128.107:6443";
   };
   networking.firewall.allowedTCPPorts = [
     443
