@@ -9,6 +9,7 @@
       # "--debug" # Optionally add additional args to k3s
       "--disable=traefik"
       "--bind-address 100.122.128.107"
+      "--node-external-ip 100.122.128.107"
       "--tls-san 100.122.128.107"
     ];
     serverAddr = "https://100.122.128.107:6443";
