@@ -186,33 +186,33 @@ services:
   #     - 0.0.0.0:9162:9162
   # docker run -it --rm  -p 9162:9162 --net=host sfudeus/apcupsd_exporter:master_1.19
 
-  # reverse-proxy:
-  #   image: ghcr.io/linuxserver/swag
-  #   container_name: reverse-proxy
-  #   restart: unless-stopped
-  #   cap_add:
-  #     - NET_ADMIN
-  #   environment:
-  #     - PUID=1000
-  #     - PGID=1000
-  #     - TZ=America/Denver
-  #     - URL=alexmickelson.guru
-  #     - SUBDOMAINS=wildcard
-  #     - VALIDATION=dns
-  #     - DNSPLUGIN=cloudflare
-  #   volumes:
-  #     - ./nginx.conf:/config/nginx/site-confs/default.conf
-  #     - /data/swag:/config
-  #     - /data/cloudflare/cloudflare.ini:/config/dns-conf/cloudflare.ini
-  #   ports:
-  #     # - 0.0.0.0:80:80
-  #     # - 0.0.0.0:443:443
-  #     - 0.0.0.0:7080:80
-  #     - 0.0.0.0:7443:443
-  #   extra_hosts:
-  #     - host.docker.internal:host-gateway
-  #   networks:
-  #     - proxy
+  reverse-proxy:
+    image: ghcr.io/linuxserver/swag
+    container_name: reverse-proxy
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Denver
+      - URL=alexmickelson.guru
+      - SUBDOMAINS=wildcard
+      - VALIDATION=dns
+      - DNSPLUGIN=cloudflare
+    volumes:
+      - ./nginx.conf:/config/nginx/site-confs/default.conf
+      - /data/swag:/config
+      - /data/cloudflare/cloudflare.ini:/config/dns-conf/cloudflare.ini
+    ports:
+      # - 0.0.0.0:80:80
+      # - 0.0.0.0:443:443
+      - 0.0.0.0:7080:80
+      - 0.0.0.0:7443:443
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    networks:
+      - proxy
 
 
   audiobookshelf:
