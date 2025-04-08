@@ -38,6 +38,7 @@ scrape_configs:
         - 100.64.229.40:9323 # linode
 
   - job_name: "nvidia"
+    scrape_interval: 10s
     static_configs:
       - targets: 
         - 100.72.221.110:9400 # ai vm
