@@ -37,6 +37,11 @@ scrape_configs:
         - 100.122.128.107:9323 # home server
         - 100.64.229.40:9323 # linode
 
+  - job_name: "nvidia"
+    static_configs:
+      - targets: 
+        - 100.72.221.110:9400 # ai vm
+
   - job_name: ups
     static_configs:
     - targets:
