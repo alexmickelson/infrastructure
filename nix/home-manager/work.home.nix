@@ -27,11 +27,12 @@
     nmap
     iperf
     makemkv
-    # elixir_1_18
+    elixir_1_18
     inotify-tools
     # (builtins.getFlake "github:ghostty-org/ghostty").packages.${pkgs.system}.default
     # ghostty
     # gnome-themes-extra
+    code-cursor
   ];
   programs.fish = {
     enable = true;
