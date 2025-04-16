@@ -89,6 +89,7 @@
     libguestfs-with-appliance
     iperf
     mangohud
+    # woeusb ntfs3g
   ];
   services.tailscale.enable = true;
   services.openssh.enable = true;

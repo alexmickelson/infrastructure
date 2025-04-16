@@ -15,6 +15,11 @@
     elixir_1_18
     inotify-tools # needed for elixir hot-reloading
   ];
+
+  programs.ghostty = {
+    enable = true;
+    enableFishIntegration = true;
+  };
   fonts.fontconfig.enable = true;
   dconf.enable = true;
   dconf.settings = {
@@ -23,6 +28,11 @@
     };
     "org/gnome/desktop/wm/keybindings" = {
       toggle-maximized=["<Super>m"];
+    };
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
+      binding = "<Super>t";
+      command = "ghostty";
+      name = "terminal";
     };
   };
   gtk = {
