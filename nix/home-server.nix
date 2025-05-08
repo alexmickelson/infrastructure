@@ -61,6 +61,20 @@
   home-manager.useGlobalPkgs = true;
 
   services.fwupd.enable = true;
+   systemd.timers."nix-garbage-collect-weekly" = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "weekly";
+      Persistent = true;
+    };
+  };
+
+  systemd.services."nix-garbage-collect-weekly" = {
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "/run/current-system/sw/bin/nix-collect-garbage --delete-older-than 7d";
+    };
+  };
 
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
