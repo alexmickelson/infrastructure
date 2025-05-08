@@ -201,6 +201,21 @@
     datasets."backup/media" = {
       useTemplate = [ "backup" ];
     };
+
+
+    templates.vms = {
+      hourly = 2;
+      daily = 1;
+      weekly = 2;
+      autoprune = true;
+      autosnap = true;
+    };
+    datasets."vms" = {
+      useTemplate = [ "vms" ];
+    };
+    datasets."vms-2" = {
+      useTemplate = [ "vms" ];
+    };
   }; 
 
   services.github-runners = {
