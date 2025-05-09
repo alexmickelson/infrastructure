@@ -32,7 +32,7 @@
     # (builtins.getFlake "github:ghostty-org/ghostty").packages.${pkgs.system}.default
     # ghostty
     # gnome-themes-extra
-    code-cursor
+    uv
   ];
   programs.fish = {
     enable = true;
