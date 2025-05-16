@@ -89,6 +89,15 @@
     libguestfs-with-appliance
     iperf
     mangohud
+
+
+    wineWowPackages.stable
+    wine
+    (wine.override { wineBuild = "wine64"; })
+    wine64
+    wineWowPackages.staging
+    winetricks
+    wineWowPackages.waylandFull
     # woeusb ntfs3g
   ];
   services.tailscale.enable = true;

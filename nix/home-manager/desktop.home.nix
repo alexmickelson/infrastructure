@@ -16,6 +16,7 @@
     inotify-tools # needed for elixir hot-reloading
     # nodejs_23
     pnpm
+    legcord
   ];
 
   programs.ghostty = {
