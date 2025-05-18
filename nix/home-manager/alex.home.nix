@@ -23,6 +23,7 @@
     gnumake
     dig
     pciutils
+    uv
   ];
   home.sessionVariables = {
     EDITOR = "vim";
