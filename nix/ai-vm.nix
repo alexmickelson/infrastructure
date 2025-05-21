@@ -4,6 +4,7 @@
   imports =
     [
       <home-manager/nixos>
+      /etc/nixos/cachix.nix
     ];
 
   boot.loader.grub.enable = true;
