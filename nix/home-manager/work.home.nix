@@ -33,6 +33,7 @@
     # ghostty
     # gnome-themes-extra
     uv
+    ghostty
   ];
   programs.fish = {
     enable = true;
