@@ -66,7 +66,7 @@ export DOTNET_CLI_TELEMETRY_OPTOUT=1
 export DOTNET_ROOT=${pkgs.dotnetCorePackages.sdk_8_0}
 
 set -x LIBVIRT_DEFAULT_URI qemu:///system
-set -x TERM xterm-256color
+set -x TERM xterm-256color # ghostty
    '';
   };
   home.file = {
