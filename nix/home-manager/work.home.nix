@@ -1,5 +1,8 @@
-{ config, pkgs, ... }:
-{
+{ config, pkgs,  ... }:
+
+let
+  nixgl = import (fetchTarball "https://github.com/nix-community/nixGL/archive/main.tar.gz") {};
+in {
   home.username = "alexm";
   home.homeDirectory = "/home/alexm";
   nixpkgs.config.allowUnfree = true;
@@ -29,12 +32,16 @@
     makemkv
     elixir_1_18
     inotify-tools
-    # (builtins.getFlake "github:ghostty-org/ghostty").packages.${pkgs.system}.default
-    # ghostty
     # gnome-themes-extra
     uv
     ghostty
+    nixgl.nixGLIntel
+    (config.lib.nixGL.wrap ghostty)
   ];
+
+  programs.ghostty = {
+    enable = true;
+  };
   programs.fish = {
     enable = true;
     shellInit = ''
@@ -157,7 +164,7 @@ TryExec=/home/alexm/.local/share/flatpak/exports/bin/com.brave.Browser'';
 
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
       name = "Launch Ghostty";
-      command = "ghostty";
+      command = "nixGL ghostty";
       binding = "<Super>t";
     };
   };
