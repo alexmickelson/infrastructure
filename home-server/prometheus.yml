@@ -43,6 +43,13 @@ scrape_configs:
       - targets: 
         - 100.72.221.110:9400 # ai vm
 
+  - job_name: "openwebui"
+    scrape_interval: 10s
+    static_configs:
+      - targets: 
+        - openwebui.bison-python.ts.net:8889
+
+
   - job_name: ups
     static_configs:
     - targets:
