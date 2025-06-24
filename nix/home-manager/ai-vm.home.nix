@@ -67,7 +67,7 @@ set -x LIBVIRT_DEFAULT_URI qemu:///system
 gui:
   returnImmediately: true
   screenMode: "half"
-    '';
+'';
     ".config/k9s/config.yaml".text = ''
 k9s:
   liveViewAutoRefresh: true

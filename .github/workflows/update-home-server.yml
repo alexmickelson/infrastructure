@@ -27,8 +27,6 @@ jobs:
           CLOUDFLARE_CONFIG: ${{ secrets.CLOUDFLARE_CONFIG }}
         working-directory: /home/github/infrastructure/infrastructure
         run: |
-          # git secret reveal -f
-          pwd
           # echo "$CLOUDFLARE_CONFIG" > /data/cloudflare/cloudflare.ini
           cd home-server
           docker pull -q nextcloud:production
