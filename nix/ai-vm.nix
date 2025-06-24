@@ -85,6 +85,7 @@
 
   environment.systemPackages = with pkgs; [
     vim
+    nvidia-container-toolkit
   ];
   programs.nix-ld.enable = true;
 
