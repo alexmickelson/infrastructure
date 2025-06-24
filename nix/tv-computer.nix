@@ -45,7 +45,7 @@
   users.users.alex = {
     isNormalUser = true;
     description = "alex";
-    extraGroups = [ "networkmanager" "wheel" "docker" "libvirtd" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [
       firefox
       docker
@@ -62,29 +62,15 @@
     vim
     wget
     curl
-    fishPlugins.done
-    fishPlugins.fzf-fish
-    fishPlugins.forgit
-    fishPlugins.hydro
-    fzf
-    fishPlugins.grc
-    grc
     git
     gnome-tweaks
-    #gnome-tweaks
     docker
     btop
     vscode-fhs
     libvirt
     numix-cursor-theme
-    #mint-cursor-themes
     ffmpeg
-    #steam
-    #game-devices-udev-rules
     libva-utils
-#    xboxdrv
-#    xone
-    #linuxKernel.packages.linux_6_6.xone
     libcec
     flirc
 
@@ -93,13 +79,11 @@
   services.tailscale.enable = true;
   hardware.flirc.enable=true;
   hardware.steam-hardware.enable = true;
-  #hardware.xone.enable = true;
- # hardware.xpadneo.enable = true;
   programs.fish.enable = true;
   virtualisation.docker.enable = true;
   services.flatpak.enable = true;
-  virtualisation.libvirtd.enable = true;
-  programs.virt-manager.enable = true;
+  # virtualisation.libvirtd.enable = true;
+  # programs.virt-manager.enable = true;
 
 
   systemd.targets.sleep.enable = false;
