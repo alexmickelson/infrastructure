@@ -7,5 +7,5 @@ services:
     container_name: libation
     restart: always
     volumes:
-      - /data/config:/config
-      - /data/books:/data
+      - /data/libation/config:/config
+      - /data/libation/books:/data
