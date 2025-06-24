@@ -89,6 +89,7 @@
     libguestfs-with-appliance
     iperf
     mangohud
+    mlocate
 
 
     wineWowPackages.stable

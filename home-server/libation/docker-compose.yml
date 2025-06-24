@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  libation:
+    image: rmcrackan/libation:latest
+    container_name: libation
+    restart: always
+    volumes:
+      - /data/config:/config
+      - /data/books:/data
