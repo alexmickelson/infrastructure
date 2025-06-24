@@ -5,7 +5,6 @@ services:
     image: rmcrackan/libation:latest
     user: "1000:1000"
     container_name: libation
-    restart: always
     volumes:
       - /data/libation/config:/config
       - /data/media/audiobooks-libation:/data
