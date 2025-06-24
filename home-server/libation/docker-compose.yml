@@ -8,4 +8,4 @@ services:
     restart: always
     volumes:
       - /data/libation/config:/config
-      - /data/libation/books:/data
+      - /data/media/audiobooks-libation:/data

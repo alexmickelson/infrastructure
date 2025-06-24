@@ -60,6 +60,7 @@ services:
       - /data/media/tvshows:/tvshows
       - /data/media/shared:/shared
       - /data/media/audiobooks:/audiobooks
+      - /data/media/audiobooks-libation:/audiobooks-libation
     restart: unless-stopped
     entrypoint: /cron.sh
     depends_on:
@@ -222,6 +223,7 @@ services:
       - 13378:80
     volumes:
       - /data/media/audiobooks:/audiobooks
+      - /data/media/audiobooks-libation:/audiobooks-libation
       # - </path/to/podcasts>:/podcasts
       - /data/audiobookshelf/config:/config
       - /data/audiobookshelf/metadata:/metadata
