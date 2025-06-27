@@ -24,6 +24,7 @@
     enable = true;
     enableFishIntegration = true;
   };
+
   fonts.fontconfig.enable = true;
   dconf.enable = true;
   dconf.settings = {
