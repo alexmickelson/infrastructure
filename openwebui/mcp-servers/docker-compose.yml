@@ -1,0 +1,32 @@
+services:
+  sequential:
+    container_name: sequential_thinking
+    build:
+      context: .
+      dockerfile: npx-uvx.Dockerfile
+    # restart: always
+    command: uvx mcpo --port 3901 -- npx -y @modelcontextprotocol/server-sequential-thinking
+    ports:
+      - 3901:3901
+
+  playwright:
+    container_name: playwrite_mcp
+    build:
+      context: .
+      dockerfile: playwright.Dockerfile
+    # restart: always
+    ports:
+      - "3902:3902"   # MCP port
+
+  playwright_novnc:
+    build:
+      context: .
+      dockerfile: novnc.Dockerfile
+    container_name: playwrite_novnc
+    ports:
+      - "6080:6080"   # noVNC web access
+    depends_on:
+      - playwright
+    # restart: always
+    command: >
+      websockify --web=/opt/novnc --wrap-mode=ignore 6080 playwrite_mcp:5900
