@@ -24,9 +24,9 @@ services:
       dockerfile: novnc.Dockerfile
     container_name: playwrite_novnc
     ports:
-      - "6080:6080"   # noVNC web access
+      - "3903:3903"
     depends_on:
       - playwright
     # restart: always
     command: >
-      websockify --web=/opt/novnc --wrap-mode=ignore 6080 playwrite_mcp:5900
+      websockify --web=/opt/novnc --wrap-mode=ignore 3903 playwrite_mcp:5900

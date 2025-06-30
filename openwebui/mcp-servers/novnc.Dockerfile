@@ -9,5 +9,3 @@ RUN apt-get update && \
 WORKDIR /opt/novnc
 
 RUN echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=/vnc.html"></head><body></body></html>' > /opt/novnc/index.html
-EXPOSE 6080
-CMD ["websockify", "--web=/opt/novnc", "6080", "playwright:5900"]
