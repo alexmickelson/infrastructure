@@ -16,7 +16,7 @@ services:
     ports:
       - "3903:3903"
     depends_on:
-      - playwright
+      - many_mcp
     # restart: always
     command: >
       websockify --web=/opt/novnc --wrap-mode=ignore 3903 many_mcp:5900
