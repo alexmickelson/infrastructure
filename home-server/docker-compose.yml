@@ -239,6 +239,8 @@ services:
     ports:
       - "4444:4444"
     restart: unless-stopped
+    networks:
+      - proxy
 
 networks:
   proxy: 
