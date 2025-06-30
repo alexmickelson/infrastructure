@@ -233,7 +233,7 @@ services:
   copilot-api:
     image: node:latest
     working_dir: /app
-    command: sh -c "npx copilot-api@latest start --github-token $COPILOT_TOKEN"
+    command: sh -c "npx copilot-api@latest start --github-token $COPILOT_TOKEN --host 0.0.0.0 --port 4444"
     environment:
       - COPILOT_TOKEN=${COPILOT_TOKEN}
     ports:
@@ -242,5 +242,5 @@ services:
 
 networks:
   proxy: 
-    external:
-      name: proxy
+    name: proxy
+    external: true
