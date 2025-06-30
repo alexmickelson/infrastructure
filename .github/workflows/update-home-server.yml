@@ -25,6 +25,7 @@ jobs:
           HOMEASSISTANT_TOKEN: ${{ secrets.HOMEASSISTANT_TOKEN }}
           GRAFANA_PASSWORD: ${{ secrets.GRAFANA_PASSWORD }}
           CLOUDFLARE_CONFIG: ${{ secrets.CLOUDFLARE_CONFIG }}
+          COPILOT_TOKEN: ${{ secrets.COPILOT_TOKEN }}
         working-directory: /home/github/infrastructure/infrastructure
         run: |
           # echo "$CLOUDFLARE_CONFIG" > /data/cloudflare/cloudflare.ini

@@ -230,54 +230,15 @@ services:
     networks:
       - proxy
 
-  # docker-registry:
-  #   image: registry:2
-  #   container_name: docker-registry
-  #   restart: unless-stopped
-  #   ports:
-  #   - "5000:5000"
-  #   environment:
-  #     REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
-  #     REGISTRY_HTTP_TLS_CERTIFICATE: /etc/docker/certs.d/server.alexmickelson.guru/cert.pem
-  #     REGISTRY_HTTP_TLS_KEY: /etc/docker/certs.d/server.alexmickelson.guru/key.pem
-  #   volumes:
-  #     - /data/docker-registry:/data
-  #   depends_on:
-  #     - reverse-proxy
-  #   networks:
-  #     - proxy
-  # github-actions-exporter:
-  #   # ports:
-  #   #   - 9999:9999
-  #   image: ghcr.io/labbs/github-actions-exporter
-  #   environment:
-  #     - GITHUB_REPOS=alexmickelson/infrastructure
-  #     - GITHUB_TOKEN=${MY_GITHUB_TOKEN}
-
-
-  # pihole:
-  #   container_name: pihole
-  #   image: pihole/pihole:latest
-  #   # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
-  #   ports:
-  #     # - "0.0.0.0:53:53/tcp"
-  #     # - "0.0.0.0:53:53/udp"
-  #     # - "127.0.0.1:53:53/tcp"
-  #     # - "127.0.0.1:53:53/udp"
-  #     - "100.122.128.107:53:53/tcp"
-  #     - "100.122.128.107:53:53/udp"
-  # #     # - "67:67/udp" # Only required if you are using Pi-hole as your DHCP server
-  #     - "8580:80"
-  #   environment:
-  #     TZ: 'America/Denver'
-  #     # WEBPASSWORD: 'set a secure password here or it will be random'
-  #   volumes:
-  #     - '/data/pihole/etc-pihole:/etc/pihole'
-  #     - '/data/pihole/etc-dnsmasq.d:/etc/dnsmasq.d'
-  #   #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
-  #   cap_add:
-  #     - NET_ADMIN # Required if you are using Pi-hole as your DHCP server, else not needed
-  #   restart: unless-stopped
+  copilot-api:
+    image: node:latest
+    working_dir: /app
+    command: sh -c "npx copilot-api@latest start --github-token $COPILOT_TOKEN"
+    environment:
+      - COPILOT_TOKEN=${COPILOT_TOKEN}
+    ports:
+      - "4444:4444"
+    restart: unless-stopped
 
 networks:
   proxy: 
