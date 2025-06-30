@@ -43,9 +43,10 @@ fluxbox &
 x11vnc -nopw -display :99 -forever -shared &
 
 # Start Playwright MCP
-uvx mcpo --port 3902 -- npx -y @playwright/mcp@latest --no-sandbox
+uvx mcpo --port 3901 --config mcpo-config.json
+
 EOF
 
 RUN chmod +x /playwright-start.sh
-
+COPY mcpo-config.json mcpo-config.json
 CMD ["/playwright-start.sh"]
