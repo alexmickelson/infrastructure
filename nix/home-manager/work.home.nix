@@ -40,6 +40,9 @@ in {
     wl-clipboard
   ];
 
+  programs.direnv = {
+    enable = true;
+  };
   programs.ghostty = {
     enable = true;
   };
@@ -155,7 +158,6 @@ end
    '';
   };
   home.file = {
-   
     ".config/lazydocker/config.yml".text = ''
 gui:
   returnImmediately: true
@@ -256,6 +258,4 @@ TryExec=/home/alexm/.local/share/flatpak/exports/bin/com.brave.Browser'';
   };
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
-
-
 }
