@@ -38,6 +38,7 @@ in {
     nixgl.nixGLIntel
     (config.lib.nixGL.wrap ghostty)
     wl-clipboard
+    jellyfin-tui
   ];
 
   programs.direnv = {
