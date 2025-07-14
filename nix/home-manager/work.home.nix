@@ -156,6 +156,8 @@ end
 function plz
   ghcs suggest "$argv"
 end
+
+fish_add_path /home/alexm/.opencode/bin
    '';
   };
   home.file = {
