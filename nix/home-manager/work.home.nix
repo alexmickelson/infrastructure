@@ -39,7 +39,14 @@ in {
     (config.lib.nixGL.wrap ghostty)
     wl-clipboard
     jellyfin-tui
+    firefoxpwa
   ];
+
+  programs.firefox = {
+    enable = true;
+    package = pkgs.firefox;
+    nativeMessagingHosts = [ pkgs.firefoxpwa ];
+  };
 
   programs.direnv = {
     enable = true;
@@ -211,20 +218,38 @@ k9s:
   namespace:
     lockFavorites: false'';
 
-    ".local/share/applications/teams.desktop".text = ''#!/usr/bin/env xdg-open
-[Desktop Entry]
+    ".local/share/applications/firefox.desktop".text = ''[Desktop Entry]
+Version=1.0
 Type=Application
-Name=Teams
-Exec=flatpak 'run' '--command=brave' 'com.brave.Browser' '--profile-directory=Default' '--app-id=cifhbcnohmdccbgoicgdjpfamggdegmo'
-# on other computer...
-# Exec=flatpak 'run' '--command=brave' 'com.brave.Browser' '--profile-directory=Default' '--app="https://teams.microsoft.com/v2/"'
-Keywords=teams;microsoft;chat;
-Icon=brave-cifhbcnohmdccbgoicgdjpfamggdegmo-Default
-NoDisplay=false
-SingleMainWindow=true
-StartupWMClass=crx_cifhbcnohmdccbgoicgdjpfamggdegmo
-X-Flatpak-Part-Of=com.brave.Browser
-TryExec=/home/alexm/.local/share/flatpak/exports/bin/com.brave.Browser'';
+Name=Firefox
+Comment=Browse the Web
+Exec=firefox %u
+Icon=firefox
+Terminal=false
+Categories=Network;WebBrowser;
+MimeType=x-scheme-handler/http;x-scheme-handler/https;text/html;
+StartupWMClass=firefox
+Actions=new-window;new-private-window;
+
+[Desktop Action new-window]
+Name=Open a New Window
+Exec=firefox --new-window
+
+[Desktop Action new-private-window]
+Name=Open a New Private Window
+Exec=firefox --private-window
+'';
+
+    ".local/share/applications/teams.desktop".text = ''[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Microsoft Teams (Web)
+Comment=Launch Microsoft Teams in Firefox
+Exec=firefox --new-window https://teams.microsoft.com
+Icon=teams
+Terminal=false
+Categories=Network;WebBrowser;
+'';
   };
 
   home.sessionVariables = {
