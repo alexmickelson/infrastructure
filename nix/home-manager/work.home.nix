@@ -40,6 +40,7 @@ in {
     wl-clipboard
     jellyfin-tui
     firefoxpwa
+    bluetui
   ];
 
   programs.firefox = {
@@ -71,6 +72,8 @@ end
 bind \e\[3\;5~ kill-word
 # have ctrl+delete delete following word
 bind \b  backward-kill-word
+
+alias blue="bluetui"
 
 set -U fish_user_paths ~/.local/bin $fish_user_paths
 set -U fish_user_paths ~/bin $fish_user_paths
