@@ -21,17 +21,19 @@
           ];
           shellHook = ''
             export PUPPETEER_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium
-            export PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium
-            export PLAYWRIGHT_BROWSERS_PATH=0
+            mkdir -p ~/.config/opencode
+            cp ${self.packages.${system}.config_json}/config.json ~/.config/opencode/opencode.json
           '';
         };
         packages.run = pkgs.writeShellScriptBin "run_flake" ''
-          opencode --config ./config.json
+          ${pkgs.opencode}/bin/opencode --config ./config.json
         '';
         packages.config_json = pkgs.writeTextFile {
           name = "config.json";
           text = ''
             {
+              "$schema": "https://opencode.ai/config.json",
+              "theme": "github",
               "mcpServers": {
                 "memory": {
                   "command": "npx",
