@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  opencodeFlake = import ../../flakes/opencode;
+  opencodeFlake = builtins.getFlake (toString ../../flakes/opencode);
   nixgl = import
     (fetchTarball "https://github.com/nix-community/nixGL/archive/main.tar.gz")
     { };
@@ -41,8 +41,8 @@ in {
     jellyfin-tui
     firefoxpwa
     bluetui
-    nixfmt
-    opencodeFlake.packages.${pkgs.system}.opencodeInstance
+    nixfmt-classic
+    opencodeFlake.packages.${system}.opencode
   ];
 
   programs.firefox = {

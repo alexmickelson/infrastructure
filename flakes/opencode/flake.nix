@@ -47,29 +47,16 @@
             };
           };
         };
-      in {
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [ bash glib glib.out uv nodejs_22 opencode ];
-        };
-        packages.run = pkgs.writeShellScriptBin "run_flake" ''
-          mkdir -p ~/.config/opencode
-          cp ${
-            self.packages.${system}.config_json
-          } ~/.config/opencode/opencode.json
-          ${pkgs.opencode}/bin/opencode
-        '';
-        packages.config_json = pkgs.writeTextFile {
+        configJson = pkgs.writeTextFile {
           name = "config.json";
           text = builtins.toJSON opencodeConfig;
         };
-        packages.opencodeInstance = pkgs.stdenv.mkDerivation {
-          name = "opencode";
-          buildInputs = [ pkgs.opencode ];
-          installPhase = ''
-            mkdir -p $out/bin
-            ln -s ${pkgs.opencode}/bin/opencode $out/bin/opencode
-            mkdir -p $out/config
-            cp ${self.packages.${system}.config_json} $out/config/opencode.json
+      in {
+        packages = rec {
+          opencode = pkgs.writeShellScriptBin "opencode" ''
+            mkdir -p ~/.config/opencode
+            cp ${configJson} ~/.config/opencode/opencode.json
+            ${pkgs.opencode}/bin/opencode
           '';
         };
       });
