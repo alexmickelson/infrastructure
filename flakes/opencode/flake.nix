@@ -6,52 +6,70 @@
 
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = import nixpkgs { inherit system; };
+      let
+        pkgs = import nixpkgs { inherit system; };
+        opencodeConfig = {
+          "$schema" = "https://opencode.ai/config.json";
+          theme = "github";
+          provider = {
+            ollama = {
+              npm = "@ai-sdk/openai-compatible";
+              options = {
+                baseURL = "http://ai-snow.reindeer-pinecone.ts.net:11434/v1";
+              };
+              models = {
+                "llama3.1:70b" = { };
+                "deepseek-r1:70b" = { };
+                "mistral:latest" = { };
+                "qwen3:32b" = { };
+              };
+            };
+          };
+          mcp = {
+            playwright = {
+              type = "local";
+              command = [
+                "npx"
+                "-y"
+                "@playwright/mcp@latest"
+                "--executable-path"
+                "${pkgs.chromium}/bin/chromium"
+                "--no-sandbox"
+              ];
+            };
+            sequential_thinking = {
+              type = "local";
+              command = [
+                "npx"
+                "-y"
+                "@modelcontextprotocol/server-sequential-thinking"
+              ];
+            };
+          };
+        };
       in {
         devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            bash
-            glib
-            glib.out
-            chromium
-            uv
-            nodejs_22
-            opencode
-          ];
+          buildInputs = with pkgs; [ bash glib glib.out uv nodejs_22 opencode ];
         };
         packages.run = pkgs.writeShellScriptBin "run_flake" ''
           mkdir -p ~/.config/opencode
-          cp ${self.packages.${system}.config_json} ~/.config/opencode/opencode.json
+          cp ${
+            self.packages.${system}.config_json
+          } ~/.config/opencode/opencode.json
           ${pkgs.opencode}/bin/opencode
         '';
         packages.config_json = pkgs.writeTextFile {
           name = "config.json";
-          text = ''
-            {
-              "$schema": "https://opencode.ai/config.json",
-              "theme": "github",
-              "mcp": {
-                "memory": {
-                  "type": "local",
-                  "command": [ "npx", "-y", "@modelcontextprotocol/server-memory" ]
-                },
-                "playwright": {
-                  "type": "local",
-                  "command": [ 
-                    "npx", 
-                    "-y",
-                    "@playwright/mcp@latest",
-                    "--executable-path",
-                    "${pkgs.chromium}/bin/chromium",
-                    "--no-sandbox"
-                  ]
-                },
-                "sequential_thinking": {
-                  "type": "local",
-                  "command": [ "npx", "-y", "@modelcontextprotocol/server-sequential-thinking"]
-                }
-              }
-            }
+          text = builtins.toJSON opencodeConfig;
+        };
+        packages.opencodeInstance = pkgs.stdenv.mkDerivation {
+          name = "opencode";
+          buildInputs = [ pkgs.opencode ];
+          installPhase = ''
+            mkdir -p $out/bin
+            ln -s ${pkgs.opencode}/bin/opencode $out/bin/opencode
+            mkdir -p $out/config
+            cp ${self.packages.${system}.config_json} $out/config/opencode.json
           '';
         };
       });
