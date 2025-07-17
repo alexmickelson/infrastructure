@@ -9,14 +9,15 @@
       let pkgs = import nixpkgs { inherit system; };
       in {
         devShells.default = pkgs.mkShell {
-          buildInputs = [
-            pkgs.bash
-            pkgs.python313Packages.pyppeteer
-            pkgs.glib
-            pkgs.glib.out
-            pkgs.chromium
-            pkgs.uv
-            pkgs.nodejs_22
+          buildInputs = with pkgs; [
+            bash
+            python313Packages.pyppeteer
+            glib
+            glib.out
+            chromium
+            uv
+            nodejs_22
+            opencode
           ];
           shellHook = ''
             export PUPPETEER_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium
