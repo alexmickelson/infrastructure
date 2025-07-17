@@ -7,17 +7,15 @@
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        pkgs = import nixpkgs { inherit system; };
+        pkgs = nixpkgs.legacyPackages.${system};
       in {
         devShells.default = pkgs.mkShell {
           buildInputs = [
             pkgs.bash
             pkgs.python313Packages.pyppeteer
-            pkgs.python312
             pkgs.glib
-            pkgs.glib.out
             pkgs.chromium
-            pkgs.uvx
+            pkgs.uv
             pkgs.nodejs_22
           ];
           shellHook = ''

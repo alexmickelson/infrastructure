@@ -41,6 +41,7 @@ in {
     jellyfin-tui
     firefoxpwa
     bluetui
+    nixfmt
   ];
 
   programs.firefox = {
