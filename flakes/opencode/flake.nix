@@ -21,12 +21,12 @@
           ];
           shellHook = ''
             export PUPPETEER_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium
-            mkdir -p ~/.config/opencode
-            cp ${self.packages.${system}.config_json}/config.json ~/.config/opencode/opencode.json
           '';
         };
         packages.run = pkgs.writeShellScriptBin "run_flake" ''
-          ${pkgs.opencode}/bin/opencode --config ./config.json
+            mkdir -p ~/.config/opencode
+            cp ${self.packages.${system}.config_json}/config.json ~/.config/opencode/opencode.json
+          ${pkgs.opencode}/bin/opencode
         '';
         packages.config_json = pkgs.writeTextFile {
           name = "config.json";
