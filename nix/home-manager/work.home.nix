@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  opencodeFlake = builtins.getFlake (toString ../../flakes/opencode);
+  opencodeFlake = builtins.getFlake (toString ../flakes/opencode);
   nixgl = import
     (fetchTarball "https://github.com/nix-community/nixGL/archive/main.tar.gz")
     { };
