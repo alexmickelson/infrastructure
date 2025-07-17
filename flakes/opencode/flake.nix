@@ -11,7 +11,6 @@
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             bash
-            python313Packages.pyppeteer
             glib
             glib.out
             chromium
@@ -19,13 +18,10 @@
             nodejs_22
             opencode
           ];
-          shellHook = ''
-            export PUPPETEER_EXECUTABLE_PATH=${pkgs.chromium}/bin/chromium
-          '';
         };
         packages.run = pkgs.writeShellScriptBin "run_flake" ''
-            mkdir -p ~/.config/opencode
-            cp ${self.packages.${system}.config_json}/config.json ~/.config/opencode/opencode.json
+          mkdir -p ~/.config/opencode
+          cp ${self.packages.${system}.config_json} ~/.config/opencode/opencode.json
           ${pkgs.opencode}/bin/opencode
         '';
         packages.config_json = pkgs.writeTextFile {
@@ -34,27 +30,25 @@
             {
               "$schema": "https://opencode.ai/config.json",
               "theme": "github",
-              "mcpServers": {
+              "mcp": {
                 "memory": {
-                  "command": "npx",
-                  "args": ["-y", "@modelcontextprotocol/server-memory"]
-                },
-                "puppeteer": {
-                  "command": "npx",
-                  "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+                  "type": "local",
+                  "command": [ "npx", "-y", "@modelcontextprotocol/server-memory" ]
                 },
                 "playwright": {
-                  "command": "npx",
-                  "args": [
+                  "type": "local",
+                  "command": [ 
+                    "npx", 
                     "-y",
                     "@playwright/mcp@latest",
                     "--executable-path",
-                    "${pkgs.chromium}/bin/chromium"
+                    "${pkgs.chromium}/bin/chromium",
+                    "--no-sandbox"
                   ]
                 },
                 "sequential_thinking": {
-                  "command": "npx",
-                  "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+                  "type": "local",
+                  "command": [ "npx", "-y", "@modelcontextprotocol/server-sequential-thinking"]
                 }
               }
             }
