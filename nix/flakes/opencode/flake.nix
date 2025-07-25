@@ -37,26 +37,26 @@
                 "--no-sandbox"
               ];
             };
-            sequential_thinking = {
-              type = "local";
-              command = [
-                "npx"
-                "-y"
-                "@modelcontextprotocol/server-sequential-thinking"
-              ];
-            };
-            discord_bot = {
-              type = "local";
-              command = [
-                "npx"
-                "-y"
-                "@pyroprompts/mcp-stdio-to-streamable-http-adapter"
-              ];
-              environment = {
-                URI = "http://server.alexmickelson.guru:5678/mcp/";
-                MCP_NAME = "discord_bot";
-              };
-            };
+            # sequential_thinking = {
+            #   type = "local";
+            #   command = [
+            #     "npx"
+            #     "-y"
+            #     "@modelcontextprotocol/server-sequential-thinking"
+            #   ];
+            # };
+            # discord_bot = {
+            #   type = "local";
+            #   command = [
+            #     "npx"
+            #     "-y"
+            #     "@pyroprompts/mcp-stdio-to-streamable-http-adapter"
+            #   ];
+            #   environment = {
+            #     URI = "http://server.alexmickelson.guru:5678/mcp/";
+            #     MCP_NAME = "discord_bot";
+            #   };
+            # };
           };
         };
         configJson = pkgs.writeTextFile {

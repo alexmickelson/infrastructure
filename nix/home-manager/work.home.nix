@@ -239,7 +239,6 @@ in {
       Name=Open a New Private Window
       Exec=firefox --private-window
     '';
-
     ".local/share/applications/teams.desktop".text = ''
       [Desktop Entry]
       Version=1.0
@@ -256,15 +255,15 @@ in {
   home.sessionVariables = { EDITOR = "vim"; };
   dconf.enable = true;
   dconf.settings = {
-    "org/gnome/desktop/wm/keybindings" = { toggle-maximized = [ "<Super>m" ]; };
+    "org/gnome/desktop/wm/keybindings" = {
+      toggle-maximized = [ "<Super>m" ];
+    };
     "org/gnome/desktop/interface" = { color-scheme = "prefer-dark"; };
-
     "org/gnome/settings-daemon/plugins/media-keys" = {
       custom-keybindings = [
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
       ];
     };
-
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" =
       {
         name = "Launch Ghostty";
