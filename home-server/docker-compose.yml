@@ -119,7 +119,7 @@ services:
         - /data/zwave:/usr/src/app/store
     ports:
       - '3050:8091'
-      - '3051:3000'
+      - '3051:3051'
 
   music-assistant-server:
     image: ghcr.io/music-assistant/server:2
