@@ -100,6 +100,26 @@ services:
     network_mode: host
 
 
+  zwave-js-ui:
+    container_name: zwave-js-ui
+    image: zwavejs/zwave-js-ui:latest
+    restart: always
+    tty: true
+    stop_signal: SIGINT
+    environment:
+      - SESSION_SECRET=iqpwoeinf9384bw3p48gbwer
+      - TZ=America/Denver
+    devices:
+      # Do not use /dev/ttyUSBX serial devices, as those mappings can change over time.
+      # Instead, use the /dev/serial/by-id/X serial device for your Z-Wave stick.
+      # - '/dev/serial/by-id/insert_stick_reference_here:/dev/zwave'
+      - /dev/serial/by-id:/dev/serial/by-id
+    volumes:
+        - /data/zwave:/usr/src/app/store
+    ports:
+      - '3050:8091'
+      - '3051:3000'
+
   music-assistant-server:
     image: ghcr.io/music-assistant/server:2
     container_name: music-assistant-server
