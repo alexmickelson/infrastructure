@@ -263,6 +263,17 @@ services:
     networks:
       - proxy
 
+  esphome:
+    container_name: esphome
+    image: ghcr.io/esphome/esphome
+    volumes:
+      - /data/esphome:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    network_mode: host
+    environment:
+      - USERNAME=alex
+      - PASSWORD=alex
 networks:
   proxy: 
     name: proxy
