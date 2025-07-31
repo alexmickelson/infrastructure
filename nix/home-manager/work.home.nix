@@ -10,7 +10,6 @@ in {
   home.homeDirectory = "/home/alexm";
   nixpkgs.config.allowUnfree = true;
   home.packages = with pkgs; [
-    openldap
     k9s
     jwt-cli
     fish
@@ -20,7 +19,7 @@ in {
     (with dotnetCorePackages; combinePackages [ sdk_8_0 sdk_9_0 ])
     nodejs_22
     parallel
-    k0sctl
+    #k0sctl
     kubernetes-helm
     ffmpeg
     pnpm
@@ -29,9 +28,9 @@ in {
     # lldb
     nmap
     iperf
-    makemkv
-    elixir_1_18
-    inotify-tools
+    #makemkv
+    #elixir_1_18
+    #inotify-tools
     # gnome-themes-extra
     uv
     ghostty
@@ -41,10 +40,15 @@ in {
     jellyfin-tui
     firefoxpwa
     bluetui
-    nixfmt-classic
+    #nixfmt-classic
     opencodeFlake.packages.${system}.opencode
+    # jan
+    # texlivePackages.jetbrainsmono-otf
+    # nerd-fonts.fira-code
+    # dejavu_fonts
+    # vscode-fhs
   ];
-
+  fonts.fontconfig.enable = true;
   programs.firefox = {
     enable = true;
     package = pkgs.firefox;

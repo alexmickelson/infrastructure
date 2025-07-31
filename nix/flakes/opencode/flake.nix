@@ -22,6 +22,7 @@
                 "deepseek-r1:70b" = { };
                 "mistral:latest" = { };
                 "qwen3:32b" = { };
+                "alibayram/Qwen3-30B-A3B-Instruct-2507" = { };
               };
             };
           };
