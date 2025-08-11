@@ -1,8 +1,0 @@
-{
-  "name": "monitor-tui",
-  "version": "0.1.0",
-  "description": "Rust rewrite launcher for GNOME Monitor TUI",
-  "scripts": {
-    "run": "nix run .#monitor-tui"
-  }
-}

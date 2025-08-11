@@ -17,8 +17,6 @@
           naersk' = pkgs.callPackage naersk { };
           runtimeDeps = with pkgs; [
             gnome-monitor-config
-            dialog
-            newt
             xorg.xrandr
             bash
             coreutils
@@ -49,7 +47,7 @@
           default = pkgs.mkShell {
             buildInputs = with pkgs; [
               rustc cargo rustfmt clippy
-              gnome-monitor-config dialog newt xorg.xrandr bash coreutils
+              gnome-monitor-config xorg.xrandr bash coreutils
             ];
           };
         }
