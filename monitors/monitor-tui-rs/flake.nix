@@ -46,11 +46,11 @@
         let pkgs = import nixpkgs { inherit system; }; in {
           default = pkgs.mkShell {
             buildInputs = with pkgs; [
-              rustc cargo rustfmt clippy rust-analyzer rust-src
+              rustc cargo rustfmt clippy rust-analyzer
               gnome-monitor-config xorg.xrandr bash coreutils
             ];
             shellHook = ''
-              export RUST_SRC_PATH=${pkgs.rust-src}/lib/rustlib/src/rust/library
+              export RUST_SRC_PATH=${pkgs.rustPlatform.rustLibSrc}
             '';
           };
         }

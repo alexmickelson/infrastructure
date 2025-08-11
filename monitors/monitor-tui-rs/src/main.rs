@@ -8,6 +8,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use which::which;
 use dialoguer::{theme::ColorfulTheme, Input, Select, MultiSelect};
+use console::style;
 
 const APP_NAME: &str = "GNOME Monitor TUI";
 
@@ -18,7 +19,16 @@ fn theme() -> ColorfulTheme {
     // Slightly more vivid selection and success colors for a modern feel
     t.values_style = t.values_style.bold();
     t.active_item_style = t.active_item_style.bold();
-    t.selection_style = t.selection_style.bold();
+    // Customize prefixes for a cleaner, modern aesthetic
+    t.prompt_prefix = style("❯".to_string());
+    t.success_prefix = style("✔".to_string());
+    t.error_prefix = style("✘".to_string());
+    t.active_item_prefix = style("➤".to_string());
+    t.inactive_item_prefix = style(" ".to_string());
+    t.checked_item_prefix = style("◉".to_string());
+    t.unchecked_item_prefix = style("○".to_string());
+    t.picked_item_prefix = style("⭐".to_string());
+    t.unpicked_item_prefix = style(" ".to_string());
     t
 }
 
