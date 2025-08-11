@@ -49,11 +49,11 @@ fn menu(prompt: &str, options: &[(String, String)]) -> Result<Option<String>> {
 fn checklist(prompt: &str, items: &[(String, String, bool)]) -> Result<Vec<String>> {
     let labels: Vec<String> = items.iter().map(|(k, d, _)| format!("{}  {}", k, d)).collect();
     let defaults: Vec<bool> = items.iter().map(|(_, _, on)| *on).collect();
-    let mut ms = MultiSelect::with_theme(&theme());
-    ms.with_prompt(prompt).items(&labels);
-    // Set defaults
-    ms.defaults(&defaults);
-    let chosen = ms.interact()?;
+    let chosen = MultiSelect::with_theme(&theme())
+        .with_prompt(prompt)
+        .items(&labels)
+        .defaults(&defaults)
+        .interact()?;
     Ok(chosen.into_iter().map(|i| items[i].0.clone()).collect())
 }
 

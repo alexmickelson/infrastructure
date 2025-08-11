@@ -6,7 +6,6 @@
 /result
 /result-*
 .direnv/
-.envrc
 
 # Editors
 *.swp
