@@ -1,0 +1,20 @@
+# Rust build
+/target/
+**/*.rs.bk
+
+# Nix / direnv
+/result
+/result-*
+.direnv/
+.envrc
+
+# Editors
+*.swp
+*.swo
+*.idea/
+.vscode/
+.DS_Store
+
+# Node (optional helper script)
+node_modules/
+package-lock.json
