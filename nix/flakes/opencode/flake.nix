@@ -18,11 +18,11 @@
                 baseURL = "http://ai-snow.reindeer-pinecone.ts.net:11434/v1";
               };
               models = {
-                "llama3.1:70b" = { };
+                # "llama3.1:70b" = { };
                 "deepseek-r1:70b" = { };
-                "mistral:latest" = { };
+                # "mistral:latest" = { };
                 "qwen3:32b" = { };
-                "alibayram/Qwen3-30B-A3B-Instruct-2507" = { };
+                # "alibayram/Qwen3-30B-A3B-Instruct-2507" = { };
               };
             };
           };
