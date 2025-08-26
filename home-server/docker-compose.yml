@@ -254,7 +254,7 @@ services:
   copilot-api:
     image: node:latest
     working_dir: /app
-    command: sh -c "npx copilot-api@latest start --github-token $COPILOT_TOKEN --port 4444"
+    command: sh -c "npm cache clean --force && npx copilot-api@latest start --github-token $COPILOT_TOKEN --port 4444"
     environment:
       - COPILOT_TOKEN=${COPILOT_TOKEN}
     ports:
