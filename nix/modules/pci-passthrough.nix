@@ -4,6 +4,8 @@ let
   #   "10de:22bb" # Audio
   # ];
   gpuIDs = [
+    "10de:2704" # Graphics
+    "10de:22bb" # Audio
     "10de:2bb1" # Graphics
     "10de:22e8" # Audio
   ];
