@@ -24,6 +24,7 @@
     dig
     pciutils
     uv
+    bluetui
   ];
   programs.direnv = {
     enable = true;
@@ -34,6 +35,8 @@
   programs.fish = {
     enable = true;
     shellInit = ''
+alias blue="bluetui"
+
 function commit
   git add --all
   git commit -m "$argv"
