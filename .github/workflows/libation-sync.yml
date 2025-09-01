@@ -1,4 +1,4 @@
-name: Libation Audiobook Sync
+name: Libation
 on:
   schedule:
     # Run 4 times a day: 6am, 12pm, 6pm, 12am UTC
