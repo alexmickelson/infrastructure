@@ -47,6 +47,7 @@ in {
     # nerd-fonts.fira-code
     # dejavu_fonts
     # vscode-fhs
+    # aider-chat-full
   ];
   fonts.fontconfig.enable = true;
   programs.firefox = {
