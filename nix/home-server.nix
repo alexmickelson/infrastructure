@@ -173,8 +173,8 @@
   #     source = config.virtualisation.libvirtd.qemu.package + "/share/qemu/edk2-i386-vars.fd";
   #   };
   # };
-  environment.etc."qemu/edk2-x86_64-secure-code.fd".source = "${pkgs.OVMF.fd}/FV/OVMF_CODE.secboot.fd";
-  environment.etc."qemu/edk2-i386-vars.fd".source = "${pkgs.OVMF.fd}/FV/OVMF_VARS.fd";
+  # environment.etc."qemu/edk2-x86_64-secure-code.fd".source = "${pkgs.OVMF.fd}/FV/OVMF_CODE.secboot.fd";
+  # environment.etc."qemu/edk2-i386-vars.fd".source = "${pkgs.OVMF.fd}/FV/OVMF_VARS.fd";
 
   environment.etc."qemu/edk2-x86_64-secure-code.fd".source = "${pkgs.OVMF.fd}/FV/OVMF_CODE.secboot.fd";
   environment.etc."qemu/edk2-x86_64-secure-vars.fd".source = "${pkgs.OVMF.fd}/FV/OVMF_VARS.secboot.fd";
