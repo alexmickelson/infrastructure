@@ -171,17 +171,11 @@
   # environment.etc."qemu/edk2-x86_64-secure-vars.fd".source = "${pkgs.OVMF.fd}/FV/OVMF_VARS.secboot.fd";
 
   environment.etc = {
-    # Real files live under /etc/static when envfs is enabled
-    "static/qemu/edk2-x86_64-secure-code.fd".source =
-      "${pkgs.OVMF.fd}/FV/OVMF_CODE.ms.fd";
-    "static/qemu/edk2-x86_64-secure-vars.fd".source =
-      "${pkgs.OVMF.fd}/FV/OVMF_VARS.ms.fd";
-
-    # Convenience aliases at /etc/qemu that your VM XML points to
     "qemu/edk2-x86_64-secure-code.fd".source =
-      "/etc/static/qemu/edk2-x86_64-secure-code.fd";
+      lib.mkForce "${pkgs.OVMF.fd}/FV/OVMF_CODE.ms.fd";
+
     "qemu/edk2-x86_64-secure-vars.fd".source =
-      "/etc/static/qemu/edk2-x86_64-secure-vars.fd";
+      lib.mkForce "${pkgs.OVMF.fd}/FV/OVMF_VARS.ms.fd";
   };
 
 
