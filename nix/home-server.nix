@@ -149,9 +149,10 @@
       swtpm.enable = true;
       ovmf = {
         enable = true;
-        packages = [
-          (pkgs.OVMF.override { secureBoot = true; tpmSupport = true; }).fd
-        ];
+        packages = [ pkgs.OVMFFull.fd ];
+        # packages = [
+        #   (pkgs.OVMF.override { secureBoot = true; tpmSupport = true; }).fd
+        # ];
       };
     };
   };
@@ -176,6 +177,9 @@
     "qemu/edk2-x86_64-secure-vars.fd".source =
       lib.mkForce "${pkgs.OVMF.fd}/FV/OVMF_VARS.ms.fd";
   };
+  systemd.tmpfiles.rules = [
+    "d /var/lib/libvirt/qemu/nvram 0755 root root -"
+  ];
 
   powerManagement.powertop.enable = true;
   powerManagement.enable = true;
