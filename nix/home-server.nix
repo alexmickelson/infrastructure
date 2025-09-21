@@ -173,11 +173,9 @@
   environment.etc = {
     "qemu/edk2-x86_64-secure-code.fd".source =
       lib.mkForce "${pkgs.OVMF.fd}/FV/OVMF_CODE.ms.fd";
-
     "qemu/edk2-x86_64-secure-vars.fd".source =
       lib.mkForce "${pkgs.OVMF.fd}/FV/OVMF_VARS.ms.fd";
   };
-
 
   powerManagement.powertop.enable = true;
   powerManagement.enable = true;
