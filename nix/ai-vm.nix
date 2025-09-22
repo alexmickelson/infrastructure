@@ -69,6 +69,7 @@
       nvtopPackages.nvidia
       uv
       git
+      tmux
     ];
   };
   home-manager.users.alex = { pgks, ...}: {
