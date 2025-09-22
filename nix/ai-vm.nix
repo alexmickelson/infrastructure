@@ -60,7 +60,7 @@
   users.users.alex = {
     isNormalUser = true;
     description = "alex";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "video" "render" "input" ];
     shell = pkgs.fish;
 
     packages = with pkgs; [
@@ -87,6 +87,9 @@
   environment.systemPackages = with pkgs; [
     vim
     nvidia-container-toolkit
+    libva-utils 
+    vulkan-tools 
+    ffmpeg
   ];
   programs.nix-ld.enable = true;
 
@@ -111,7 +114,17 @@
     autoStart = true;
     capSysAdmin = true;
     openFirewall = true;
+    serviceConfig = {
+      After = [ "graphical-session.target" ];
+      Wants = [ "graphical-session.target" ];
+      BindsTo = [ "graphical-session.target" ];
+    };
   };
+
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+  xdg.portal.config.common.default = [ "gnome" ];
+
   hardware.graphics = {
     enable32Bit = true;
     enable = true;
