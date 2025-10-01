@@ -56,6 +56,7 @@
     home.stateVersion = "24.05";
     imports = [
       ./home-manager/alex.home.nix
+      ./home-manager/server.home.nix
     ];
   };
   home-manager.useGlobalPkgs = true;
