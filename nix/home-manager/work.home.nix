@@ -93,8 +93,6 @@ in {
 
       set -x LIBVIRT_DEFAULT_URI qemu:///system
       set -x TERM xterm-256color # ghostty
-
-     
     '';
   };
   home.file = {

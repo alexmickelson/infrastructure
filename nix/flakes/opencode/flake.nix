@@ -12,17 +12,22 @@
           "$schema" = "https://opencode.ai/config.json";
           theme = "github";
           provider = {
-            ollama = {
+            snow = {
               npm = "@ai-sdk/openai-compatible";
               options = {
-                baseURL = "http://ai-snow.reindeer-pinecone.ts.net:11434/v1";
+                baseURL = "http://ai-snow.reindeer-pinecone.ts.net:9292/v1";
               };
               models = {
-                # "llama3.1:70b" = { };
-                "deepseek-r1:70b" = { };
-                # "mistral:latest" = { };
-                "qwen3:32b" = { };
-                # "alibayram/Qwen3-30B-A3B-Instruct-2507" = { };
+                "gpt-oss-120b" = { };
+              };
+            };
+            home = {
+              npm = "@ai-sdk/openai-compatible";
+              options = {
+                baseURL = "http://openwebui.beefalo-newton.ts.net:9292/v1";
+              };
+              models = {
+                "gpt-oss-20b" = { };
               };
             };
           };
