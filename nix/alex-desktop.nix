@@ -100,6 +100,14 @@
     winetricks
     wineWowPackages.waylandFull
     # woeusb ntfs3g
+    (lutris.override {
+      extraLibraries =  pkgs: [
+        # List library dependencies here
+      ];
+      extraPkgs = pkgs: [
+        # List package dependencies here
+      ];
+    })
   ];
   services.tailscale.enable = true;
   services.openssh.enable = true;
