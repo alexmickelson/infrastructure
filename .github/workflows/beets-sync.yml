@@ -12,7 +12,6 @@ jobs:
       - name: Run Beets sync
         working-directory: /home/github/infrastructure/infrastructure/home-server/beets
         run: |
-          echo "Starting Beets audiobook sync at $(date)"
           git pull
           docker compose pull -q
           docker compose up -d
