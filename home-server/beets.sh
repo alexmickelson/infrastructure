@@ -6,6 +6,7 @@ docker run -d \
     --name=beets \
     -v /data/media/music/sydnie-untagged/NewPipe:/sydnie \
     -v /data/media/music/Alex-untagged:/alex \
+    -v /data/media/music/managed:/managed \
     -v /home/alex/beets/output:/config \
     -v /data/media/music/tagged:/config/music \
     -e PUID=1000 \
