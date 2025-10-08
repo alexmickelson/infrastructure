@@ -1,0 +1,19 @@
+services:
+  beets:
+    image: linuxserver/beets
+    container_name: beets
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - /data/media/music/sydnie-untagged/NewPipe:/sydnie
+      - /data/media/music/Alex-untagged:/alex
+      - /data/media/music/managed:/managed
+      
+      - /data/beets/output:/config
+      - ./config.yaml:/config/config.yaml
+      - /data/media/music/tagged:/output/music
+    restart: unless-stopped
+
+
+# docker exec -it -u 1000 beets bash -c "beet import -is /alex/*"
