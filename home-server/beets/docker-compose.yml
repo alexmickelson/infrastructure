@@ -19,7 +19,7 @@ services:
 # docker exec -it -u 1000 beets bash -c "beet import -is /alex/*"
 
 # background
-# beet import -q /managed/*
+# beet -vvv import -I -is -q /managed/*
 
 
 # beet update -a (updates metadata in local db...)

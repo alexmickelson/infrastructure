@@ -61,3 +61,40 @@ replace:
 web:
     host: 0.0.0.0
     port: 8337
+
+match:
+  strong_rec_thresh: 0.15      # Default: 0.04 (96% match or better = auto-accept)
+  medium_rec_thresh: 0.25      # Default: 0.25 (75% match = suggest but ask)
+  rec_gap_thresh: 0.25         # Gap between best and second-best match
+  
+  max_rec:
+    missing_tracks: weak     # How to handle missing tracks (strong/medium/weak)
+    unmatched_tracks: medium   # How to handle extra tracks not in release
+  
+  preferred:
+    countries: ['US']  # Prefer certain countries
+    media: ['CD', 'Digital Media|File']
+    original_year: yes          # Prefer original release year
+  
+  ignored: unmatched_tracks missing_tracks  # Penalties to ignore
+  
+  distance_weights:
+    source: 2.0
+    artist: 3.0
+    album: 3.0
+    media: 1.0
+    mediums: 1.0
+    year: 1.0
+    country: 0.5
+    label: 0.5
+    catalognum: 0.5
+    albumdisambig: 0.5
+    album_id: 5.0
+    tracks: 2.0
+    missing_tracks: 0.2
+    unmatched_tracks: 0.6
+    track_title: 3.0
+    track_artist: 2.0
+    track_index: 1.0
+    track_length: 2.0
+    track_id: 5.0
