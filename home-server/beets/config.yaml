@@ -24,7 +24,8 @@ import:
     copy: yes
     move: no
     resume: ask
-    incremental: yes
+    # incremental: yes
+    incremental: no
     quiet_fallback: skip
     timid: no
     log: /config/beet.log
