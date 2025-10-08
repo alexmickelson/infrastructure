@@ -19,4 +19,6 @@ jobs:
           docker compose restart
           sleep 2
           docker exec -u 1000 beets bash -c 'beet -v import -i -q /managed/*' || true
+          # Clean up empty directories after import (but not /managed itself)
+          docker exec -u 1000 beets bash -c 'find /managed -mindepth 1 -type d -empty -delete' || true
           echo "Beets sync completed"

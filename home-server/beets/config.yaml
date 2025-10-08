@@ -62,17 +62,6 @@ web:
     host: 0.0.0.0
     port: 8337
 
-# hook:
-#   hooks:
-#     # Delete the source file after successful import
-#     - event: item_imported
-#       command: |
-#         SOURCE_FILE="{item.path}"
-#         if [ -f "$SOURCE_FILE" ]; then
-#           echo "Deleting imported source file: $SOURCE_FILE"
-#           rm -f "$SOURCE_FILE"
-#         fi
-
 match:
   strong_rec_thresh: 0.15      # Default: 0.04 (96% match or better = auto-accept)
   medium_rec_thresh: 0.25      # Default: 0.25 (75% match = suggest but ask)
