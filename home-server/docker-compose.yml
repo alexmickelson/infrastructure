@@ -137,7 +137,7 @@ services:
       - LOG_LEVEL=info
 
   prometheus:
-    image: bitnami/prometheus:latest
+    image: public.ecr.aws/bitnami/prometheus:2
     container_name: prometheus
     restart: unless-stopped
     environment:
