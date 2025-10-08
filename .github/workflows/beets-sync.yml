@@ -17,6 +17,6 @@ jobs:
           docker compose pull 
           docker compose up -d
           sleep 2
-          docker exec -u 1000 beets bash -c 'beet -v import -i -q /managed/*' 
+          docker exec -u 1000 beets bash -c 'beet -v import -i -q /managed/*' || true
           docker compose down
           echo "Beets sync completed"
