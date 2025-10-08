@@ -68,15 +68,15 @@ match:
   rec_gap_thresh: 0.25         # Gap between best and second-best match
   
   max_rec:
-    missing_tracks: weak     # How to handle missing tracks (strong/medium/weak)
-    unmatched_tracks: medium   # How to handle extra tracks not in release
+    missing_tracks: none     # How to handle missing tracks (strong/medium/weak)
+    unmatched_tracks: weak   # How to handle extra tracks not in release
   
   preferred:
     countries: ['US']  # Prefer certain countries
     media: ['CD', 'Digital Media|File']
     original_year: yes          # Prefer original release year
   
-  ignored: unmatched_tracks missing_tracks  # Penalties to ignore
+  # ignored: missing_tracks unmatched_tracks
   
   distance_weights:
     source: 2.0
