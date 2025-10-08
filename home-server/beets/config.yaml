@@ -21,8 +21,8 @@ paths:
 
 import:
     write: yes
-    copy: yes
-    move: no
+    copy: no
+    move: yes
     resume: ask
     # incremental: yes
     incremental: no
