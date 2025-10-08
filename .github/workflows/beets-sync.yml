@@ -6,15 +6,17 @@ on:
   workflow_dispatch: # Allow manual trigger
 
 jobs:
-  sync-audiobooks:
+  sync-beets:
     runs-on: [home-server]
     steps:
       - name: Run Beets sync
         working-directory: /home/github/infrastructure/infrastructure/home-server/beets
         run: |
           echo "Starting Beets audiobook sync at $(date)"
+          git pull
           docker compose pull 
           docker compose up -d
-          docker exec -u 1000 beets bash -c "beet -v import -i -q /managed/*"
+          sleep 2
+          docker exec -u 1000 beets bash -c 'beet -v import -i -q /managed/*' 
           docker compose down
           echo "Beets sync completed"
