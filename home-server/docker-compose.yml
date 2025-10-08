@@ -136,25 +136,6 @@ services:
     environment:
       - LOG_LEVEL=info
 
-
-  # octoprint:
-  #   image: octoprint/octoprint
-  #   container_name: octoprint
-  #   restart: unless-stopped
-  #   # ports:
-  #   #   - 80:80
-  #   # devices:
-  #   # # use `python -m serial.tools.miniterm` to see what the name is of the printer, this requires pyserial
-  #   #  - /dev/ttyACM0:/dev/ttyACM0
-  #   #  - /dev/video0:/dev/video0
-  #   volumes:
-  #     - /data/octoprint:/octoprint
-  #   # uncomment the lines below to ensure camera streaming is enabled when
-  #   # you add a video device
-  #   environment:
-  #     - ENABLE_MJPG_STREAMER=true
-  #     - MJPG_SREAMER_INPUT=-n -r 1280x720 -f 30
-
   prometheus:
     image: bitnami/prometheus:2
     container_name: prometheus
@@ -166,14 +147,6 @@ services:
       - /data/prometheus:/opt/bitnami/prometheus/data
     ports:
       - 9091:9090
-    # command:
-    #   - '--config.file=/etc/prometheus/prometheus.yml'
-    #   - '--storage.tsdb.path=/prometheus'
-    #   - '--web.console.libraries=/etc/prometheus/console_libraries'
-    #   - '--web.console.templates=/etc/prometheus/consoles'
-    #   - '--web.enable-lifecycle'
-    # expose:
-    #   - 9090
     networks:
       - proxy
 
