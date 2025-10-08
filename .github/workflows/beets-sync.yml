@@ -15,6 +15,6 @@ jobs:
           echo "Starting Beets audiobook sync at $(date)"
           docker compose pull 
           docker compose up -d
-          docker exec -it -u 1000 beets bash -c "beet -v import -i -q /managed/*"
+          docker exec -u 1000 beets bash -c "beet -v import -i -q /managed/*"
           docker compose down
           echo "Beets sync completed"
