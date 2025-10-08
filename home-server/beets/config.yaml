@@ -1,4 +1,4 @@
-plugins: fetchart embedart convert scrub replaygain lastgenre chroma web
+plugins: fetchart embedart convert scrub replaygain lastgenre chroma web hook
 directory: /output/music
 library: /config/musiclibrary.blb
 art_filename: albumart
@@ -21,9 +21,9 @@ paths:
 
 import:
     write: yes
-    copy: yes
-    move: no
-    resume: ask
+    copy: no
+    move: yes
+    # resume: ask
     # incremental: yes
     incremental: no
     quiet_fallback: skip
@@ -61,6 +61,17 @@ replace:
 web:
     host: 0.0.0.0
     port: 8337
+
+# hook:
+#   hooks:
+#     # Delete the source file after successful import
+#     - event: item_imported
+#       command: |
+#         SOURCE_FILE="{item.path}"
+#         if [ -f "$SOURCE_FILE" ]; then
+#           echo "Deleting imported source file: $SOURCE_FILE"
+#           rm -f "$SOURCE_FILE"
+#         fi
 
 match:
   strong_rec_thresh: 0.15      # Default: 0.04 (96% match or better = auto-accept)
