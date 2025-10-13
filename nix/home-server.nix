@@ -90,6 +90,7 @@
     github-runner
     sanoid
     virtiofsd
+    qemu
     OVMF
     tmux
   ];
