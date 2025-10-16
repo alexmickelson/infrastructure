@@ -90,8 +90,14 @@
     github-runner
     sanoid
     virtiofsd
+    qemu
     OVMF
     tmux
+    (pkgs.writeShellScriptBin "qemu-system-x86_64-uefi" ''
+      qemu-system-x86_64 \
+        -bios ${pkgs.OVMF.fd}/FV/OVMF.fd \
+        "$@"
+    '')
   ];
 
   services.openssh.enable = true;
