@@ -90,7 +90,7 @@ services:
     volumes:
       - /data/homeAssistant/config:/config
       - /etc/localtime:/etc/localtime:ro
-      - /dev/serial/by-id:/dev/serial/by-id
+      # - /dev/serial/by-id:/dev/serial/by-id
     devices:
       # - /dev/ttyUSB0:/dev/ttyUSB0
       # - /dev/ttyUSB1:/dev/ttyUSB1
