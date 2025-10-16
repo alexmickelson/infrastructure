@@ -92,8 +92,9 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /dev/serial/by-id:/dev/serial/by-id
     devices:
-      - /dev/ttyUSB0:/dev/ttyUSB0
-      - /dev/ttyUSB1:/dev/ttyUSB1
+      # - /dev/ttyUSB0:/dev/ttyUSB0
+      # - /dev/ttyUSB1:/dev/ttyUSB1
+      - /dev/serial/by-id/usb-Itead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_V2_0cad0783fc73ef11b46be21e313510fd-if00-port0:/dev/serial/by-id/usb-Itead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_V2_0cad0783fc73ef11b46be21e313510fd-if00-port0
     environment:
       - TZ=America/Denver
     restart: always
