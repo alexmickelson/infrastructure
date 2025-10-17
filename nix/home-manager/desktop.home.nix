@@ -18,6 +18,7 @@
     pnpm
     legcord
     ffmpeg
+    gh
   ];
 
   programs.ghostty = {
