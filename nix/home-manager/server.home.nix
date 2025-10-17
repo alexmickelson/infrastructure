@@ -4,5 +4,6 @@
         vscode-fhs
         opencode
         quickemu
+        tree
     ];
 }
