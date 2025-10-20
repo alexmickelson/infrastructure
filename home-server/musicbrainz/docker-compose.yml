@@ -60,11 +60,11 @@ services:
 
 
   search:
-    image: metabrainz/musicbrainz-solr:4.1.0
+    image: metabrainz/mb-solr:4.1.0
     container_name: musicbrainz-search
     restart: unless-stopped
     environment:
-      SOLR_HEAP: 0.5g
+      SOLR_HEAP: 512m
       LOG4J_FORMAT_MSG_NO_LOOKUPS: "true"
     mem_swappiness: 1
     volumes:
