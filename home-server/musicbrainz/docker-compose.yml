@@ -47,10 +47,11 @@ services:
       RABBITMQ_PASSWORD: guest
       # Replication
       REPLICATION_TYPE: RT_SLAVE
-      REPLICATION_ACCESS_TOKEN: ${MUSICBRAINZ_TOKEN}
+      # REPLICATION_ACCESS_TOKEN: ${MUSICBRAINZ_TOKEN} # not working...
     depends_on:
       - db
       - redis
       - mq
     volumes:
       - /data/musicbrainz/dbdump:/media/dbdump
+      - /data/musicbrainz/access_token:/run/secrets/metabrainz_access_token
