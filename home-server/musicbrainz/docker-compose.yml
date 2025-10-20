@@ -53,6 +53,21 @@ services:
       - db
       - redis
       - mq
+      - search
     volumes:
       - /data/musicbrainz/dbdump:/media/dbdump
       - /data/musicbrainz/access_token:/run/secrets/metabrainz_access_token
+
+
+  search:
+    image: metabrainz/musicbrainz-solr:4.1.0
+    container_name: musicbrainz-search
+    restart: unless-stopped
+    environment:
+      SOLR_HEAP: 0.5g
+      LOG4J_FORMAT_MSG_NO_LOOKUPS: "true"
+    mem_swappiness: 1
+    volumes:
+      - /data/musicbrainz/solr:/var/solr
+      - /data/musicbrainz/dbdump:/media/dbdump:ro
+      - /data/musicbrainz/solrdump:/var/cache/musicbrainz/solr-backups
