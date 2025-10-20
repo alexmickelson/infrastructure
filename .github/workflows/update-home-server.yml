@@ -38,13 +38,13 @@ jobs:
           # docker exec reverse-proxy nginx -t
           # docker exec reverse-proxy nginx -s reload
 
-  update-pihole:
-    runs-on: [home-server]
-    needs: update-repo
-    steps:
-      - working-directory: /home/github/infrastructure/infrastructure
-        run: |
-          cd dns
-          docker compose pull
-          docker compose up -d
+  # update-pihole:
+  #   runs-on: [home-server]
+  #   needs: update-repo
+  #   steps:
+  #     - working-directory: /home/github/infrastructure/infrastructure
+  #       run: |
+  #         cd dns
+  #         docker compose pull
+  #         docker compose up -d
 
