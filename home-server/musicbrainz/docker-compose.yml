@@ -53,7 +53,7 @@ services:
       - db
       - redis
       - mq
-      - search
+      # - search
     volumes:
       - /data/musicbrainz/dbdump:/media/dbdump
       - /data/musicbrainz/access_token:/run/secrets/metabrainz_access_token
