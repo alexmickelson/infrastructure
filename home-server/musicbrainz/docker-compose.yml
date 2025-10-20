@@ -58,15 +58,27 @@ services:
       - /data/musicbrainz/dbdump:/media/dbdump
       - /data/musicbrainz/access_token:/run/secrets/metabrainz_access_token
 
-
-  search:
-    image: metabrainz/mb-solr:4.1.0
-    container_name: musicbrainz-search
+  postgrest:
+    image: postgrest/postgrest:latest
+    container_name: musicbrainz-postgrest
     restart: unless-stopped
+    ports:
+      - "5003:3000"
     environment:
-      SOLR_HEAP: 512m
-      LOG4J_FORMAT_MSG_NO_LOOKUPS: "true"
-    volumes:
-      - /data/musicbrainz/solr:/var/solr
-      - /data/musicbrainz/dbdump:/media/dbdump:ro
-      - /data/musicbrainz/solrdump:/var/cache/musicbrainz/solr-backups
+      PGRST_DB_URI: postgresql://musicbrainz:musicbrainz@db:5432/musicbrainz_db
+      PGRST_DB_SCHEMA: musicbrainz
+      PGRST_DB_ANON_ROLE: musicbrainz
+      PGRST_OPENAPI_SERVER_PROXY_URI: http://server.alexmickelson.guru:5003
+    depends_on:
+      - db
+  # search:
+  #   image: metabrainz/mb-solr:4.1.0
+  #   container_name: musicbrainz-search
+  #   restart: unless-stopped
+  #   environment:
+  #     SOLR_HEAP: 512m
+  #     LOG4J_FORMAT_MSG_NO_LOOKUPS: "true"
+  #   volumes:
+  #     - /data/musicbrainz/solr:/var/solr
+  #     - /data/musicbrainz/dbdump:/media/dbdump:ro
+  #     - /data/musicbrainz/solrdump:/var/cache/musicbrainz/solr-backups
