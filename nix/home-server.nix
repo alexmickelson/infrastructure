@@ -8,7 +8,20 @@
       ./modules/k3s.nix
       ./modules/pci-passthrough.nix
     ];
-
+  security.pam.loginLimits = [
+    {
+      domain = "*";
+      type = "soft";
+      item = "nofile";
+      value = "65000";
+    }
+    {
+      domain = "*";
+      type = "hard";
+      item = "nofile";
+      value = "65000";
+    }
+  ];
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
