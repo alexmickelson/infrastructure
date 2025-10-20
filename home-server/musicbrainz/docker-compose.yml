@@ -1,6 +1,6 @@
 services:
   db:
-    image: metabrainz/musicbrainz-docker-db
+    image: metabrainz/musicbrainz-docker-db:16-build0
     container_name: musicbrainz-db
     restart: unless-stopped
     command: postgres -c "shared_buffers=2048MB"
@@ -15,7 +15,7 @@ services:
       - "5432:5432"
 
   musicbrainz:
-    image: metabrainz/musicbrainz-docker-musicbrainz
+    image: metabrainz/musicbrainz-docker-musicbrainz:v-2025-10-13.0-build1
     container_name: musicbrainz-server
     restart: unless-stopped
     ports:
