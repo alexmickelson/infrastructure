@@ -1,0 +1,35 @@
+services:
+  db:
+    image: metabrainz/musicbrainz-docker-db
+    container_name: musicbrainz-db
+    restart: unless-stopped
+    command: postgres -c "shared_buffers=2048MB"
+    environment:
+      POSTGRES_USER: musicbrainz
+      POSTGRES_PASSWORD: musicbrainz
+      POSTGRES_DB: musicbrainz_db
+    shm_size: "2GB"
+    volumes:
+      - /data/musicbrainz/db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  musicbrainz:
+    image: metabrainz/musicbrainz-docker-musicbrainz
+    container_name: musicbrainz-server
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: musicbrainz
+      POSTGRES_PASSWORD: musicbrainz
+      POSTGRES_DB: musicbrainz_db
+      MUSICBRAINZ_WEB_SERVER_HOST: 0.0.0.0
+      MUSICBRAINZ_WEB_SERVER_PORT: 5000
+      # Replication settings
+      REPLICATION_TYPE: RT_SLAVE
+      REPLICATION_ACCESS_TOKEN: ${MUSICBRAINZ_TOKEN}
+    depends_on:
+      - db
