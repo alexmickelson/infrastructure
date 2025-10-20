@@ -11,8 +11,19 @@ services:
     shm_size: "2GB"
     volumes:
       - /data/musicbrainz/db:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+
+  redis:
+    image: redis:3-alpine
+    container_name: musicbrainz-redis
+    restart: unless-stopped
+
+  mq:
+    image: rabbitmq:3-alpine
+    container_name: musicbrainz-mq
+    hostname: "mq"
+    restart: unless-stopped
+    volumes:
+      - /data/musicbrainz/rabbitmq:/var/lib/rabbitmq
 
   musicbrainz:
     image: metabrainz/musicbrainz-docker-musicbrainz:v-2025-10-13.0-build1
@@ -28,9 +39,16 @@ services:
       POSTGRES_DB: musicbrainz_db
       MUSICBRAINZ_WEB_SERVER_HOST: 0.0.0.0
       MUSICBRAINZ_WEB_SERVER_PORT: 5000
-      MUSICBRAINZ_STANDALONE_SERVER: 1
-      # Replication settings
+      REDIS_SERVER: redis:6379
+      RABBITMQ_HOST: mq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_VHOST: /
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
+      # Replication
       REPLICATION_TYPE: RT_SLAVE
-      REPLICATION_ACCESS_TOKEN: ${MUSICBRAINZ_TOKEN}
+      REPLICATION_ACCESS_TOKEN: ${MUSICBRAINZ_TOKEN:-}
     depends_on:
       - db
+      - redis
+      - mq
