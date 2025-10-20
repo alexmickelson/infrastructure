@@ -46,7 +46,8 @@ services:
       RABBITMQ_USER: guest
       RABBITMQ_PASSWORD: guest
       # Replication
-      REPLICATION_TYPE: RT_SLAVE
+      # REPLICATION_TYPE: RT_SLAVE
+      MUSICBRAINZ_STANDALONE_SERVER: 0
       # REPLICATION_ACCESS_TOKEN: ${MUSICBRAINZ_TOKEN} # not working...
     depends_on:
       - db
