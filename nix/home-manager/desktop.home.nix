@@ -19,6 +19,7 @@
     legcord
     ffmpeg
     gh
+    bitwarden-desktop
   ];
 
   programs.ghostty = {
