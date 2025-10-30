@@ -115,11 +115,11 @@
     autoStart = true;
     capSysAdmin = true;
     openFirewall = true;
-    serviceConfig = {
-      After = [ "graphical-session.target" ];
-      Wants = [ "graphical-session.target" ];
-      BindsTo = [ "graphical-session.target" ];
-    };
+    # serviceConfig = {
+    #   After = [ "graphical-session.target" ];
+    #   Wants = [ "graphical-session.target" ];
+    #   BindsTo = [ "graphical-session.target" ];
+    # };
   };
 
   xdg.portal.enable = true;
