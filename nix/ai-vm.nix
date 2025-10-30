@@ -33,7 +33,7 @@
   systemd.services."autovt@tty1".enable = false;
 
   services.xserver.enable = true;
-  services.xserver.displayManager = {
+  services.displayManager = {
     gdm.enable = true;
     autoLogin = {
       enable = true;
@@ -47,8 +47,8 @@
     layout = "us";
     variant = "";
   };
+  services.pulseaudio.enable = false;
 
-  hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
