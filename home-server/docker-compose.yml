@@ -248,6 +248,19 @@ services:
     environment:
       - USERNAME=alex
       - PASSWORD=alex
+
+  
+  searxng:
+    image: docker.io/searxng/searxng:latest
+    container_name: searxng
+    ports:
+      - "4444:8080"
+    volumes:
+      - /data/searxng:/etc/searxng
+      - /data/searxng-data:/var/cache/searxng
+    environment:
+      - SEARXNG_BASE_URL=http://server.alexmickelson.guru:4444/
+    restart: unless-stopped
 networks:
   proxy: 
     name: proxy
