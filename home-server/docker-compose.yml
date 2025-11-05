@@ -254,12 +254,12 @@ services:
     image: docker.io/searxng/searxng:latest
     container_name: searxng
     ports:
-      - "4444:8080"
+      - "4446:8080"
     volumes:
       - /data/searxng:/etc/searxng
       - /data/searxng-data:/var/cache/searxng
     environment:
-      - SEARXNG_BASE_URL=http://server.alexmickelson.guru:4444/
+      - SEARXNG_BASE_URL=http://server.alexmickelson.guru:4446/
     restart: unless-stopped
 networks:
   proxy: 
