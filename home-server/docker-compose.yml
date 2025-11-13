@@ -97,7 +97,7 @@ services:
       - /dev/serial/by-id/usb-Itead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_V2_0cad0783fc73ef11b46be21e313510fd-if00-port0:/dev/serial/by-id/usb-Itead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_V2_0cad0783fc73ef11b46be21e313510fd-if00-port0
     environment:
       - TZ=America/Denver
-      - OPENAI_BASE_URL=http://openwebui.beefalo-newton.ts.net
+      - OPENAI_BASE_URL=http://openwebui.beefalo-newton.ts.net/v1
     restart: always
     network_mode: host
 
