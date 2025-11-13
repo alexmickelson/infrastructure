@@ -71,6 +71,7 @@
       uv
       git
       tmux
+      vscode
     ];
   };
   home-manager.users.alex = { pgks, ...}: {
