@@ -73,6 +73,7 @@
       git
       tmux
       vscode
+      lmstudio
     ];
   };
   home-manager.users.alex = { pgks, ...}: {
