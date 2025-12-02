@@ -90,6 +90,7 @@
     libva-utils 
     vulkan-tools 
     ffmpeg
+    dbus
   ];
   programs.nix-ld.enable = true;
 
