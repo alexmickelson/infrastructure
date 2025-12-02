@@ -7,7 +7,7 @@
       # /etc/nixos/cachix.nix
     ];
 
-  boot.loader.systemd-boot.enbale = true;
+  boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   
   networking.hostname = "ai-office-server";
