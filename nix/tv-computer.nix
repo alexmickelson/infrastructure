@@ -8,10 +8,10 @@
   boot.loader.efi.canTouchEfiVariables = true;
   # boot.extraModulePackages = with config.boot.kernelPackages; [ xpadneo ];
   # boot.kernelModules = [ "hid_xpadneo" ];
-  boot.kernelModules = [
-    "hid_microsoft" # Xbox One Elite 2 controller driver preferred by Steam
-    "uinput"
-  ];
+  # boot.kernelModules = [
+  #   "hid_microsoft" # Xbox One Elite 2 controller driver preferred by Steam
+  #   "uinput"
+  # ];
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -87,6 +87,7 @@
   hardware.flirc.enable = true;
   hardware.steam-hardware.enable = true;
   # hardware.xpadneo.enable = true;
+  hardware.xone.enable = true;
 
   programs.fish.enable = true;
   virtualisation.docker.enable = true;
