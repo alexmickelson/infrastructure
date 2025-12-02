@@ -1,3 +1,4 @@
+
 { config, pkgs, ... }:
 
 {
@@ -5,6 +6,8 @@
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.extraModulePackages = with config.boot.kernelPackages; [ xpadneo ];
+  boot.kernelModules = [ "hid_xpadneo" ];
   boot.kernelModules = [
     "hid_microsoft" # Xbox One Elite 2 controller driver preferred by Steam
     "uinput"
@@ -49,7 +52,7 @@
   users.users.alex = {
     isNormalUser = true;
     description = "alex";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "input" ];
     packages = with pkgs; [
       firefox
       docker
@@ -83,6 +86,8 @@
   services.tailscale.enable = true;
   hardware.flirc.enable = true;
   hardware.steam-hardware.enable = true;
+  hardware.xpadneo.enable = true;
+
   programs.fish.enable = true;
   virtualisation.docker.enable = true;
   services.flatpak.enable = true;
