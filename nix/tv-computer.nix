@@ -5,6 +5,10 @@
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernelModules = [
+    "hid_microsoft" # Xbox One Elite 2 controller driver preferred by Steam
+    "uinput"
+  ];
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -77,7 +81,7 @@
   ];
   services.openssh.enable = true;
   services.tailscale.enable = true;
-  hardware.flirc.enable=true;
+  hardware.flirc.enable = true;
   hardware.steam-hardware.enable = true;
   programs.fish.enable = true;
   virtualisation.docker.enable = true;
