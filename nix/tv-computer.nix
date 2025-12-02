@@ -6,8 +6,8 @@
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.extraModulePackages = with config.boot.kernelPackages; [ xpadneo ];
-  boot.kernelModules = [ "hid_xpadneo" ];
+  # boot.extraModulePackages = with config.boot.kernelPackages; [ xpadneo ];
+  # boot.kernelModules = [ "hid_xpadneo" ];
   boot.kernelModules = [
     "hid_microsoft" # Xbox One Elite 2 controller driver preferred by Steam
     "uinput"
@@ -86,7 +86,7 @@
   services.tailscale.enable = true;
   hardware.flirc.enable = true;
   hardware.steam-hardware.enable = true;
-  hardware.xpadneo.enable = true;
+  # hardware.xpadneo.enable = true;
 
   programs.fish.enable = true;
   virtualisation.docker.enable = true;
