@@ -8,7 +8,7 @@
     ];
 
   boot.loader.systemd-boot.enbale = true;
-  boot.loader.canTouchEfiVariables = true;
+  boot.loader.efi.canTouchEfiVariables = true;
   
   networking.hostname = "ai-office-server";
   networking.networkmanager.enable = true;
