@@ -12,6 +12,8 @@
   
   networking.hostName = "ai-office-server";
   networking.networkmanager.enable = true;
+  networking.firewall.enable = true;
+
 
   time.timeZone = "America/Denver";
   i18n.defaultLocale = "en_US.UTF-8";
