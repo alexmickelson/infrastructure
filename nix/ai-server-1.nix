@@ -10,7 +10,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   
-  networking.hostname = "ai-office-server";
+  networking.hostName = "ai-office-server";
   networking.networkmanager.enable = true;
 
   time.timeZone = "America/Denver";
