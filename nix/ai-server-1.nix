@@ -7,10 +7,10 @@
       /etc/nixos/cachix.nix
     ];
 
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/vda";
-  boot.loader.grub.useOSProber = true;
-
+  boot.loader.systemd-boot.enbale = true;
+  boot.loader.canTouchEfiVariables = true;
+  
+  networking.hostname = "ai-office-server";
   networking.networkmanager.enable = true;
 
   time.timeZone = "America/Denver";
@@ -74,7 +74,7 @@
     ];
   };
   home-manager.users.alex = { pgks, ...}: {
-    home.stateVersion = "24.11";
+    home.stateVersion = "25.11";
     imports = [
       ./home-manager/ai-vm.home.nix
     ];
@@ -83,7 +83,7 @@
   programs.firefox.enable = true;
   nixpkgs.config.allowUnfree = true;
 
-  system.stateVersion = "24.11"; # Did you read the comment?
+  system.stateVersion = "25.11"; # Did you read the comment?
 
   environment.systemPackages = with pkgs; [
     vim
