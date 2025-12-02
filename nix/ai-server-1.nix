@@ -68,7 +68,7 @@
     packages = with pkgs; [
       lazydocker
       btop
-      nvtopPackages.full
+      nvtopPackages.amd
       uv
       git
       tmux
