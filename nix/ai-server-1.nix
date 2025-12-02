@@ -4,7 +4,7 @@
   imports =
     [
       <home-manager/nixos>
-      /etc/nixos/cachix.nix
+      # /etc/nixos/cachix.nix
     ];
 
   boot.loader.systemd-boot.enbale = true;
