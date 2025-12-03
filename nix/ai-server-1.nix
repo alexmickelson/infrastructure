@@ -124,10 +124,9 @@
 
   services.xrdp = {
     enable = true;
-    allowRoot = false;
     port = 3389;
-    securityLayer = "negotiate";
-    tlsLevel = "high";
+    # securityLayer = "negotiate";
+    # tlsLevel = "high";
   };
 
   hardware.graphics = {
