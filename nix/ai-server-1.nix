@@ -129,6 +129,7 @@
     # securityLayer = "negotiate";
     # tlsLevel = "high";
   };
+  services.gnome.gnome-remote-desktop.enable = true;
 
   hardware.graphics = {
     enable32Bit = true;
