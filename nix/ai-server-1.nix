@@ -124,7 +124,7 @@
 
   services.xrdp = {
     enable = true;
-    port = 3389;
+    # port = 3389;
     # securityLayer = "negotiate";
     # tlsLevel = "high";
   };
