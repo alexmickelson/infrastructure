@@ -101,7 +101,8 @@
   services.tailscale.enable = true;
   services.openssh.enable = true;
   virtualisation.docker.enable = true;
-  hardware.steam-hardware.enable = true;
+  # hardware.steam-hardware.enable = true;
+  services.fwupd.enable = true;
 
   systemd.targets.sleep.enable = false;
   systemd.targets.suspend.enable = false;
