@@ -124,6 +124,7 @@
 
   services.xrdp = {
     enable = true;
+    defaultWindowManager = "${pkgs.gnome-session}/bin/gnome-session";
     # port = 3389;
     # securityLayer = "negotiate";
     # tlsLevel = "high";
