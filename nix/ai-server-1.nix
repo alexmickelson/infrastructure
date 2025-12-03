@@ -46,7 +46,6 @@
   services.gnome.gnome-remote-desktop = {
     enable = true;
     # openFirewall = true;        # opens port 3389 automatically
-    modes = [ "rdp" ];          # enable RDP mode
   };
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
