@@ -81,7 +81,7 @@
   users.users.alex = {
     isNormalUser = true;
     description = "alex";
-    extraGroups = [ "networkmanager" "wheel" "docker" "video" "render" "input" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "video" "render" "input" "uinput" ];
     shell = pkgs.fish;
 
     packages = with pkgs; [
@@ -122,6 +122,7 @@
   virtualisation.docker.enable = true;
   hardware.amdgpu.opencl.enable = true;
   hardware.steam-hardware.enable = true;
+  hardware.uinput.enable = true;
   services.fwupd.enable = true;
 
   systemd.targets.sleep.enable = false;
