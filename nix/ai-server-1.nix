@@ -46,11 +46,11 @@
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
   xdg.portal.config.common.default = [ "gnome" ];
 
-  services.xrdp = {
-    enable = true;
-    defaultWindowManager = "gnome-session";
-  };
+
   services.gnome.gnome-remote-desktop.enable = true;
+  services.xrdp.enable = true;
+  services.xrdp.defaultWindowManager = "${pkgs.gnome-session}/bin/gnome-session";
+  services.xrdp.openFirewall = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
