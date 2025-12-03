@@ -43,6 +43,24 @@
   };
   services.xserver.desktopManager.gnome.enable = true;
 
+  services.gnome.gnome-remote-desktop = {
+    enable = true;
+    # openFirewall = true;        # opens port 3389 automatically
+    modes = [ "rdp" ];          # enable RDP mode
+  };
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+  xdg.portal.config.common.default = [ "gnome" ];
+
+  # services.xrdp = {
+  #   enable = true;
+  #   defaultWindowManager = "gnome-session";
+  #   # port = 3389;
+  #   # securityLayer = "negotiate";
+  #   # tlsLevel = "high";
+  # };
+  # services.gnome.gnome-remote-desktop.enable = true;
+
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -118,18 +136,6 @@
     openFirewall = true;
   };
 
-  xdg.portal.enable = true;
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
-  xdg.portal.config.common.default = [ "gnome" ];
-
-  services.xrdp = {
-    enable = true;
-    defaultWindowManager = "${pkgs.gnome-session}/bin/gnome-session";
-    # port = 3389;
-    # securityLayer = "negotiate";
-    # tlsLevel = "high";
-  };
-  services.gnome.gnome-remote-desktop.enable = true;
 
   hardware.graphics = {
     enable32Bit = true;
