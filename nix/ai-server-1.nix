@@ -122,6 +122,14 @@
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
   xdg.portal.config.common.default = [ "gnome" ];
 
+  services.xrdp = {
+    enable = true;
+    allowRoot = false;
+    port = 3389;
+    securityLayer = "negotiate";
+    tlsLevel = "high";
+  };
+
   hardware.graphics = {
     enable32Bit = true;
     enable = true;
