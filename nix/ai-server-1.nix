@@ -54,10 +54,12 @@
   # services.xrdp.openFirewall = true;
   # services.displayManager.autoLogin.enable = false;
   # services.getty.autologinUser = null;
-  services.gnome.gnome-remote-desktop.enable = true;
-  systemd.services.gnome-remote-desktop = {
-    wantedBy = [ "graphical.target" ];
-  };
+
+  # gnome rdp
+  # services.gnome.gnome-remote-desktop.enable = true;
+  # systemd.services.gnome-remote-desktop = {
+  #   wantedBy = [ "graphical.target" ];
+  # };
 
 
   # Configure keymap in X11
