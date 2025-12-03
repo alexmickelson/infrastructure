@@ -42,6 +42,7 @@
     };
   };
   services.xserver.desktopManager.gnome.enable = true;
+  services.xserver.displayManager.gdm.wayland = true;
 
   services.gnome.gnome-remote-desktop = {
     enable = true;
