@@ -36,10 +36,10 @@
   services.xserver.enable = true;
   services.displayManager = {
     gdm.enable = true;
-    # autoLogin = {
-    #   enable = true;
-    #   user = "alex";
-    # };
+    autoLogin = {
+      enable = true;
+      user = "alex";
+    };
   };
   services.xserver.desktopManager.gnome.enable = true;
   xdg.portal.enable = true;
