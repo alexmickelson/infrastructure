@@ -53,6 +53,7 @@ in {
     opencodeFlake.packages.${system}.opencode
     bitwarden-desktop
     wiremix
+    moonlight-qt
     # jan
     # texlivePackages.jetbrainsmono-otf
     # nerd-fonts.fira-code
