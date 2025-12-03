@@ -101,6 +101,7 @@
   services.tailscale.enable = true;
   services.openssh.enable = true;
   virtualisation.docker.enable = true;
+  hardware.amdgpu.opencl.enable = true;
   # hardware.steam-hardware.enable = true;
   services.fwupd.enable = true;
 
