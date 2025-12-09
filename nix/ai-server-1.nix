@@ -6,7 +6,8 @@
       <home-manager/nixos>
       # /etc/nixos/cachix.nix
     ];
-
+  nix.extraExperimentalFeatures = [ "flakes" "nix-command" ];
+  
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   
