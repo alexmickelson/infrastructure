@@ -103,7 +103,7 @@
   home-manager.users.alex = { pgks, ...}: {
     home.stateVersion = "25.11";
     imports = [
-      ./home-manager/ai-vm.home.nix
+      ./home-manager/ai-office-server.home.nix
     ];
   };
 
