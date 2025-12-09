@@ -70,7 +70,7 @@ export DOTNET_ROOT=${pkgs.dotnetCorePackages.sdk_8_0}
 set -x LIBVIRT_DEFAULT_URI qemu:///system
 
 set -x TERM xterm-256color # ghostty
-export SSH_AUTH_SOCK=/home/alexm/.bitwarden-ssh-agent.sock # ssh agent
+export SSH_AUTH_SOCK=/home/alex/.bitwarden-ssh-agent.sock # ssh agent
 
      '';
     };
