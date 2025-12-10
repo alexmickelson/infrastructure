@@ -47,7 +47,7 @@
       user = "alex";
     };
   };
-  services.xserver.desktopManager.gnome.enable = true;
+  services.desktopManager.gnome.enable = true;
   xdg.portal.enable = true;
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
   xdg.portal.config.common.default = [ "gnome" ];
@@ -120,6 +120,15 @@
     vulkan-tools 
     ffmpeg
     dbus
+
+
+
+    freetype
+    freetype.bin
+    fontconfig
+    libxcrypt-compat
+    libpng
+    zlib
   ];
   programs.nix-ld.enable = true;
 
@@ -137,9 +146,8 @@
     # dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     # localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
   };
-  hardware.opengl.driSupport32Bit = true;
-  hardware.opengl.extraPackages = with pkgs; [ freetype libxkbcommon ];
-  hardware.opengl.extraPackages32 = with pkgs.pkgsi686Linux; [ freetype libxkbcommon ];
+  hardware.graphics.extraPackages = with pkgs; [ freetype libxkbcommon ];
+  hardware.graphics.extraPackages32 = with pkgs.pkgsi686Linux; [ freetype libxkbcommon ];
 
   systemd.targets.sleep.enable = false;
   systemd.targets.suspend.enable = false;
