@@ -99,6 +99,7 @@
       tmux
       vscode
       lmstudio
+      protontricks
     ];
   };
   home-manager.users.alex = { pgks, ...}: {
