@@ -100,14 +100,19 @@
     winetricks
     wineWowPackages.waylandFull
     # woeusb ntfs3g
-    (lutris.override {
-      extraLibraries =  pkgs: [
-        # List library dependencies here
-      ];
-      extraPkgs = pkgs: [
-        # List package dependencies here
-      ];
-    })
+    # (lutris.override {
+    #   extraLibraries =  pkgs: [
+    #     # List library dependencies here
+    #   ];
+    #   extraPkgs = pkgs: [
+    #     # List package dependencies here
+    #   ];
+    # })
+
+
+    mesa-gl-headers
+    mesa
+    driversi686Linux.mesa
   ];
   services.tailscale.enable = true;
   services.openssh.enable = true;
@@ -133,52 +138,11 @@
   # };
   networking.firewall.enable = false;
 
-  #services.sunshine = {
-  #  enable = true;
-  #  autoStart = false;
-  #  capSysAdmin = true;
-  #  package = (pkgs.sunshine.override { cudaSupport = true; });
-  #  # openFirewall = true; 
-  #};
-  #services.sunshine = {
-  #  enable = true;
-  #  # Enable nvenc support
-  #  package = with pkgs;
-  #    (pkgs.sunshine.override {
-  #      cudaSupport = true;
-  #      cudaPackages = cudaPackages;
-  #    })
-  #    .overrideAttrs (old: {
-  #      nativeBuildInputs =
-  #        old.nativeBuildInputs
-  #        ++ [
-  #          cudaPackages.cuda_nvcc
-  #          (lib.getDev cudaPackages.cuda_cudart)
-  #        ];
-  #      cmakeFlags =
-  #        old.cmakeFlags
-  #        ++ [
-  #          "-DCMAKE_CUDA_COMPILER=${(lib.getExe cudaPackages.cuda_nvcc)}"
-  #        ];
-  #    });
-  #  capSysAdmin = true;
-  #};
-
-  # hardware.nvidia = {
-  #   modesetting.enable = true;
-  #   open = false;
-  #   nvidiaSettings = true;
-  #   package = config.boot.kernelPackages.nvidiaPackages.production;
-  #   powerManagement.enable = false;
-  #   powerManagement.finegrained = false;
-  # };
-  # virtualisation.docker.enableNvidia = true;
-  # hardware.nvidia-container-toolkit.enable = true;
-  # services.xserver.videoDrivers = [ "nvidia" ];
   hardware.graphics = {
     enable32Bit = true;
     enable = true;
   };
+
 
   fileSystems."/steam-data" =
   { 

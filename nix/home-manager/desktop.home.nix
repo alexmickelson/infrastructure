@@ -4,7 +4,7 @@
     vscode-fhs
     gnome-software
     gnome-tweaks
-    nvtopPackages.nvidia
+    # nvtopPackages.nvidia
     nerd-fonts.fira-code
     nerd-fonts.droid-sans-mono
     # fira-code
