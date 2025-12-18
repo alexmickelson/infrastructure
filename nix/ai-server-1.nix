@@ -129,6 +129,8 @@
     libxcrypt-compat
     libpng
     zlib
+
+    quickemu
   ];
   programs.nix-ld.enable = true;
 
