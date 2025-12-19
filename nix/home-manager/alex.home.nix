@@ -58,6 +58,8 @@ export DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 set -x LIBVIRT_DEFAULT_URI qemu:///system
 
+alias blue="bluetui"
+alias jelly="jellyfin-tui"
      '';
     };
     home.file = {

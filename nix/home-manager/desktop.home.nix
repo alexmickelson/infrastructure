@@ -20,6 +20,8 @@
     ffmpeg
     gh
     bitwarden-desktop
+    jellyfin-tui
+    bluetui
   ];
 
   programs.ghostty = {

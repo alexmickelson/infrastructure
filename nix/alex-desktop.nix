@@ -113,6 +113,7 @@
     mesa-gl-headers
     mesa
     driversi686Linux.mesa
+    mesa-demos
   ];
   services.tailscale.enable = true;
   services.openssh.enable = true;
