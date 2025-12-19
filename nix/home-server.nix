@@ -189,6 +189,8 @@
       lib.mkForce "${pkgs.OVMFFull.fd}/FV/OVMF_CODE.ms.fd";
     "qemu/edk2-x86_64-secure-vars.fd".source =
       lib.mkForce "${pkgs.OVMFFull.fd}/FV/OVMF_VARS.ms.fd";
+    "qemu/OVMF_VARS.fd".source =
+      lib.mkForce "${pkgs.OVMFFull.fd}/FV/OVMF_VARS.fd";
   };
   systemd.tmpfiles.rules = [
     "d /var/lib/libvirt/qemu/nvram 0755 root root -"
