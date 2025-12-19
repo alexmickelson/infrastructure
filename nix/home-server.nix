@@ -167,13 +167,13 @@
       package = pkgs.qemu_kvm;
       runAsRoot = true;
       swtpm.enable = true;
-      ovmf = {
-        enable = true;
-        packages = [ pkgs.OVMFFull.fd ];
-        # packages = [
-        #   (pkgs.OVMF.override { secureBoot = true; tpmSupport = true; }).fd
-        # ];
-      };
+      # ovmf = {
+      #   enable = true;
+      #   packages = [ pkgs.OVMFFull.fd ];
+      #   # packages = [
+      #   #   (pkgs.OVMF.override { secureBoot = true; tpmSupport = true; }).fd
+      #   # ];
+      # };
     };
   };
   networking.interfaces.enp5s0.useDHCP = true;
