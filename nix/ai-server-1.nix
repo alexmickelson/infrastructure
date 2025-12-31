@@ -122,7 +122,7 @@
     dbus
 
 
-
+    # protontricks stuff?
     freetype
     freetype.bin
     fontconfig
