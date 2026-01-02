@@ -17,10 +17,11 @@ jobs:
           fi
   update-infrastructure:
     runs-on: [home-server]
-    needs: update-repo 
+    needs: update-repo
     steps:
       - name: update home server containers
         env:
+          KUBECONFIG: .kube/config
           MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
           HOMEASSISTANT_TOKEN: ${{ secrets.HOMEASSISTANT_TOKEN }}
           GRAFANA_PASSWORD: ${{ secrets.GRAFANA_PASSWORD }}
@@ -28,6 +29,5 @@ jobs:
           COPILOT_TOKEN: ${{ secrets.COPILOT_TOKEN }}
         working-directory: /home/github/infrastructure/infrastructure
         run: |
-          ls -alh
           kubectl apply -f kubernetes/ingress
           kubectl apply -f kubernetes/proxy-ingress
