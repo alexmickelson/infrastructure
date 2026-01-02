@@ -254,7 +254,6 @@
       tokenFile = "/data/runner/github-infrastructure-token.txt";
       url = "https://github.com/alexmickelson/infrastructure";
       extraLabels = [ "home-server" ];
-      #workDir = "/data/runner/infrastructure/";
       replace = true;
       serviceOverrides = { 
         ReadWritePaths = [ 
@@ -269,12 +268,8 @@
         ProtectSystem = false;
         PrivateMounts = false;
         PrivateUsers = false;
-        #DynamicUser = true;
-        #NoNewPrivileges = false;
         ProtectHome = false;
-        #RuntimeDirectoryPreserve = "yes";
         Restart = lib.mkForce  "always";
-        #RuntimeMaxSec = "7d";
       };
       extraPackages = with pkgs; [
         docker
@@ -287,15 +282,8 @@
       ];
     };
   };
-  # services.cron = {
-  #   enable = true;
-  #   systemCronJobs = [
-  #     "*/5 * * * *      root    date >> /tmp/cron.log"
-  #   ];
-  # };
   
   networking.firewall.enable = false;
-  # networking.firewall.trustedInterfaces = [ "docker0" ]; 
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

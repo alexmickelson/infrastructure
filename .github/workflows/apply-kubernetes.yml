@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: update home server containers
         env:
-          KUBECONFIG: .kube/config
+          KUBECONFIG: /home/github/.kube/config
           MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
           HOMEASSISTANT_TOKEN: ${{ secrets.HOMEASSISTANT_TOKEN }}
           GRAFANA_PASSWORD: ${{ secrets.GRAFANA_PASSWORD }}
