@@ -31,5 +31,6 @@ jobs:
         run: |
           kubectl apply -f kubernetes/ingress
           kubectl apply -f kubernetes/proxy-ingress
-          
-          kubectl annotate ingressclass nginx ingressclass.kubernetes.io/is-default-class=true
+
+          kubectl annotate ingressclass nginx \
+            ingressclass.kubernetes.io/is-default-class="true" --overwrite
