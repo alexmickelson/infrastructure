@@ -28,5 +28,6 @@ jobs:
           COPILOT_TOKEN: ${{ secrets.COPILOT_TOKEN }}
         working-directory: /home/github/infrastructure/infrastructure
         run: |
+          ls -alh
           kubectl apply -f kuberentes/ingress
           kubectl apply -f kuberentes/proxy-ingress

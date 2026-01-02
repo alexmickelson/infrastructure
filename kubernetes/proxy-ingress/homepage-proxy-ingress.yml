@@ -31,3 +31,4 @@ metadata:
 spec:
   type: ExternalName
   externalName: 100.122.128.107
+  
