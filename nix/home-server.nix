@@ -58,6 +58,9 @@
     description = "github";
     extraGroups = [ "docker" ];
     shell = pkgs.fish;
+    packages = [
+      kubernetes-helm
+    ];
   };
   users.users.alex = {
     isNormalUser = true;
@@ -279,6 +282,7 @@
         mbuffer
         lzop
         kubectl
+        kubernetes-helm
       ];
     };
   };
