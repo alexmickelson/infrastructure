@@ -58,7 +58,7 @@
     description = "github";
     extraGroups = [ "docker" ];
     shell = pkgs.fish;
-    packages = [
+    packages = with pkgs; [
       kubernetes-helm
     ];
   };
