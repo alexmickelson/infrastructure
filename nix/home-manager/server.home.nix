@@ -5,5 +5,6 @@
         opencode
         quickemu
         tree
+        kubernetes-helm
     ];
 }
