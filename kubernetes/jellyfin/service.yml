@@ -10,4 +10,18 @@ spec:
     - protocol: TCP
       port: 8096
       targetPort: 8096
-  type: ClusterIP
+      nodePort: 30096
+  type: NodePort
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: jellyfin
+#   namespace: projects
+# spec:
+#   selector:
+#     app: jellyfin
+#   ports:
+#     - protocol: TCP
+#       port: 8096
+#       targetPort: 8096
+#   type: ClusterIP
