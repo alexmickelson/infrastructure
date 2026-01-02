@@ -290,6 +290,7 @@
         sanoid
         mbuffer
         lzop
+        kubectl
       ];
     };
   };
