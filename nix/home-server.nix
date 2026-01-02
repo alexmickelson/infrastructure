@@ -176,14 +176,7 @@
       interfaces = [ "enp5s0" ];
     };
   };
-
-  # not working yet, in theory simplifies xml for vm
-  # environment.etc."qemu/edk2-x86_64-secure-code.fd".source = "${pkgs.OVMF.fd}/FV/OVMF_CODE.secboot.fd";
-  # environment.etc."qemu/edk2-i386-vars.fd".source = "${pkgs.OVMF.fd}/FV/OVMF_VARS.fd";
-
-  # environment.etc."qemu/edk2-x86_64-secure-code.fd".source = "${pkgs.OVMF.fd}/FV/OVMF_CODE.secboot.fd";
-  # environment.etc."qemu/edk2-x86_64-secure-vars.fd".source = "${pkgs.OVMF.fd}/FV/OVMF_VARS.secboot.fd";
-
+  
   environment.etc = {
     "qemu/edk2-x86_64-secure-code.fd".source =
       lib.mkForce "${pkgs.OVMFFull.fd}/FV/OVMF_CODE.ms.fd";
@@ -204,7 +197,7 @@
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.forceImportRoot = false;
   networking.hostId = "eafe9551";
-  boot.zfs.extraPools = [ "data-ssd" "backup" "vms" "vms-2" ];
+  boot.zfs.extraPools = [ "data-ssd" "backup" "vms-2" "vms-3" ];
   services.sanoid = {
     enable = true;
     templates.production = {
