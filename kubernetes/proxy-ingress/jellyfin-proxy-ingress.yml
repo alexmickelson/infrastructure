@@ -34,14 +34,18 @@ spec:
       targetPort: 8096
       protocol: TCP
 ---
-apiVersion: v1
-kind: Endpoints
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
 metadata:
   name: jellyfin-service
   namespace: projects
-subsets:
+  labels:
+    kubernetes.io/service-name: jellyfin-service
+addressType: IPv4
+ports:
+  - name: http
+    port: 8096
+    protocol: TCP
+endpoints:
   - addresses:
-      - ip: 100.122.128.107
-    ports:
-      - port: 8096
-        protocol: TCP
+      - 100.122.128.107
