@@ -29,5 +29,5 @@ jobs:
         working-directory: /home/github/infrastructure/infrastructure
         run: |
           ls -alh
-          kubectl apply -f kuberentes/ingress
-          kubectl apply -f kuberentes/proxy-ingress
+          kubectl apply -f kubernetes/ingress
+          kubectl apply -f kubernetes/proxy-ingress
