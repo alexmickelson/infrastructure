@@ -60,4 +60,4 @@ helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
   --set controller.metrics.enabled=false \
   --set controller.ingressClassResource.default=true
 ```
-<!-- https://github.com/kubernetes/ingress-nginx/issues/12618 -->
+<!-- https://github.com/kubernetes/ingress-nginx/issues/12618 for why anotation risk needs to be critical-->
