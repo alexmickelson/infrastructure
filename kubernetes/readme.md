@@ -51,9 +51,13 @@ helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
   --namespace ingress-nginx \
   --create-namespace \
   --set controller.kind=DaemonSet \
-  --set controller.hostNetwork=true \
+  --set controller.hostPort.enabled=true \
+  --set controller.hostPort.ports.http=80 \
+  --set controller.hostPort.ports.https=443 \
   --set controller.service.type=NodePort \
   --set controller.allowSnippetAnnotations=true \
+  --set controller.config.annotations-risk-level=Critical \
   --set controller.metrics.enabled=false \
   --set controller.ingressClassResource.default=true
 ```
+<!-- https://github.com/kubernetes/ingress-nginx/issues/12618 -->

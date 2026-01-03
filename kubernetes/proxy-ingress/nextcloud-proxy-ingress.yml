@@ -13,9 +13,9 @@ metadata:
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/proxy-buffer-size: 225m
     nginx.ingress.kubernetes.io/proxy-buffering: "on"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: 60s
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"
     nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "1800"
 spec:
   ingressClassName: nginx
