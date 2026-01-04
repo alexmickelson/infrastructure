@@ -156,6 +156,21 @@
   boot.zfs.extraPools = [ "data" "data2" ];
  
 
+  systemd.timers."nix-garbage-collect-weekly" = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "weekly";
+      Persistent = true;
+    };
+  };
+
+  systemd.services."nix-garbage-collect-weekly" = {
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "/run/current-system/sw/bin/nix-collect-garbage --delete-older-than 7d";
+    };
+  };
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave

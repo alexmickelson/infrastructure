@@ -78,7 +78,7 @@
   home-manager.useGlobalPkgs = true;
 
   services.fwupd.enable = true;
-   systemd.timers."nix-garbage-collect-weekly" = {
+  systemd.timers."nix-garbage-collect-weekly" = {
     wantedBy = [ "timers.target" ];
     timerConfig = {
       OnCalendar = "weekly";
