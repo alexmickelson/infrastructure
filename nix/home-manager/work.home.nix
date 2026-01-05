@@ -106,6 +106,8 @@ in {
       set -x LIBVIRT_DEFAULT_URI qemu:///system
       set -x TERM xterm-256color # ghostty
 
+      source "$HOME/.cargo/env.fish"
+
       export SSH_AUTH_SOCK=/home/alexm/.bitwarden-ssh-agent.sock # ssh agent
     '';
   };
