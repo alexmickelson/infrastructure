@@ -22,6 +22,7 @@
     bitwarden-desktop
     jellyfin-tui
     bluetui
+    nexusmods-app-unfree
   ];
 
   programs.ghostty = {
