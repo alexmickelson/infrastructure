@@ -1,0 +1,18 @@
+services:
+  metatube:
+    image: jvt038/metatube:latest
+    container_name: metatube
+    ports:
+      - 5555:5555
+    environment:
+      - PORT=5555
+      - HOST=0.0.0.0
+      # Optional: set DEBUG=true for verbose logs
+      # - DEBUG=true
+      - DATABASE_URL=sqlite:////database/metatube.db
+      # Optional: set custom default download folder inside container
+      # - DOWNLOADS=/downloads
+    volumes:
+      - /data/media/music/tagged:/downloads
+      - /data/metatube/database:/database
+      - /data/metatube/migrations:/config/migrations
