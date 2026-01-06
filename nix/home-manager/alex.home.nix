@@ -29,6 +29,13 @@
   programs.direnv = {
     enable = true;
   };
+  programs.ghostty = {
+    enable = true;
+    enableFishIntegration = true;
+    settings = {
+      window-new-tab-cwd = "home";
+    };
+  };
   home.sessionVariables = {
     EDITOR = "vim";
   };

@@ -50,7 +50,7 @@ in {
     firefoxpwa
     bluetui
     #nixfmt-classic
-    opencodeFlake.packages.${system}.opencode
+    opencodeFlake.packages.${pkgs.stdenv.hostPlatform.system}.opencode
     bitwarden-desktop
     wiremix
     (config.lib.nixGL.wrap moonlight-qt)
