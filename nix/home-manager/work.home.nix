@@ -3,6 +3,7 @@
 let
   opencodeFlake = builtins.getFlake (toString ../flakes/opencode);
   monitorTuiFlake = builtins.getFlake (toString ../../monitors/monitor-tui-rs);
+  zenBrowserFlake = builtins.getFlake "github:youwen5/zen-browser-flake";
   nixgl = import
     (fetchTarball "https://github.com/nix-community/nixGL/archive/main.tar.gz")
     { };
@@ -53,6 +54,7 @@ in {
     #nixfmt-classic
     opencodeFlake.packages.${pkgs.stdenv.hostPlatform.system}.opencode
     monitorTuiFlake.packages.${pkgs.stdenv.hostPlatform.system}.default
+    (config.lib.nixGL.wrap zenBrowserFlake.packages.${pkgs.stdenv.hostPlatform.system}.default)
     bitwarden-desktop
     wiremix
     (config.lib.nixGL.wrap moonlight-qt)
@@ -207,6 +209,28 @@ in {
       Terminal=false
       Categories=Network;WebBrowser;
     '';
+    ".local/share/applications/zen-browser.desktop".text = ''
+      [Desktop Entry]
+      Version=1.0
+      Type=Application
+      Name=Zen Browser
+      Comment=A calmer Firefox-based browser
+      Exec=nixGLIntel zen
+      Icon=${zenBrowserFlake.packages.${pkgs.stdenv.hostPlatform.system}.default}/share/icons/hicolor/128x128/apps/zen.png
+      Terminal=false
+      Categories=Network;WebBrowser;
+      MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;
+      StartupWMClass=zen
+      Actions=new-window;new-private-window;
+
+      [Desktop Action new-window]
+      Name=Open a New Window
+      Exec=nixGLIntel zen --new-window
+
+      [Desktop Action new-private-window]
+      Name=Open a New Private Window
+      Exec=nixGLIntel zen --private-window
+    '';
   };
 
   home.sessionVariables = { EDITOR = "vim"; };
@@ -236,6 +260,5 @@ in {
       package = pkgs.gnome-themes-extra;
     };
   };
-  # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
