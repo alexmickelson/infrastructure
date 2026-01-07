@@ -11,6 +11,13 @@
       "--bind-address 100.122.128.107"
       "--node-external-ip 100.122.128.107"
       "--tls-san 100.122.128.107"
+
+
+      # Disable disk-based evictions
+      "--kubelet-arg=eviction-hard="
+      "--kubelet-arg=eviction-soft="
+      "--kubelet-arg=eviction-soft-grace-period="
+      "--kubelet-arg=eviction-pressure-transition-period=0s"
     ];
     serverAddr = "https://100.122.128.107:6443";
   };
