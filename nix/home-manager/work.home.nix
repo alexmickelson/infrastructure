@@ -2,6 +2,7 @@
 
 let
   opencodeFlake = builtins.getFlake (toString ../flakes/opencode);
+  monitorTuiFlake = builtins.getFlake (toString ../../monitors/monitor-tui-rs);
   nixgl = import
     (fetchTarball "https://github.com/nix-community/nixGL/archive/main.tar.gz")
     { };
@@ -51,6 +52,7 @@ in {
     bluetui
     #nixfmt-classic
     opencodeFlake.packages.${pkgs.stdenv.hostPlatform.system}.opencode
+    monitorTuiFlake.packages.${pkgs.stdenv.hostPlatform.system}.default
     bitwarden-desktop
     wiremix
     (config.lib.nixGL.wrap moonlight-qt)
@@ -69,7 +71,13 @@ in {
   };
 
   programs.direnv = { enable = true; };
-  programs.ghostty = { enable = true; };
+  programs.ghostty = {
+    enable = true;
+    enableFishIntegration = true;
+    settings = {
+      window-new-tab-cwd = "home";
+    };
+  };
   programs.fish = {
     enable = true;
     shellInit = ''
