@@ -31,9 +31,9 @@
     settings = {
       window-inherit-working-directory = "false";
       theme = "Atom";
-      font-size = "18";
-      window-height = "30";
-      window-width = "120"; 
+      font-size = 10;
+      window-height = 30;
+      window-width = 90; 
     };
   };
 
