@@ -114,6 +114,8 @@
     mesa
     driversi686Linux.mesa
     mesa-demos
+
+    android-tools
   ];
   services.tailscale.enable = true;
   services.openssh.enable = true;
@@ -123,7 +125,6 @@
   programs.fish.enable = true;
   services.flatpak.enable = true;
   hardware.steam-hardware.enable = true;
-  programs.adb.enable = true; # graphene
 
   # programs.gamescope = {
   #   enable = true;
