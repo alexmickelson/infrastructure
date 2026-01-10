@@ -9,8 +9,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "alex-desktop"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.hostName = "alex-desktop";
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   networking.networkmanager.enable = true;
 
@@ -50,7 +49,20 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+
+    wireplumber = {
+      enable = true;
+
+      extraConfig = {
+        "disable-x11" = {
+          "wireplumber.settings" = {
+            "support.x11" = false;
+          };
+        };
+      };
+    };
   };
+
 
   users.users.alex = {
     isNormalUser = true;
@@ -73,6 +85,7 @@
   services.fwupd.enable = true;
   hardware.enableAllFirmware = true;
   hardware.firmware = with pkgs; [ linux-firmware ];
+  programs.nix-ld.enable = true;
   
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
@@ -91,7 +104,6 @@
     mangohud
     mlocate
 
-
     wineWowPackages.stable
     wine
     (wine.override { wineBuild = "wine64"; })
@@ -99,16 +111,6 @@
     wineWowPackages.staging
     winetricks
     wineWowPackages.waylandFull
-    # woeusb ntfs3g
-    # (lutris.override {
-    #   extraLibraries =  pkgs: [
-    #     # List library dependencies here
-    #   ];
-    #   extraPkgs = pkgs: [
-    #     # List package dependencies here
-    #   ];
-    # })
-
 
     mesa-gl-headers
     mesa
@@ -125,26 +127,12 @@
   programs.fish.enable = true;
   services.flatpak.enable = true;
   hardware.steam-hardware.enable = true;
-
-  # programs.gamescope = {
-  #   enable = true;
-  #   capSysNice = true;
-  # };
-  # programs.gamemode.enable = true;
-  # programs.steam = {
-  #   enable = true;
-  #   gamescopeSession.enable = true;
-  #   remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-  #   dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-  #   localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
-  # };
   networking.firewall.enable = false;
 
   hardware.graphics = {
     enable32Bit = true;
     enable = true;
   };
-
 
   fileSystems."/steam-data" =
   { 
