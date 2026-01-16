@@ -261,6 +261,7 @@ services:
     environment:
       - SEARXNG_BASE_URL=http://server.alexmickelson.guru:4446/
     restart: unless-stopped
+
 networks:
   proxy: 
     name: proxy
