@@ -131,6 +131,8 @@
     zlib
 
     quickemu
+
+    git-lfs
   ];
   programs.nix-ld.enable = true;
 
