@@ -124,9 +124,9 @@
 
 
     freetype
-    freetype.bin
+    # freetype.bin
     fontconfig
-    libxcrypt-compat
+    # libxcrypt-compat
     libpng
     zlib
 
