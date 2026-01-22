@@ -122,7 +122,7 @@
     dbus
 
 
-
+    # protontricks stuff?
     freetype
     # freetype.bin
     fontconfig
@@ -131,6 +131,8 @@
     zlib
 
     quickemu
+
+    git-lfs
   ];
   programs.nix-ld.enable = true;
 

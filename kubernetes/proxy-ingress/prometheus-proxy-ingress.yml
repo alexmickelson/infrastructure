@@ -8,26 +8,46 @@ metadata:
 spec:
   ingressClassName: nginx
   tls:
-  - hosts: 
-    - prometheus.alexmickelson.guru
-    secretName: prometheus-tls-cert
+    - hosts:
+        - prometheus.alexmickelson.guru
+      secretName: prometheus-tls-cert
   rules:
-  - host: prometheus.alexmickelson.guru
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: prometheus-service
-            port:
-              number: 9091
+    - host: prometheus.alexmickelson.guru
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus
+                port:
+                  number: 9091
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: prometheus-service
+  name: prometheus
   namespace: projects
 spec:
-  type: ExternalName
-  externalName: 100.122.128.107
+  ports:
+    - port: 9091
+      targetPort: 9091
+      protocol: TCP
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: prometheus
+  namespace: projects
+  labels:
+    kubernetes.io/service-name: prometheus
+addressType: IPv4
+ports:
+  - name: http
+    port: 9091
+    protocol: TCP
+endpoints:
+  - addresses:
+      - 100.122.128.107
+    conditions:
+      ready: true

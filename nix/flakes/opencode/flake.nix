@@ -19,6 +19,7 @@
               };
               models = {
                 "gpt-oss-120b" = { };
+                "devstral-123b" = { };
               };
             };
             home = {

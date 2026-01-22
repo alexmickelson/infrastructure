@@ -2,6 +2,8 @@
 
 let
   opencodeFlake = builtins.getFlake (toString ../flakes/opencode);
+  monitorTuiFlake = builtins.getFlake (toString ../../monitors/monitor-tui-rs);
+  zenBrowserFlake = builtins.getFlake "github:youwen5/zen-browser-flake";
   nixgl = import
     (fetchTarball "https://github.com/nix-community/nixGL/archive/main.tar.gz")
     { };
@@ -50,10 +52,13 @@ in {
     firefoxpwa
     bluetui
     #nixfmt-classic
-    opencodeFlake.packages.${system}.opencode
+    opencodeFlake.packages.${pkgs.stdenv.hostPlatform.system}.opencode
+    monitorTuiFlake.packages.${pkgs.stdenv.hostPlatform.system}.default
+    (config.lib.nixGL.wrap zenBrowserFlake.packages.${pkgs.stdenv.hostPlatform.system}.default)
     bitwarden-desktop
     wiremix
-    moonlight-qt
+    (config.lib.nixGL.wrap moonlight-qt)
+    nvtopPackages.amd
     # jan
     # texlivePackages.jetbrainsmono-otf
     # nerd-fonts.fira-code
@@ -69,7 +74,17 @@ in {
   };
 
   programs.direnv = { enable = true; };
-  programs.ghostty = { enable = true; };
+  programs.ghostty = {
+    enable = true;
+    enableFishIntegration = true;
+    settings = {
+      window-inherit-working-directory = "false";
+      theme = "Atom";
+      font-size = "18";
+      window-height = "30";
+      window-width = "120"; 
+    };
+  };
   programs.fish = {
     enable = true;
     shellInit = ''
@@ -105,6 +120,8 @@ in {
 
       set -x LIBVIRT_DEFAULT_URI qemu:///system
       set -x TERM xterm-256color # ghostty
+
+      source "$HOME/.cargo/env.fish"
 
       export SSH_AUTH_SOCK=/home/alexm/.bitwarden-ssh-agent.sock # ssh agent
     '';
@@ -193,6 +210,28 @@ in {
       Terminal=false
       Categories=Network;WebBrowser;
     '';
+    ".local/share/applications/zen-browser.desktop".text = ''
+      [Desktop Entry]
+      Version=1.0
+      Type=Application
+      Name=Zen Browser
+      Comment=A calmer Firefox-based browser
+      Exec=nixGLIntel zen
+      Icon=${zenBrowserFlake.packages.${pkgs.stdenv.hostPlatform.system}.default}/share/icons/hicolor/128x128/apps/zen.png
+      Terminal=false
+      Categories=Network;WebBrowser;
+      MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;
+      StartupWMClass=zen
+      Actions=new-window;new-private-window;
+
+      [Desktop Action new-window]
+      Name=Open a New Window
+      Exec=nixGLIntel zen --new-window
+
+      [Desktop Action new-private-window]
+      Name=Open a New Private Window
+      Exec=nixGLIntel zen --private-window
+    '';
   };
 
   home.sessionVariables = { EDITOR = "vim"; };
@@ -222,6 +261,5 @@ in {
       package = pkgs.gnome-themes-extra;
     };
   };
-  # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }

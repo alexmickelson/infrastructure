@@ -13,13 +13,18 @@ spec:
       labels:
         app: jellyfin
     spec:
+      hostNetwork: true
       containers:
         - name: jellyfin
           image: jellyfin/jellyfin
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
+            supplementalGroups:
+              - 303 # render group for GPU access
           volumeMounts:
+            - name: dri-device
+              mountPath: /dev/dri/renderD128
             - name: config-volume
               mountPath: /config
             - name: cache-volume
@@ -52,4 +57,8 @@ spec:
         - name: tvshows-volume
           hostPath:
             path: /data/jellyfin/tvshows
+        - name: dri-device
+          hostPath:
+            path: /dev/dri/renderD128
+            type: CharDevice
       restartPolicy: Always

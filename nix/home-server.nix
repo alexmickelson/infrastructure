@@ -58,6 +58,9 @@
     description = "github";
     extraGroups = [ "docker" ];
     shell = pkgs.fish;
+    packages = with pkgs; [
+      kubernetes-helm
+    ];
   };
   users.users.alex = {
     isNormalUser = true;
@@ -75,7 +78,7 @@
   home-manager.useGlobalPkgs = true;
 
   services.fwupd.enable = true;
-   systemd.timers."nix-garbage-collect-weekly" = {
+  systemd.timers."nix-garbage-collect-weekly" = {
     wantedBy = [ "timers.target" ];
     timerConfig = {
       OnCalendar = "weekly";
@@ -167,13 +170,6 @@
       package = pkgs.qemu_kvm;
       runAsRoot = true;
       swtpm.enable = true;
-      ovmf = {
-        enable = true;
-        packages = [ pkgs.OVMFFull.fd ];
-        # packages = [
-        #   (pkgs.OVMF.override { secureBoot = true; tpmSupport = true; }).fd
-        # ];
-      };
     };
   };
   networking.interfaces.enp5s0.useDHCP = true;
@@ -183,19 +179,14 @@
       interfaces = [ "enp5s0" ];
     };
   };
-
-  # not working yet, in theory simplifies xml for vm
-  # environment.etc."qemu/edk2-x86_64-secure-code.fd".source = "${pkgs.OVMF.fd}/FV/OVMF_CODE.secboot.fd";
-  # environment.etc."qemu/edk2-i386-vars.fd".source = "${pkgs.OVMF.fd}/FV/OVMF_VARS.fd";
-
-  # environment.etc."qemu/edk2-x86_64-secure-code.fd".source = "${pkgs.OVMF.fd}/FV/OVMF_CODE.secboot.fd";
-  # environment.etc."qemu/edk2-x86_64-secure-vars.fd".source = "${pkgs.OVMF.fd}/FV/OVMF_VARS.secboot.fd";
-
+  
   environment.etc = {
     "qemu/edk2-x86_64-secure-code.fd".source =
-      lib.mkForce "${pkgs.OVMF.fd}/FV/OVMF_CODE.ms.fd";
+      lib.mkForce "${pkgs.OVMFFull.fd}/FV/OVMF_CODE.ms.fd";
     "qemu/edk2-x86_64-secure-vars.fd".source =
-      lib.mkForce "${pkgs.OVMF.fd}/FV/OVMF_VARS.ms.fd";
+      lib.mkForce "${pkgs.OVMFFull.fd}/FV/OVMF_VARS.ms.fd";
+    "qemu/OVMF_VARS.fd".source =
+      lib.mkForce "${pkgs.OVMFFull.fd}/FV/OVMF_VARS.fd";
   };
   systemd.tmpfiles.rules = [
     "d /var/lib/libvirt/qemu/nvram 0755 root root -"
@@ -209,7 +200,7 @@
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.forceImportRoot = false;
   networking.hostId = "eafe9551";
-  boot.zfs.extraPools = [ "data-ssd" "backup" "vms" "vms-2" ];
+  boot.zfs.extraPools = [ "data-ssd" "backup" "vms-2" "vms-3" ];
   services.sanoid = {
     enable = true;
     templates.production = {
@@ -266,7 +257,6 @@
       tokenFile = "/data/runner/github-infrastructure-token.txt";
       url = "https://github.com/alexmickelson/infrastructure";
       extraLabels = [ "home-server" ];
-      #workDir = "/data/runner/infrastructure/";
       replace = true;
       serviceOverrides = { 
         ReadWritePaths = [ 
@@ -281,12 +271,8 @@
         ProtectSystem = false;
         PrivateMounts = false;
         PrivateUsers = false;
-        #DynamicUser = true;
-        #NoNewPrivileges = false;
         ProtectHome = false;
-        #RuntimeDirectoryPreserve = "yes";
         Restart = lib.mkForce  "always";
-        #RuntimeMaxSec = "7d";
       };
       extraPackages = with pkgs; [
         docker
@@ -295,18 +281,13 @@
         sanoid
         mbuffer
         lzop
+        kubectl
+        kubernetes-helm
       ];
     };
   };
-  # services.cron = {
-  #   enable = true;
-  #   systemCronJobs = [
-  #     "*/5 * * * *      root    date >> /tmp/cron.log"
-  #   ];
-  # };
   
   networking.firewall.enable = false;
-  # networking.firewall.trustedInterfaces = [ "docker0" ]; 
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

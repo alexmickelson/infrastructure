@@ -72,6 +72,7 @@
       git
       tmux
       vscode
+      zip
     ];
   };
   home-manager.users.alex = { pgks, ...}: {
