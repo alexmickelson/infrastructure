@@ -65,6 +65,8 @@ in {
     # dejavu_fonts
     # vscode-fhs
     # aider-chat-full
+
+    codex
   ];
   fonts.fontconfig.enable = true;
   programs.firefox = {
