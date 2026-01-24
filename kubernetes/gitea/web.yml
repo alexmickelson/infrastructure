@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gitea-web
-  namespace: projects
+  namespace: gitea
 spec:
   replicas: 1
   selector:
@@ -35,7 +35,7 @@ spec:
             - name: GITEA__database__PASSWD
               value: wauiofnasufnweaiufbsdklfjb23456
             - name: GITEA__server__ROOT_URL
-              value: "https://gitea.alexmickelson.guru/"
+              value: "https://git.alexmickelson.guru/"
           volumeMounts:
             - name: gitea-data
               mountPath: /data
@@ -62,7 +62,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: gitea-web-svc
-  namespace: projects
+  namespace: gitea
   annotations:
     tailscale.com/expose: "true" # exposes IP directly
 spec:
@@ -81,7 +81,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: gitea
-  namespace: projects
+  namespace: gitea
   annotations:
     cert-manager.io/cluster-issuer: cloudflare-issuer
 spec:

@@ -1,0 +1,59 @@
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: gitea-runner-secret
+#   namespace: gitea
+# type: Opaque
+# stringData:
+#   RUNNER_TOKEN: "<REPLACE_WITH_GITEA_RUNNER_TOKEN>"
+
+
+# kubectl create secret generic gitea-runner-secret \
+#   --namespace gitea \
+#   --from-literal=RUNNER_TOKEN=<REPLACE_WITH_GITEA_RUNNER_TOKEN>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitea-actions-runner
+  namespace: gitea
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitea-actions-runner
+  template:
+    metadata:
+      labels:
+        app: gitea-actions-runner
+    spec:
+      containers:
+        - name: runner
+          image: gitea/act_runner:latest
+          env:
+            - name: GITEA_INSTANCE_URL
+              value: "https://git.alexmickelson.guru"
+            - name: GITEA_RUNNER_REGISTRATION_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: gitea-runner-secret
+                  key: RUNNER_TOKEN
+            - name: GITEA_RUNNER_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: GITEA_RUNNER_LABELS
+              value: "docker,kubernetes"
+            - name: DOCKER_HOST
+              value: "unix:///var/run/docker.sock"
+          volumeMounts:
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
+            - name: runner-data
+              mountPath: /data
+      volumes:
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: runner-data
+          emptyDir: {}

@@ -23,6 +23,7 @@
   networking.firewall.allowedTCPPorts = [
     443
     80
+    10250
   ];
   networking.firewall.allowedUDPPorts = [
     443
