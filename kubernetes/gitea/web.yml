@@ -88,10 +88,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - gitea.alexmickelson.guru
-      secretName: gitea-tls-cert2
+        - git.alexmickelson.guru
+      secretName: git-tls-cert2
   rules:
-    - host: gitea.alexmickelson.guru
+    - host: git.alexmickelson.guru
       http:
         paths:
           - path: /
