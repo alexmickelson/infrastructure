@@ -39,13 +39,13 @@ spec:
                   name: gitea-runner-secret
                   key: RUNNER_TOKEN
             - name: GITEA_RUNNER_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
+              value: kubernetes-runner
             - name: GITEA_RUNNER_LABELS
               value: "docker,kubernetes"
             - name: DOCKER_HOST
               value: "unix:///var/run/docker.sock"
+            # - name: GITEA_RUNNER_EPHEMERAL
+            #   value: "1"
           volumeMounts:
             - name: docker-sock
               mountPath: /var/run/docker.sock
