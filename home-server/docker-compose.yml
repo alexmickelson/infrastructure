@@ -10,6 +10,7 @@ services:
       - /data/media/music/tagged:/music
       - /data/media/movies:/movies
       - /data/media/tvshows:/tvshows
+      - /data/nextcloud/html/data/alex/files/Documents/home-video:/home-videos:ro
     restart: "unless-stopped"
     group_add:
       - "303" # getent group render | cut -d: -f3
