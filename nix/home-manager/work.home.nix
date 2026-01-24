@@ -58,12 +58,15 @@ in {
     bitwarden-desktop
     wiremix
     (config.lib.nixGL.wrap moonlight-qt)
+    nvtopPackages.amd
     # jan
     # texlivePackages.jetbrainsmono-otf
     # nerd-fonts.fira-code
     # dejavu_fonts
     # vscode-fhs
     # aider-chat-full
+
+    codex
   ];
   fonts.fontconfig.enable = true;
   programs.firefox = {
