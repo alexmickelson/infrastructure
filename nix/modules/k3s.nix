@@ -7,6 +7,7 @@
     role = "server";
     extraFlags = toString [
       "--disable=traefik"
+      "--node-ip=100.122.128.107"
       "--bind-address 100.122.128.107"
       "--node-external-ip 100.122.128.107"
       "--tls-san 100.122.128.107"
