@@ -347,7 +347,7 @@
     packages = with pkgs; [
       kubernetes-helm
     ];
-    shell = pkgs.bashInteractive;
+    shell = pkgs.bash;
   };
   # users.users.github = {
   #   isNormalUser = true;
