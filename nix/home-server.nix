@@ -294,6 +294,7 @@
       url = "https://git.alexmickelson.guru";
       tokenFile = "/data/runner/gitea-infrastructure-token.txt";
       labels = [
+        "home-server"
         "home-server:host"
       ];
       hostPackages = with pkgs; [
