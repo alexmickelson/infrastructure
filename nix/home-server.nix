@@ -314,6 +314,9 @@
         container = {
           enabled = false;
         };
+        runner = {
+          shell = "${pkgs.bashNonInteractive}/bin/bash";
+        }
       };
     };
   };
