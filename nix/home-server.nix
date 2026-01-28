@@ -294,7 +294,10 @@
       name = "infrastructure-runner";
       url = "https://gitea.example.com";
       tokenFile = "/data/runner/gitea-infrastructure-token.txt";
-      labels = [ "home-server" ];
+      labels = [ 
+        "home-server"
+        "ubuntu-latest:docker://catthehacker/ubuntu:act-latest"
+      ];
 
       hostPackages = with pkgs; [
         docker
