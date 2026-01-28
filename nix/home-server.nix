@@ -319,6 +319,11 @@
   };
   systemd.services.gitea-runner-infrastructure.environment = {
     RUNNER_SHELL = "${pkgs.bashNonInteractive}/bin/bash";
+    PATH = lib.makeBinPath [
+      pkgs.bashNonInteractive
+      pkgs.coreutils
+      pkgs.git
+    ];
   };
   systemd.services.gitea-runner-infrastructure.serviceConfig = {
     ReadWritePaths = [
