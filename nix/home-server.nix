@@ -286,7 +286,7 @@
       ];
     };
   };
-  
+
   services.gitea-actions-runner = {
     instances.infrastructure = {
       enable = true;
@@ -327,7 +327,7 @@
     PrivateUsers = false;
     ProtectHome = false;
 
-    Restart = "always";
+    Restart = lib.mkForce "always";
   };
 
 
