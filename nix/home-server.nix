@@ -295,10 +295,11 @@
       tokenFile = "/data/runner/gitea-infrastructure-token.txt";
       labels = [
         "home-server"
-        "home-server:host"
+        "native:host"
       ];
       hostPackages = with pkgs; [
         bashNonInteractive
+        bash
         coreutils
         docker
         git
@@ -314,9 +315,6 @@
         container = {
           enabled = false;
         };
-        runner = {
-          shell = "${pkgs.bashNonInteractive}/bin/bash";
-        }
       };
     };
   };
@@ -356,7 +354,7 @@
     packages = with pkgs; [
       kubernetes-helm
     ];
-    shell = pkgs.bashNonInteractive;
+    shell = pkgs.bash;
   };
 
   
