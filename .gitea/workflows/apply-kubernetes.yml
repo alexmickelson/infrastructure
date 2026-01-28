@@ -2,7 +2,7 @@ name: Apply Kuberentes Configs
 on: [push, workflow_dispatch]
 jobs:
   update-repo:
-    runs-on: [home-server:host]
+    runs-on: [home-server]
     steps:
       - name: checkout repo
         working-directory: /home/gitea-runner/infrastructure
@@ -16,7 +16,7 @@ jobs:
             git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
           fi
   update-infrastructure:
-    runs-on: [home-server:host]
+    runs-on: [home-server]
     needs: update-repo
     steps:
       - name: update home server containers
