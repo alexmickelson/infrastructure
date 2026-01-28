@@ -312,8 +312,7 @@
   };
 
   systemd.services.gitea-runner-infrastructure.serviceConfig = {
-    User = lib.mkForce "github";
-    Group = "users";
+ 
     ReadWritePaths = [
       "/data/cloudflare/"
       "/data/runner/infrastructure"
@@ -332,6 +331,26 @@
 
     Restart = lib.mkForce "always";
   };
+  users.users.gitea-runner = {
+    isNormalUser = true;
+    description = "Gitea Actions Runner";
+    home = "/home/gitea-runner";
+    createHome = true;
+    extraGroups = [ "docker" ];
+    packages = with pkgs; [
+      kubernetes-helm
+    ];
+    shell = pkgs.bashInteractive;
+  };
+  # users.users.github = {
+  #   isNormalUser = true;
+  #   description = "github";
+  #   extraGroups = [ "docker" ];
+  #   shell = pkgs.fish;
+  #   packages = with pkgs; [
+  #     kubernetes-helm
+  #   ];
+  # };
 
 
   
