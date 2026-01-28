@@ -286,14 +286,17 @@
       ];
     };
   };
-
+  
   services.gitea-actions-runner = {
     instances.infrastructure = {
       enable = true;
+
       name = "infrastructure-runner";
-      url = "https://git.alexmickelson.guru";
-      tokenFile = "/data/runner/gitea-infrastructure-token.txt";
-      labels = ["home-server"];
+      url = "https://gitea.example.com";
+      tokenFile = "/data/runner/github-infrastructure-token.txt";
+
+      labels = [ "home-server" ];
+
       hostPackages = with pkgs; [
         docker
         git-secret
@@ -306,7 +309,8 @@
       ];
     };
   };
-  systemd.services.gitea-actions-runner-infrastructure.serviceConfig = {
+
+  systemd.services.gitea-runner-infrastructure.serviceConfig = {
     ReadWritePaths = [
       "/data/cloudflare/"
       "/data/runner/infrastructure"
@@ -316,7 +320,8 @@
 
     PrivateDevices = false;
     DeviceAllow = [ "/dev/zfs rw" ];
-    ProtectProc = false;
+
+    ProtectProc = "default";
     ProtectSystem = false;
     PrivateMounts = false;
     PrivateUsers = false;
@@ -324,6 +329,7 @@
 
     Restart = "always";
   };
+
 
   
   networking.firewall.enable = false;
