@@ -8,7 +8,7 @@ jobs:
     runs-on: [self-hosted, home-server]
     steps:
       - name: checkout repo
-        working-directory: /home/github/infrastructure
+        working-directory: /home/gitea-runner/infrastructure
         run: |
           if [ -d "infrastructure" ]; then
             cd infrastructure
@@ -22,7 +22,7 @@ jobs:
         env:
           JELLYFIN_USER: ${{ secrets.JELLYFIN_USER }}
           JELLYFIN_PASSWORD: ${{ secrets.JELLYFIN_PASSWORD }}
-        working-directory: /home/github/infrastructure/infrastructure
+        working-directory: /home/gitea-runner/infrastructure/infrastructure
         run: |
           docker build -t jellyfin_management -f jellyfin/Dockerfile .
           docker run --rm \

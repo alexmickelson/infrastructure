@@ -10,7 +10,7 @@ jobs:
     runs-on: [home-server]
     steps:
       - name: Run Beets sync
-        working-directory: /home/github/infrastructure/infrastructure/home-server/beets
+        working-directory: /home/gitea-runner/infrastructure/infrastructure/home-server/beets
         run: |
           git pull
           docker compose pull -q

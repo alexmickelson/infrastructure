@@ -10,7 +10,7 @@ jobs:
     runs-on: [home-server]
     steps:
       - name: Run Libation sync
-        working-directory: /home/github/infrastructure/infrastructure/home-server/libation
+        working-directory: /home/gitea-runner/infrastructure/infrastructure/home-server/libation
         run: |
           echo "Starting Libation audiobook sync at $(date)"
           docker compose pull -q
