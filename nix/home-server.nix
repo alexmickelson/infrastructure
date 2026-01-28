@@ -312,7 +312,7 @@
   };
 
   systemd.services.gitea-runner-infrastructure.serviceConfig = {
-    User = "github";
+    User = lib.mkForce "github";
     Group = "users";
     ReadWritePaths = [
       "/data/cloudflare/"
