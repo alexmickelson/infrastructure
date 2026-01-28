@@ -291,7 +291,7 @@
     instances.infrastructure = {
       enable = true;
       name = "infrastructure-runner";
-      url = "https://gitea.example.com";
+      url = "https://git.alexmickelson.guru";
       tokenFile = "/data/runner/gitea-infrastructure-token.txt";
       labels = [
         "home-server"
