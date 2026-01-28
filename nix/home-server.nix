@@ -298,6 +298,8 @@
         "home-server:host"
       ];
       hostPackages = with pkgs; [
+        bash
+        coreutils
         docker
         git
         git-secret
