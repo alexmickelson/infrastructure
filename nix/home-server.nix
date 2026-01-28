@@ -321,7 +321,6 @@
     RUNNER_SHELL = "${pkgs.bashNonInteractive}/bin/bash";
   };
   systemd.services.gitea-runner-infrastructure.serviceConfig = {
- 
     ReadWritePaths = [
       "/data/cloudflare/"
       "/data/runner/infrastructure"
