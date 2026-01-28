@@ -95,6 +95,7 @@
 
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
+    bash
     vim
     wget
     curl
@@ -311,6 +312,10 @@
         kubectl
         kubernetes-helm
       ];
+
+      settings = {
+        container = { enabled = false; };
+      };
     };
   };
   systemd.services.gitea-runner-infrastructure.serviceConfig = {
