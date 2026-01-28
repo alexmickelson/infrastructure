@@ -295,8 +295,6 @@
       tokenFile = "/data/runner/gitea-infrastructure-token.txt";
       labels = [
         "home-server"
-        "native:host"
-        # "ubuntu-latest:docker://catthehacker/ubuntu:act-latest"
       ];
       hostPackages = with pkgs; [
         docker
@@ -309,6 +307,11 @@
         kubectl
         kubernetes-helm
       ];
+    };
+    settings = {
+      container = {
+        enabled = false;
+      };
     };
   };
 
