@@ -317,7 +317,9 @@
       };
     };
   };
-
+  systemd.services.gitea-runner-infrastructure.environment = {
+    RUNNER_SHELL = "${pkgs.bashNonInteractive}/bin/bash";
+  };
   systemd.services.gitea-runner-infrastructure.serviceConfig = {
  
     ReadWritePaths = [
