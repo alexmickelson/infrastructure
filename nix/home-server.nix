@@ -290,17 +290,16 @@
   services.gitea-actions-runner = {
     instances.infrastructure = {
       enable = true;
-
       name = "infrastructure-runner";
       url = "https://gitea.example.com";
       tokenFile = "/data/runner/gitea-infrastructure-token.txt";
-      labels = [ 
+      labels = [
         "home-server"
         "ubuntu-latest:docker://catthehacker/ubuntu:act-latest"
       ];
-
       hostPackages = with pkgs; [
         docker
+        git
         git-secret
         zfs
         sanoid
@@ -313,6 +312,8 @@
   };
 
   systemd.services.gitea-runner-infrastructure.serviceConfig = {
+    User = "github";
+    Group = "users";
     ReadWritePaths = [
       "/data/cloudflare/"
       "/data/runner/infrastructure"
