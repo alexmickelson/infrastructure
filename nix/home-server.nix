@@ -293,8 +293,7 @@
 
       name = "infrastructure-runner";
       url = "https://gitea.example.com";
-      tokenFile = "/data/runner/github-infrastructure-token.txt";
-
+      tokenFile = "/data/runner/gitea-infrastructure-token.txt";
       labels = [ "home-server" ];
 
       hostPackages = with pkgs; [
