@@ -298,7 +298,7 @@
         "home-server:host"
       ];
       hostPackages = with pkgs; [
-        bash
+        bashNonInteractive
         coreutils
         docker
         git
@@ -347,18 +347,8 @@
     packages = with pkgs; [
       kubernetes-helm
     ];
-    shell = pkgs.bash;
+    shell = pkgs.bashNonInteractive;
   };
-  # users.users.github = {
-  #   isNormalUser = true;
-  #   description = "github";
-  #   extraGroups = [ "docker" ];
-  #   shell = pkgs.fish;
-  #   packages = with pkgs; [
-  #     kubernetes-helm
-  #   ];
-  # };
-
 
   
   networking.firewall.enable = false;
