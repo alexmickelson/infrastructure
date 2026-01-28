@@ -307,10 +307,10 @@
         kubectl
         kubernetes-helm
       ];
-    };
-    settings = {
-      container = {
-        enabled = false;
+      settings = {
+        container = {
+          enabled = false;
+        };
       };
     };
   };
