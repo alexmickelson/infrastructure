@@ -318,6 +318,10 @@
       };
     };
   };
+
+  environment.pathsToLink = [
+    "/bin"
+  ];
   systemd.services.gitea-runner-infrastructure.serviceConfig = {
     ReadWritePaths = [
       "/data/cloudflare/"
