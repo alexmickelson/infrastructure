@@ -295,7 +295,8 @@
       tokenFile = "/data/runner/gitea-infrastructure-token.txt";
       labels = [
         "home-server"
-        "ubuntu-latest:docker://catthehacker/ubuntu:act-latest"
+        "native:host"
+        # "ubuntu-latest:docker://catthehacker/ubuntu:act-latest"
       ];
       hostPackages = with pkgs; [
         docker
