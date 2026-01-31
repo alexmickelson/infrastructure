@@ -12,6 +12,10 @@
   #   "hid_microsoft" # Xbox One Elite 2 controller driver preferred by Steam
   #   "uinput"
   # ];
+  boot.kernelPackages = pkgs.linuxPackages_6_6;
+  boot.kernelParams = [
+    "amdgpu.discovery=1"
+  ];
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
