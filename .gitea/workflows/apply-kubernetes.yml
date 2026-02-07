@@ -1,36 +1,11 @@
 name: Apply Kuberentes Configs
 on: [push, workflow_dispatch]
 jobs:
-  test-environment:
-    runs-on: home-server
-    steps:
-      - name: test basic commands
-        run: |
-          echo "=== Environment Info ==="
-          whoami
-          pwd
-          echo "=== Test bash ==="
-          bash --version
-          echo "=== Test git ==="
-          git --version
-          echo "=== Success ==="
   update-repo:
-    runs-on: home-server
-    steps:
-      - name: checkout repo
-        working-directory: /home/gitea-runner
-        run: |
-          if [ -d "infrastructure" ]; then
-            cd infrastructure
-            echo "Infrastructure folder exists. Resetting to the most recent commit."
-            git reset --hard HEAD
-            git pull https://x-access-token:${{ secrets.GITEA_TOKEN }}@git.alexmickelson.guru/${{ gitea.repository }} $(git rev-parse --abbrev-ref HEAD)
-          else
-            git clone https://x-access-token:${{ secrets.GITEA_TOKEN }}@git.alexmickelson.guru/${{ gitea.repository }}.git
-          fi
+    uses: ./.gitea/workflows/update-repo.yml
   update-infrastructure:
     runs-on: home-server
-    needs: update-repo
+    needs: update-repo-folder
     steps:
       - name: update home server containers
         env:
