@@ -71,16 +71,24 @@
       "/home/github/infrastructure"
     ];
     
-    # CRITICAL: Completely disable mount namespace isolation
-    PrivateMounts = lib.mkForce false;
-    MountFlags = lib.mkForce "";
-    
-    # Also bind the nix store
+    # CRITICAL: Allow the runner to create child processes without namespace restrictions
     BindReadOnlyPaths = lib.mkForce [
       "/nix/store"
       "/nix/var"
       "/run/current-system"
     ];
+    
+    # Completely disable mount namespace isolation
+    PrivateMounts = lib.mkForce false;
+    MountFlags = lib.mkForce "shared";  # Share mounts with child processes
+    
+    # Allow the runner process to use unshare/clone without restrictions
+    SystemCallFilter = lib.mkForce [ ];
+    RestrictNamespaces = lib.mkForce false;
+    
+    # Give the runner CAP_SYS_ADMIN to create namespaces if needed, but inherit parent's
+    AmbientCapabilities = lib.mkForce [ "CAP_SYS_ADMIN" ];
+    CapabilityBoundingSet = lib.mkForce [ "CAP_SYS_ADMIN" ];
     
     # Disable all other sandboxing features
     DynamicUser = lib.mkForce false;
@@ -97,12 +105,10 @@
     ProtectProc = lib.mkForce "default";
     ProtectSystem = lib.mkForce false;
     NoNewPrivileges = lib.mkForce false;
-    RestrictNamespaces = lib.mkForce false;
     RestrictRealtime = lib.mkForce false;
     RestrictSUIDSGID = lib.mkForce false;
     RemoveIPC = lib.mkForce false;
     LockPersonality = lib.mkForce false;
-    SystemCallFilter = lib.mkForce [ ];
     RestrictAddressFamilies = lib.mkForce [ ];
     
     User = lib.mkForce "gitea-runner";
