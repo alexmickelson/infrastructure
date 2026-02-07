@@ -9,6 +9,7 @@ jobs:
     runs-on: home-server
   run-python:
     - name: Run Python script
+      runs-on: home-server
       env:
         JELLYFIN_USER: ${{ secrets.JELLYFIN_USER }}
         JELLYFIN_PASSWORD: ${{ secrets.JELLYFIN_PASSWORD }}
