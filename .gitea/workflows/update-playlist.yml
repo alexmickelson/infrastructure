@@ -8,9 +8,9 @@ jobs:
     uses: ./.gitea/workflows/update-repo.yml
     runs-on: home-server
   run-python:
+    runs-on: home-server
     steps:
     - name: Run Python script
-      runs-on: home-server
       env:
         JELLYFIN_USER: ${{ secrets.JELLYFIN_USER }}
         JELLYFIN_PASSWORD: ${{ secrets.JELLYFIN_PASSWORD }}
