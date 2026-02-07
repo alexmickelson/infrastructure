@@ -31,6 +31,9 @@
         container = { 
           enabled = false;
         };
+        runner = {
+          capacity = 5;
+        };
       };
     };
   };
