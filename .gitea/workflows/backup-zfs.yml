@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   update-infrastructure:
-    runs-on: home-server
+    runs-on: [home-server]
     steps:
       - name: run syncoid
         run: |

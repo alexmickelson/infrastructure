@@ -3,6 +3,7 @@ on: [push, workflow_dispatch]
 jobs:
   update-repo:
     uses: ./.gitea/workflows/update-repo.yml
+    runs-on: home-server
   update-infrastructure:
     runs-on: home-server
     needs: update-repo-folder
