@@ -16,6 +16,7 @@ jobs:
         JELLYFIN_PASSWORD: ${{ secrets.JELLYFIN_PASSWORD }}
       working-directory: /home/gitea-runner/infrastructure
       run: |
+        echo "$JELLYFIN_USER $JELLYFIN_PASSWORD" > /home/gitea-runner/jellyfin_credentials.txt
         docker build -t jellyfin_management -f jellyfin/Dockerfile .
         docker run --rm \
         -e JELLYFIN_USER=$JELLYFIN_USER \
