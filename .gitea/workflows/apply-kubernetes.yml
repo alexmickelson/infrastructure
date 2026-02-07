@@ -5,7 +5,6 @@ jobs:
   update-repo:
     uses: ./.gitea/workflows/update-repo.yml
   update-infrastructure:
-    runs-on: home-server
     needs: update-repo-folder
     steps:
       - name: update home server containers

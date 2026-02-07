@@ -1,11 +1,11 @@
 name: ZFS Backup
+runs-on: home-server
 on:
   schedule:
     - cron: 0 1 * * *
   workflow_dispatch:
 jobs:
   update-infrastructure:
-    runs-on: [self-hosted, home-server]
     steps:
       - name: run syncoid
         run: |
