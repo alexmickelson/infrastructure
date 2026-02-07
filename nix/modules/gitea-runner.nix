@@ -34,32 +34,33 @@
     "/bin"
   ];
 
-  # Make sure the user exists FIRST
   users.users.gitea-runner = {
     isNormalUser = true;
     description = "Gitea Actions Runner";
     home = "/home/gitea-runner";
     createHome = true;
+    group = "gitea-runner";
     extraGroups = [ "docker" ];
     packages = with pkgs; [
       kubernetes-helm
     ];
     shell = pkgs.bash;
   };
+
   users.groups.gitea-runner = { };
 
-  # Ensure proper permissions on the token file
   systemd.tmpfiles.rules = [
     "d /data/runner 0755 gitea-runner gitea-runner -"
     "f /data/runner/gitea-infrastructure-token.txt 0600 gitea-runner gitea-runner -"
   ];
 
-  # Completely disable all sandboxing
   systemd.services.gitea-runner-infrastructure.serviceConfig = {
-    # Your existing paths - but also add state directory
-    ReadWritePaths = lib.mkForce [ ];  # Empty - no restrictions
+    ReadWritePaths = lib.mkForce [ ];
     StateDirectory = lib.mkForce "gitea-runner-infrastructure";
     StateDirectoryMode = lib.mkForce "0755";
+    
+    # ADD THIS - set the working directory
+    WorkingDirectory = lib.mkForce "/var/lib/gitea-runner-infrastructure/infrastructure";
     
     # Disable all sandboxing features
     DynamicUser = lib.mkForce false;
@@ -85,11 +86,9 @@
     SystemCallFilter = lib.mkForce [ ];
     RestrictAddressFamilies = lib.mkForce [ ];
     
-    # Ensure it runs as your existing user
     User = lib.mkForce "gitea-runner";
     Group = lib.mkForce "gitea-runner";
     
-    # Allow access to devices
     DeviceAllow = lib.mkForce [ ];
     DevicePolicy = lib.mkForce "auto";
     
