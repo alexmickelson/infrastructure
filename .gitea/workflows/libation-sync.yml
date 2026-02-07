@@ -1,16 +1,18 @@
 name: Libation
 on:
   schedule:
-    # Run 4 times a day: 6am, 12pm, 6pm, 12am UTC
     - cron: '0 6,12,18,0 * * *'
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch: 
 
 jobs:
+  update-repo:
+    uses: ./.gitea/workflows/update-repo.yml
+    runs-on: home-server
   sync-audiobooks:
     runs-on: [home-server]
     steps:
       - name: Run Libation sync
-        working-directory: /home/gitea-runner/infrastructure/infrastructure/home-server/libation
+        working-directory: /home/gitea-runner/infrastructure/home-server/libation
         run: |
           echo "Starting Libation audiobook sync at $(date)"
           docker compose pull -q
