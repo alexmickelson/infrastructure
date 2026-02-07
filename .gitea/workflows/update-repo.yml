@@ -1,10 +1,9 @@
 name: Update Repository
 on:
   workflow_call:
-
 jobs:
   update-repo-folder:
-    runs-on: home-server
+    runs-on: [self-hosted]
     steps:
       - name: checkout repo
         working-directory: /home/gitea-runner

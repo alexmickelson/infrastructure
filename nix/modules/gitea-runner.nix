@@ -7,6 +7,9 @@
       url = "https://git.alexmickelson.guru";
       tokenFile = "/data/runner/gitea-infrastructure-token.txt";
       labels = [
+        "self-hosted"
+        "home-server"
+        "self-hosted:host"
         "home-server:host"
         "native:host"
       ];
