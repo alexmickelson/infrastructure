@@ -344,7 +344,11 @@
     BindReadOnlyPaths = [
       "/nix/store"
     ];
-    
+     Environment = [
+      "SHELL=${pkgs.bash}/bin/bash"
+      "BASH=${pkgs.bash}/bin/bash"
+    ];
+      
     Restart = lib.mkForce "always";
   };
 
