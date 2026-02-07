@@ -322,6 +322,11 @@
   environment.pathsToLink = [
     "/bin"
   ];
+  system.activationScripts.bashSymlink = ''
+    mkdir -p /bin
+    ln -sf ${pkgs.bash}/bin/bash /bin/bash
+  '';
+
   systemd.services.gitea-runner-infrastructure.serviceConfig = {
     ReadWritePaths = [
       "/data/cloudflare/"
