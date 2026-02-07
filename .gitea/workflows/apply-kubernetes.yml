@@ -40,7 +40,7 @@ jobs:
           GRAFANA_PASSWORD: ${{ secrets.GRAFANA_PASSWORD }}
           CLOUDFLARE_CONFIG: ${{ secrets.CLOUDFLARE_CONFIG }}
           COPILOT_TOKEN: ${{ secrets.COPILOT_TOKEN }}
-        working-directory: /home/gitea-runner/infrastructure/infrastructure
+        working-directory: /home/gitea-runner/infrastructure
         run: |
           # kubectl apply -f kubernetes/ingress
           kubectl apply -f kubernetes/proxy-ingress
