@@ -65,7 +65,9 @@
       "/data/runner"
       "/home/github/infrastructure"
     ];
-    
+    BindReadOnlyPaths = [
+      "/nix/store"
+    ];
     # Disable all sandboxing features
     DynamicUser = lib.mkForce false;
     PrivateDevices = lib.mkForce false;
