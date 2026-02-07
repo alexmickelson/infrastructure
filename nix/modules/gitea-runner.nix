@@ -50,6 +50,20 @@
 
   users.groups.gitea-runner = { };
 
+  system.activationScripts.zfs-delegate-gitea-runner = {
+    text = 
+      let
+        poolNames = [ "data-ssd", "backup" ];
+        permissions = "compression,create,destroy,mount,mountpoint,receive,rollback,send,snapshot,hold";
+      in
+      ''
+        ${lib.concatMapStringsSep "\n" (pool: 
+          "${pkgs.zfs}/bin/zfs allow -u gitea-runner ${permissions} ${pool} || true"
+        ) poolNames}
+      '';
+    deps = [ ];
+  };
+
   systemd.services.gitea-runner-infrastructure.serviceConfig = {
     WorkingDirectory = lib.mkForce "/var/lib/gitea-runner/infrastructure";
     
