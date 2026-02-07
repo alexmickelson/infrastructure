@@ -323,14 +323,20 @@
     "/bin"
   ];
   
-  environment.binsh = "${pkgs.bash}/bin/bash";
   systemd.services.gitea-runner-infrastructure.serviceConfig = {
     ReadWritePaths = [
       "/data/cloudflare/"
       "/data/runner/infrastructure"
       "/data/runner"
       "/home/github/infrastructure"
+      "/nix/store"  # ADD THIS - critical for accessing bash and other nix packages
     ];
+    
+    # Also add read-only bind for /nix/store as a fallback
+    BindReadOnlyPaths = [
+      "/nix/store"
+    ];
+    
     PrivateDevices = false;
     DeviceAllow = [ "/dev/zfs rw" ];
     ProtectProc = "default";
@@ -338,17 +344,8 @@
     PrivateMounts = false;
     PrivateUsers = false;
     ProtectHome = false;
-    NoNewPrivileges = false;
+    NoNewPrivileges = false;  # ADD THIS
     
-    # Make sure the service can see /nix/store
-    BindReadOnlyPaths = [
-      "/nix/store"
-    ];
-     Environment = [
-      "SHELL=${pkgs.bash}/bin/bash"
-      "BASH=${pkgs.bash}/bin/bash"
-    ];
-      
     Restart = lib.mkForce "always";
   };
 
