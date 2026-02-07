@@ -7,7 +7,7 @@
       url = "https://git.alexmickelson.guru";
       tokenFile = "/data/runner/gitea-infrastructure-token.txt";
       labels = [
-        "home-server"
+        "home-server:host"  # Changed from just "home-server"
         "native:host"
       ];
       hostPackages = with pkgs; [
@@ -25,7 +25,13 @@
         kubernetes-helm
       ];
       settings = {
-        container = { enabled = false; };
+        container = { 
+          enabled = false;
+        };
+        # Add explicit host settings
+        host = {
+          workdir_parent = "/var/lib/gitea-runner/infrastructure";
+        };
       };
     };
   };
