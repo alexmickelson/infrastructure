@@ -55,7 +55,6 @@
   ];
 
   systemd.services.gitea-runner-infrastructure.serviceConfig = {
-    # Use the actual location where the module creates the .runner file
     WorkingDirectory = lib.mkForce "/var/lib/gitea-runner/infrastructure";
     
     ReadWritePaths = lib.mkForce [ 
@@ -65,13 +64,21 @@
       "/data/runner"
       "/home/github/infrastructure"
     ];
-    BindReadOnlyPaths = [
+    
+    # CRITICAL: Completely disable mount namespace isolation
+    PrivateMounts = lib.mkForce false;
+    MountFlags = lib.mkForce "";
+    
+    # Also bind the nix store
+    BindReadOnlyPaths = lib.mkForce [
       "/nix/store"
+      "/nix/var"
+      "/run/current-system"
     ];
-    # Disable all sandboxing features
+    
+    # Disable all other sandboxing features
     DynamicUser = lib.mkForce false;
     PrivateDevices = lib.mkForce false;
-    PrivateMounts = lib.mkForce false;
     PrivateTmp = lib.mkForce false;
     PrivateUsers = lib.mkForce false;
     ProtectClock = lib.mkForce false;
