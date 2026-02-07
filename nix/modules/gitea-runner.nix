@@ -52,15 +52,19 @@
   systemd.tmpfiles.rules = [
     "d /data/runner 0755 gitea-runner gitea-runner -"
     "f /data/runner/gitea-infrastructure-token.txt 0600 gitea-runner gitea-runner -"
-    "d /home/gitea-runner 0755 gitea-runner gitea-runner -"
   ];
 
   systemd.services.gitea-runner-infrastructure.serviceConfig = {
-    # Let systemd create the working directory with proper permissions
-    WorkingDirectory = lib.mkForce "/home/gitea-runner";
-    WorkingDirectoryMode = lib.mkForce "0755";
+    # Use the actual location where the module creates the .runner file
+    WorkingDirectory = lib.mkForce "/var/lib/gitea-runner/infrastructure";
     
-    ReadWritePaths = lib.mkForce [ ];
+    ReadWritePaths = lib.mkForce [ 
+      "/var/lib/gitea-runner"
+      "/data/cloudflare/"
+      "/data/runner/infrastructure"
+      "/data/runner"
+      "/home/github/infrastructure"
+    ];
     
     # Disable all sandboxing features
     DynamicUser = lib.mkForce false;
@@ -89,7 +93,7 @@
     User = lib.mkForce "gitea-runner";
     Group = lib.mkForce "gitea-runner";
     
-    DeviceAllow = lib.mkForce [ ];
+    DeviceAllow = lib.mkForce [ "/dev/zfs rw" ];
     DevicePolicy = lib.mkForce "auto";
     
     Restart = lib.mkForce "always";
