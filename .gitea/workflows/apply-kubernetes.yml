@@ -1,5 +1,6 @@
 name: Apply Kuberentes Configs
 on: [push, workflow_dispatch]
+runs-on: home-server
 jobs:
   update-repo:
     uses: ./.gitea/workflows/update-repo.yml
