@@ -338,21 +338,16 @@
     PrivateMounts = false;
     PrivateUsers = false;
     ProtectHome = false;
-    NoNewPrivileges = false;  # Add this
+    NoNewPrivileges = false;
     
-    # Ensure access to Nix store and system paths
+    # Make sure the service can see /nix/store
     BindReadOnlyPaths = [
       "/nix/store"
-      "/run/current-system"
-    ];
-    
-    # Set proper PATH
-    Environment = [
-      "PATH=/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/bin:/bin"
     ];
     
     Restart = lib.mkForce "always";
   };
+
   users.users.gitea-runner = {
     isNormalUser = true;
     description = "Gitea Actions Runner";
