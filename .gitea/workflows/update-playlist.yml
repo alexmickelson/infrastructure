@@ -8,6 +8,7 @@ jobs:
     uses: ./.gitea/workflows/update-repo.yml
     runs-on: home-server
   run-python:
+    steps:
     - name: Run Python script
       runs-on: home-server
       env:
