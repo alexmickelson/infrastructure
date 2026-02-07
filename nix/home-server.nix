@@ -340,6 +340,10 @@
     ProtectHome = false;
 
     Restart = lib.mkForce "always";
+
+    Environment = [
+      "PATH=/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin"
+    ];
   };
   users.users.gitea-runner = {
     isNormalUser = true;
