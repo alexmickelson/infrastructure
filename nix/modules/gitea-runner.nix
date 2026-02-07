@@ -46,6 +46,7 @@
     ];
     shell = pkgs.bash;
   };
+  users.groups.gitea-runner = { };
 
   # Ensure proper permissions on the token file
   systemd.tmpfiles.rules = [
