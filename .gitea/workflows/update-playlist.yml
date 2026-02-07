@@ -1,0 +1,27 @@
+name: Manage Jellyfin Playlists
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"
+jobs:
+  update-repo:
+    uses: ./.gitea/workflows/update-repo.yml
+    runs-on: home-server
+  run-python:
+    - name: Run Python script
+      env:
+        JELLYFIN_USER: ${{ secrets.JELLYFIN_USER }}
+        JELLYFIN_PASSWORD: ${{ secrets.JELLYFIN_PASSWORD }}
+      working-directory: /home/gitea-runner/infrastructure
+      run: |
+        docker build -t jellyfin_management -f jellyfin/Dockerfile .
+        docker run --rm \
+        -e JELLYFIN_USER=$JELLYFIN_USER \
+        -e JELLYFIN_PASSWORD=$JELLYFIN_PASSWORD \
+          jellyfin_management \
+            -m jellyfin.update_all_songs_playlist
+        docker run --rm \
+        -e JELLYFIN_USER=$JELLYFIN_USER \
+        -e JELLYFIN_PASSWORD=$JELLYFIN_PASSWORD \
+          jellyfin_management \
+            -m jellyfin.update_unindexed
