@@ -53,7 +53,7 @@
   system.activationScripts.zfs-delegate-gitea-runner = {
     text = 
       let
-        poolNames = [ "data-ssd", "backup" ];
+        poolNames = [ "data-ssd" "backup" ];
         permissions = "compression,create,destroy,mount,mountpoint,receive,rollback,send,snapshot,hold";
       in
       ''
