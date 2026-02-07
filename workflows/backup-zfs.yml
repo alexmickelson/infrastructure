@@ -24,23 +24,3 @@ jobs:
             --no-privilege-elevation \
               data-ssd/media \
               backup/media
-    # steps:
-    #   - name: run syncoid
-    #     run: |
-    #       zpool status
-    #       echo ""
-    #       zfs list
-    #       echo ""
-    #       syncoid \
-    #         --recursive \
-    #         --no-privilege-elevation \
-    #         --no-rollback \
-    #           data-ssd/data \
-    #           backup/data
-
-    #       syncoid \
-    #         --recursive \
-    #         --no-privilege-elevation \
-    #         --no-rollback \
-    #           data-ssd/media \
-    #           backup/media
