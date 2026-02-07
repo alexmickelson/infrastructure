@@ -10,14 +10,8 @@ jobs:
       - name: update home server containers
         env:
           KUBECONFIG: /home/gitea-runner/.kube/config
-          MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
-          HOMEASSISTANT_TOKEN: ${{ secrets.HOMEASSISTANT_TOKEN }}
-          GRAFANA_PASSWORD: ${{ secrets.GRAFANA_PASSWORD }}
-          CLOUDFLARE_CONFIG: ${{ secrets.CLOUDFLARE_CONFIG }}
-          COPILOT_TOKEN: ${{ secrets.COPILOT_TOKEN }}
         working-directory: /home/gitea-runner/infrastructure
         run: |
-          # kubectl apply -f kubernetes/ingress
           kubectl apply -f kubernetes/proxy-ingress
 
           kubectl annotate ingressclass nginx \
