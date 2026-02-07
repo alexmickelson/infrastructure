@@ -1,6 +1,19 @@
 name: Apply Kuberentes Configs
 on: [push, workflow_dispatch]
 jobs:
+  test-environment:
+    runs-on: home-server
+    steps:
+      - name: test basic commands
+        run: |
+          echo "=== Environment Info ==="
+          whoami
+          pwd
+          echo "=== Test bash ==="
+          bash --version
+          echo "=== Test git ==="
+          git --version
+          echo "=== Success ==="
   update-repo:
     runs-on: home-server
     steps:
