@@ -329,21 +329,27 @@
       "/data/runner"
       "/home/github/infrastructure"
     ];
-
     PrivateDevices = false;
     DeviceAllow = [ "/dev/zfs rw" ];
-
     ProtectProc = "default";
     ProtectSystem = false;
     PrivateMounts = false;
     PrivateUsers = false;
     ProtectHome = false;
-
-    Restart = lib.mkForce "always";
-
-    Environment = [
-      "PATH=/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin"
+    NoNewPrivileges = false;  # Add this
+    
+    # Ensure access to Nix store and system paths
+    BindReadOnlyPaths = [
+      "/nix/store"
+      "/run/current-system"
     ];
+    
+    # Set proper PATH
+    Environment = [
+      "PATH=/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:/usr/bin:/bin"
+    ];
+    
+    Restart = lib.mkForce "always";
   };
   users.users.gitea-runner = {
     isNormalUser = true;
