@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   services.gitea-actions-runner = {
     instances.infrastructure = {
