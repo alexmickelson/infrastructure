@@ -312,7 +312,6 @@
         kubectl
         kubernetes-helm
       ];
-
       settings = {
         container = { enabled = false; };
       };
@@ -322,39 +321,59 @@
   environment.pathsToLink = [
     "/bin"
   ];
-  
+
+  # Completely disable all sandboxing
   systemd.services.gitea-runner-infrastructure.serviceConfig = {
-    ReadWritePaths = [
+    # Your existing paths
+    ReadWritePaths = lib.mkForce [
       "/data/cloudflare/"
       "/data/runner/infrastructure"
       "/data/runner"
       "/home/github/infrastructure"
-      "/nix/store"  # ADD THIS - critical for accessing bash and other nix packages
     ];
     
-    # Also add read-only bind for /nix/store as a fallback
-    BindReadOnlyPaths = [
-      "/nix/store"
-    ];
+    # Disable all sandboxing features
+    DynamicUser = lib.mkForce false;
+    PrivateDevices = lib.mkForce false;
+    PrivateMounts = lib.mkForce false;
+    PrivateTmp = lib.mkForce false;
+    PrivateUsers = lib.mkForce false;
+    ProtectClock = lib.mkForce false;
+    ProtectControlGroups = lib.mkForce false;
+    ProtectHome = lib.mkForce false;
+    ProtectHostname = lib.mkForce false;
+    ProtectKernelLogs = lib.mkForce false;
+    ProtectKernelModules = lib.mkForce false;
+    ProtectKernelTunables = lib.mkForce false;
+    ProtectProc = lib.mkForce "default";
+    ProtectSystem = lib.mkForce false;
+    NoNewPrivileges = lib.mkForce false;
+    RestrictNamespaces = lib.mkForce false;
+    RestrictRealtime = lib.mkForce false;
+    RestrictSUIDSGID = lib.mkForce false;
+    RemoveIPC = lib.mkForce false;
+    LockPersonality = lib.mkForce false;
+    SystemCallFilter = lib.mkForce [ ];
+    RestrictAddressFamilies = lib.mkForce [ ];
     
-    PrivateDevices = false;
-    DeviceAllow = [ "/dev/zfs rw" ];
-    ProtectProc = "default";
-    ProtectSystem = false;
-    PrivateMounts = false;
-    PrivateUsers = false;
-    ProtectHome = false;
-    NoNewPrivileges = false;  # ADD THIS
+    # Ensure it runs as your existing user, not a dynamic one
+    User = lib.mkForce "gitea-runner";
+    Group = lib.mkForce "gitea-runner";
+    
+    # Allow access to devices
+    DeviceAllow = lib.mkForce [ "/dev/zfs rw" ];
+    DevicePolicy = lib.mkForce "auto";
     
     Restart = lib.mkForce "always";
   };
 
+  # Make sure the user exists
   users.users.gitea-runner = {
     isNormalUser = true;
     description = "Gitea Actions Runner";
     home = "/home/gitea-runner";
     createHome = true;
-    extraGroups = [ "docker" ];
+    extraGroups = [ "docker" "wheel" ];  # Add wheel if you need sudo
     packages = with pkgs; [
       kubernetes-helm
     ];
