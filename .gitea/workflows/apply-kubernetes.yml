@@ -18,7 +18,7 @@ jobs:
     runs-on: home-server
     steps:
       - name: checkout repo
-        working-directory: /home/gitea-runner/infrastructure
+        working-directory: /home/gitea-runner
         run: |
           if [ -d "infrastructure" ]; then
             cd infrastructure
