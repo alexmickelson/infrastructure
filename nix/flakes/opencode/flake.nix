@@ -31,6 +31,15 @@
                 "gpt-oss-20b" = { };
               };
             };
+            office = {
+              npm = "@ai-sdk/openai-compatible";
+              options = {
+                baseURL = "http://ai-office-server:8081/v1";
+              };
+              models = {
+                "gpt-oss-20b" = { };
+              };
+            };
           };
           mcp = {
             playwright = {

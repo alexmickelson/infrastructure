@@ -44,6 +44,7 @@ alias blue="bluetui"
 function commit
   git add --all
   git commit -m "$argv"
+  git pull
   git push
 end
 
