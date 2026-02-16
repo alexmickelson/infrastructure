@@ -43,3 +43,17 @@ jobs:
             --dry-run=client -o yaml | kubectl apply -f -
 
           kubectl apply -f kubernetes/copilot/
+
+      - name: jellyfin
+        env:
+          KUBECONFIG: /home/gitea-runner/.kube/config
+        working-directory: /home/gitea-runner/infrastructure
+        run: |
+          kubectl apply -f kubernetes/jellyfin/
+
+      - name: minecraft
+        env:
+          KUBECONFIG: /home/gitea-runner/.kube/config
+        working-directory: /home/gitea-runner/infrastructure
+        run: |
+          kubectl apply -f kubernetes/minecraft/
