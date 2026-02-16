@@ -1,23 +1,23 @@
 services:
-  jellyfin:
-    image: jellyfin/jellyfin
-    container_name: jellyfin
-    user: 1000:1000
-    network_mode: "host"
-    volumes:
-      - /data/jellyfin/config:/config
-      - /data/jellyfin/cache:/cache
-      - /data/media/music/tagged:/music
-      - /data/media/movies:/movies
-      - /data/media/tvshows:/tvshows
-      - /data/nextcloud/html/data/alex/files/Documents/home-video:/home-videos:ro
-    restart: "unless-stopped"
-    group_add:
-      - "303" # getent group render | cut -d: -f3
-    devices:
-      - /dev/dri/renderD128:/dev/dri/renderD128
-    environment:
-      - JELLYFIN_PublishedServerUrl=https://jellyfin.alexmickelson.guru
+  # jellyfin:
+  #   image: jellyfin/jellyfin
+  #   container_name: jellyfin
+  #   user: 1000:1000
+  #   network_mode: "host"
+  #   volumes:
+  #     - /data/jellyfin/config:/config
+  #     - /data/jellyfin/cache:/cache
+  #     - /data/media/music/tagged:/music
+  #     - /data/media/movies:/movies
+  #     - /data/media/tvshows:/tvshows
+  #     - /data/nextcloud/html/data/alex/files/Documents/home-video:/home-videos:ro
+  #   restart: "unless-stopped"
+  #   group_add:
+  #     - "303" # getent group render | cut -d: -f3
+  #   devices:
+  #     - /dev/dri/renderD128:/dev/dri/renderD128
+  #   environment:
+  #     - JELLYFIN_PublishedServerUrl=https://jellyfin.alexmickelson.guru
 
   nextcloud:
     build:
@@ -102,38 +102,6 @@ services:
     restart: always
     network_mode: host
 
-
-  # zwave-js-ui:
-  #   container_name: zwave-js-ui
-  #   image: zwavejs/zwave-js-ui:latest
-  #   restart: always
-  #   tty: true
-  #   stop_signal: SIGINT
-  #   environment:
-  #     - SESSION_SECRET=iqpwoeinf9384bw3p48gbwer
-  #     - TZ=America/Denver
-  #   devices:
-  #     # Do not use /dev/ttyUSBX serial devices, as those mappings can change over time.
-  #     # Instead, use the /dev/serial/by-id/X serial device for your Z-Wave stick.
-  #     # - '/dev/serial/by-id/insert_stick_reference_here:/dev/zwave'
-  #     - /dev/serial/by-id/usb-Silicon_Labs_HubZ_Smart_Home_Controller_31500417-if00-port0:/dev/serial/by-id/usb-Silicon_Labs_HubZ_Smart_Home_Controller_31500417-if00-port0
-  #     - /dev/serial/by-id/usb-Silicon_Labs_HubZ_Smart_Home_Controller_31500417-if01-port0:/dev/serial/by-id/usb-Silicon_Labs_HubZ_Smart_Home_Controller_31500417-if01-port0
-  #   volumes:
-  #       - /data/zwave:/usr/src/app/store
-  #   ports:
-  #     - '3050:8091'
-  #     - '3051:3051'
-
-  # music-assistant-server:
-  #   image: ghcr.io/music-assistant/server:2
-  #   container_name: music-assistant-server
-  #   restart: unless-stopped
-  #   network_mode: host
-  #   volumes:
-  #     - /data/music-assistant-server/data:/data/
-  #   environment:
-  #     - LOG_LEVEL=info
-
   prometheus:
     image: public.ecr.aws/bitnami/prometheus:2
     container_name: prometheus
@@ -168,70 +136,6 @@ services:
     ports:
       - 3000:3000
 
-  # acpupsd_exporter:
-  #   image: sfudeus/apcupsd_exporter:master_1.19
-  #   container_name: apcupsd_exporter
-  #   restart: always
-  #   extra_hosts:
-  #     - host.docker.internal:host-gateway
-  #   command: -apcupsd.addr host.docker.internal:3551
-  #   ports:
-  #     - 0.0.0.0:9162:9162
-  # docker run -it --rm  -p 9162:9162 --net=host sfudeus/apcupsd_exporter:master_1.19
-
-  # reverse-proxy:
-  #   image: ghcr.io/linuxserver/swag
-  #   container_name: reverse-proxy
-  #   restart: unless-stopped
-  #   cap_add:
-  #     - NET_ADMIN
-  #   environment:
-  #     - PUID=1000
-  #     - PGID=1000
-  #     - TZ=America/Denver
-  #     - URL=alexmickelson.guru
-  #     - SUBDOMAINS=wildcard
-  #     - VALIDATION=dns
-  #     - DNSPLUGIN=cloudflare
-  #   volumes:
-  #     - ./nginx.conf:/config/nginx/site-confs/default.conf
-  #     - /data/swag:/config
-  #     - /data/cloudflare/cloudflare.ini:/config/dns-conf/cloudflare.ini
-  #   ports:
-  #     - 0.0.0.0:80:80
-  #     - 0.0.0.0:443:443
-  #     # - 0.0.0.0:7080:80
-  #     # - 0.0.0.0:7443:443
-  #   extra_hosts:
-  #     - host.docker.internal:host-gateway
-  #   networks:
-  #     - proxy
-
-
-  # audiobookshelf:
-  #   image: ghcr.io/advplyr/audiobookshelf:latest
-  #   restart: unless-stopped
-  #   ports:
-  #     - 13378:80
-  #   volumes:
-  #     - /data/media/audiobooks:/audiobooks
-  #     - /data/media/audiobooks-libation:/audiobooks-libation
-  #     - /data/audiobookshelf/config:/config
-  #     - /data/audiobookshelf/metadata:/metadata
-  #   networks:
-  #     - proxy
-
-  copilot-api:
-    image: node:latest
-    working_dir: /app
-    command: sh -c "npm cache clean --force && npx copilot-api@latest start --github-token $COPILOT_TOKEN --port 4444"
-    environment:
-      - COPILOT_TOKEN=${COPILOT_TOKEN}
-    ports:
-      - "4444:4444"
-    restart: unless-stopped
-    networks:
-      - proxy
 
   esphome:
     container_name: esphome

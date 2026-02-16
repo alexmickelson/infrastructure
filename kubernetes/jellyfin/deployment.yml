@@ -1,8 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: jellyfin
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: jellyfin
-  namespace: projects
+  namespace: jellyfin
 spec:
   replicas: 1
   selector:
@@ -14,14 +19,16 @@ spec:
         app: jellyfin
     spec:
       hostNetwork: true
+      securityContext:
+        fsGroup: 1000
+        supplementalGroups:
+          - 303 # render group for GPU access
       containers:
         - name: jellyfin
           image: jellyfin/jellyfin
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
-            supplementalGroups:
-              - 303 # render group for GPU access
           volumeMounts:
             - name: dri-device
               mountPath: /dev/dri/renderD128
@@ -35,6 +42,9 @@ spec:
               mountPath: /movies
             - name: tvshows-volume
               mountPath: /tvshows
+            - name: home-videos-volume
+              mountPath: /home-videos
+              readOnly: true
           ports:
             - containerPort: 8096
               name: jellyfin
@@ -50,15 +60,58 @@ spec:
             path: /data/jellyfin/cache
         - name: music-volume
           hostPath:
-            path: /data/jellyfin/music
+            path: /data/media/music/tagged
         - name: movies-volume
           hostPath:
-            path: /data/jellyfin/movies
+            path: /data/media/movies
         - name: tvshows-volume
           hostPath:
-            path: /data/jellyfin/tvshows
+            path: /data/media/tvshows
+        - name: home-videos-volume
+          hostPath:
+            path: /data/nextcloud/html/data/alex/files/Documents/home-video
         - name: dri-device
           hostPath:
             path: /dev/dri/renderD128
             type: CharDevice
       restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyfin
+  namespace: jellyfin
+spec:
+  selector:
+    app: jellyfin
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8096
+    targetPort: 8096
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jellyfin
+  namespace: jellyfin
+  annotations:
+    cert-manager.io/cluster-issuer: cloudflare-issuer
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - jellyfin.alexmickelson.guru
+    secretName: jellyfin-tls
+  rules:
+  - host: jellyfin.alexmickelson.guru
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: jellyfin
+            port:
+              number: 8096
