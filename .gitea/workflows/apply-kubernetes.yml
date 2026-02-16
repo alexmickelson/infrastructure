@@ -48,3 +48,4 @@ jobs:
       - name: homepage
         run: |
           kubectl apply -f kubernetes/homepage/
+          kubectl rollout restart deployment/homepage -n homepage

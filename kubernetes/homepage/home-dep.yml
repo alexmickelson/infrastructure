@@ -18,9 +18,11 @@ spec:
       labels:
         app: homepage
     spec:
+      restartPolicy: Always
       containers:
         - name: homepage
           image: ghcr.io/gethomepage/homepage:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
               name: http
@@ -35,7 +37,6 @@ spec:
           hostPath:
             path: /data/homepage
             type: DirectoryOrCreate
-      restartPolicy: Always
 ---
 apiVersion: v1
 kind: Service
