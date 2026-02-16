@@ -37,4 +37,9 @@ jobs:
           KUBECONFIG: /home/gitea-runner/.kube/config
         working-directory: /home/gitea-runner/infrastructure
         run: |
+          kubectl create secret generic copilot-secret \
+            -n copilot \
+            --from-literal=token=${{ secrets.COPILOT_SECRET }} \
+            --dry-run=client -o yaml | kubectl apply -f -
+
           kubectl apply -f kubernetes/copilot/

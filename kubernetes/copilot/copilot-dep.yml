@@ -50,12 +50,28 @@ spec:
     port: 4444
     targetPort: 4444
 ---
-apiVersion: v1
-kind: Secret
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: copilot-secret
+  name: copilot-api-ingress
   namespace: copilot
-type: Opaque
-stringData:
-  token: "YOUR_COPILOT_TOKEN_HERE"
+  annotations:
+    cert-manager.io/cluster-issuer: cloudflare-issuer
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - copilot.alexmickelson.guru
+    secretName: copilot-api-tls-cert
+  rules:
+  - host: copilot.alexmickelson.guru
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: copilot-api
+            port:
+              number: 4444
 ---
