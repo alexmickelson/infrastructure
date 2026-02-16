@@ -17,3 +17,7 @@ jobs:
 
           kubectl annotate ingressclass nginx \
             ingressclass.kubernetes.io/is-default-class="true" --overwrite
+      - name: audiobookshelf
+        working-directory: /home/gitea-runner/infrastructure
+        run: |
+          kubectl apply -f kubernetes/audiobookshelf/

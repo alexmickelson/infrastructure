@@ -208,18 +208,18 @@ services:
   #     - proxy
 
 
-  audiobookshelf:
-    image: ghcr.io/advplyr/audiobookshelf:latest
-    restart: unless-stopped
-    ports:
-      - 13378:80
-    volumes:
-      - /data/media/audiobooks:/audiobooks
-      - /data/media/audiobooks-libation:/audiobooks-libation
-      - /data/audiobookshelf/config:/config
-      - /data/audiobookshelf/metadata:/metadata
-    networks:
-      - proxy
+  # audiobookshelf:
+  #   image: ghcr.io/advplyr/audiobookshelf:latest
+  #   restart: unless-stopped
+  #   ports:
+  #     - 13378:80
+  #   volumes:
+  #     - /data/media/audiobooks:/audiobooks
+  #     - /data/media/audiobooks-libation:/audiobooks-libation
+  #     - /data/audiobookshelf/config:/config
+  #     - /data/audiobookshelf/metadata:/metadata
+  #   networks:
+  #     - proxy
 
   copilot-api:
     image: node:latest
