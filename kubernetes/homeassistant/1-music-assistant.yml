@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: music-assistant-server
+  namespace: homeassistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: music-assistant-server
+  template:
+    metadata:
+      labels:
+        app: music-assistant-server
+    spec:
+      hostNetwork: true
+      containers:
+      - name: music-assistant-server
+        image: ghcr.io/music-assistant/server:2
+        imagePullPolicy: Always
+        env:
+        - name: LOG_LEVEL
+          value: "info"
+        - name: TZ
+          value: "America/Denver"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+      volumes:
+      - name: data
+        hostPath:
+          path: /data/music-assistant-server/data
+          type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: music-assistant
+  namespace: homeassistant
+  # annotations:
+  #   tailscale.com/expose: "true"
+spec:
+  selector:
+    app: music-assistant-server
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8095
+    targetPort: 8095
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: music-assistant-ingress
+  namespace: homeassistant
+  annotations:
+    cert-manager.io/cluster-issuer: cloudflare-issuer
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - sound.alexmickelson.guru
+    secretName: music-assistant-tls-cert
+  rules:
+  - host: sound.alexmickelson.guru
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: music-assistant
+            port:
+              number: 8095
+---

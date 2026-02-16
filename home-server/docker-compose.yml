@@ -124,20 +124,15 @@ services:
   #     - '3050:8091'
   #     - '3051:3051'
 
-  music-assistant-server:
-    image: ghcr.io/music-assistant/server:2
-    container_name: music-assistant-server
-    restart: unless-stopped
-    network_mode: host
-    volumes:
-      - /data/music-assistant-server/data:/data/
-    # cap_add:
-    #   - SYS_ADMIN
-    #   - DAC_READ_SEARCH
-    # security_opt:
-    #   - apparmor:unconfined
-    environment:
-      - LOG_LEVEL=info
+  # music-assistant-server:
+  #   image: ghcr.io/music-assistant/server:2
+  #   container_name: music-assistant-server
+  #   restart: unless-stopped
+  #   network_mode: host
+  #   volumes:
+  #     - /data/music-assistant-server/data:/data/
+  #   environment:
+  #     - LOG_LEVEL=info
 
   prometheus:
     image: public.ecr.aws/bitnami/prometheus:2
