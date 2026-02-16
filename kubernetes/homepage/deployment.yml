@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: homepage
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homepage
+  namespace: homepage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homepage
+  template:
+    metadata:
+      labels:
+        app: homepage
+    spec:
+      containers:
+        - name: homepage
+          image: ghcr.io/gethomepage/homepage:latest
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+            - name: HOMEPAGE_ALLOWED_HOSTS
+              value: "server.alexmickelson.guru:3001,home.alexmickelson.guru"
+          volumeMounts:
+            - name: host-configs
+              mountPath: /app/config/
+      volumes:
+        - name: host-configs
+          hostPath:
+            path: /data/homepage
+            type: DirectoryOrCreate
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: homepage
+  namespace: homepage
+spec:
+  selector:
+    app: homepage
+  ports:
+  - name: http
+    protocol: TCP
+    port: 3000
+    targetPort: 3000
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: homepage
+  namespace: homepage
+  annotations:
+    cert-manager.io/cluster-issuer: cloudflare-issuer
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - home.alexmickelson.guru
+    secretName: homepage-tls
+  rules:
+  - host: home.alexmickelson.guru
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: homepage
+            port:
+              number: 3000

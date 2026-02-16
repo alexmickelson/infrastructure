@@ -44,3 +44,7 @@ jobs:
       - name: minecraft
         run: |
           kubectl apply -f kubernetes/minecraft/
+     
+      - name: homepage
+        run: |
+          kubectl apply -f kubernetes/homepage/
