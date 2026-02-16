@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zwave-js-ui
+  namespace: homeassistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zwave-js-ui
+  template:
+    metadata:
+      labels:
+        app: zwave-js-ui
+    spec:
+      hostNetwork: true
+      containers:
+      - name: zwave-js-ui
+        image: zwavejs/zwave-js-ui:latest
+        imagePullPolicy: Always
+        tty: true
+        env:
+        - name: SESSION_SECRET
+          value: "iqpwoeinf9384bw3p48gbwer"
+        - name: TZ
+          value: "America/Denver"
+        volumeMounts:
+        - name: zwave-data
+          mountPath: /usr/src/app/store
+        - name: zwave-device-if00
+          mountPath: /dev/serial/by-id/usb-Silicon_Labs_HubZ_Smart_Home_Controller_31500417-if00-port0
+        - name: zwave-device-if01
+          mountPath: /dev/serial/by-id/usb-Silicon_Labs_HubZ_Smart_Home_Controller_31500417-if01-port0
+        securityContext:
+          privileged: true
+        ports:
+        - containerPort: 8091
+          name: http
+        - containerPort: 3051
+          name: websocket
+      volumes:
+      - name: zwave-data
+        hostPath:
+          path: /data/zwave
+          type: DirectoryOrCreate
+      - name: zwave-device-if00
+        hostPath:
+          path: /dev/serial/by-id/usb-Silicon_Labs_HubZ_Smart_Home_Controller_31500417-if00-port0
+          type: CharDevice
+      - name: zwave-device-if01
+        hostPath:
+          path: /dev/serial/by-id/usb-Silicon_Labs_HubZ_Smart_Home_Controller_31500417-if01-port0
+          type: CharDevice
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zwave-js-ui
+  namespace: homeassistant
+  annotations:
+    tailscale.com/expose: "true"
+spec:
+  selector:
+    app: zwave-js-ui
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8091
+    targetPort: 8091
+  - name: websocket
+    protocol: TCP
+    port: 3051
+    targetPort: 3051
+---
