@@ -17,9 +17,24 @@ jobs:
 
           kubectl annotate ingressclass nginx \
             ingressclass.kubernetes.io/is-default-class="true" --overwrite
+
       - name: audiobookshelf
         env:
           KUBECONFIG: /home/gitea-runner/.kube/config
         working-directory: /home/gitea-runner/infrastructure
         run: |
           kubectl apply -f kubernetes/audiobookshelf/
+
+      - name: home assistant
+        env:
+          KUBECONFIG: /home/gitea-runner/.kube/config
+        working-directory: /home/gitea-runner/infrastructure
+        run: |
+          kubectl apply -f kubernetes/homeassistant/
+
+      - name: copilot
+        env:
+          KUBECONFIG: /home/gitea-runner/.kube/config
+        working-directory: /home/gitea-runner/infrastructure
+        run: |
+          kubectl apply -f kubernetes/copilot/
