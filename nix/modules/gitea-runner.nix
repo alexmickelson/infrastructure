@@ -27,7 +27,6 @@
         kubectl
         kubernetes-helm
         curl
-        sudo
       ];
       settings = {
         container = { 
@@ -115,6 +114,7 @@
     RestrictAddressFamilies = lib.mkForce [ ];
     ReadWritePaths = lib.mkForce [ ];
     BindReadOnlyPaths = lib.mkForce [ ];
+    BindPaths = lib.mkForce [ "/run/wrappers" ];
     
     DeviceAllow = lib.mkForce [ "/dev/zfs rw" ];
     DevicePolicy = lib.mkForce "auto";
