@@ -90,6 +90,8 @@
     User = lib.mkForce "gitea-runner";
     Group = lib.mkForce "gitea-runner";
     
+    Environment = lib.mkForce [ "PATH=/run/wrappers/bin:/run/current-system/sw/bin" ];
+    
     DynamicUser = lib.mkForce false;
     PrivateDevices = lib.mkForce false;
     PrivateMounts = lib.mkForce false;
@@ -114,7 +116,6 @@
     RestrictAddressFamilies = lib.mkForce [ ];
     ReadWritePaths = lib.mkForce [ ];
     BindReadOnlyPaths = lib.mkForce [ ];
-    BindPaths = lib.mkForce [ "/run/wrappers" ];
     
     DeviceAllow = lib.mkForce [ "/dev/zfs rw" ];
     DevicePolicy = lib.mkForce "auto";
