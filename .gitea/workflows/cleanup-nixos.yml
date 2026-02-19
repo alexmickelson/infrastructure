@@ -1,0 +1,33 @@
+name: Cleanup NixOS Generations
+on:
+  schedule:
+    - cron: '0 2 * * 0'  # Every Sunday at 2am
+  workflow_dispatch:
+
+jobs:
+  cleanup-generations:
+    runs-on: [home-server]
+    steps:
+      - name: Cleanup old NixOS generations
+        run: |
+          echo "Deleting generations older than 7 days..."
+          sudo nix-collect-garbage --delete-older-than 7d
+
+  notify-on-failure:
+    runs-on: home-server
+    needs: cleanup-generations
+    if: failure()
+    uses: ./.gitea/workflows/notify-ntfy.yml
+    secrets:
+      NTFY_CHANNEL: ${{ secrets.NTFY_CHANNEL }}
+    with:
+      title: "NixOS Cleanup Failed"
+      message: |
+        Failed to cleanup old NixOS generations
+        Workflow: ${{ gitea.workflow }}
+        Repository: ${{ gitea.repository }}
+        Job: cleanup-generations
+        Status: ${{ needs.cleanup-generations.result }}
+      action_url: "https://git.alexmickelson.guru/${{ gitea.repository }}/actions/runs/${{ gitea.run_number }}"
+      priority: "high"
+      tags: "rotating_light,nixos"

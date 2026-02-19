@@ -54,6 +54,18 @@
 
   users.groups.gitea-runner = { };
 
+  security.sudo.extraRules = [
+    {
+      users = [ "gitea-runner" ];
+      commands = [
+        {
+          command = "${pkgs.nix}/bin/nix-collect-garbage";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
+
   system.activationScripts.zfs-delegate-gitea-runner = {
     text = 
       let
