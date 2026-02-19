@@ -121,4 +121,6 @@
     
     Restart = lib.mkForce "always";
   };
+
+  systemd.services.gitea-runner-infrastructure.path = [ pkgs.sudo ];
 }
