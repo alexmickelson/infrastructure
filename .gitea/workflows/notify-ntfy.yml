@@ -16,6 +16,9 @@ on:
         required: false
         type: string
         default: "warning"
+    secrets:
+      NTFY_CHANNEL:
+        required: true
 
 jobs:
   send-notification:

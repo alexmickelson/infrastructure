@@ -59,6 +59,8 @@ jobs:
     needs: update-infrastructure
     if: failure()
     uses: ./.gitea/workflows/notify-ntfy.yml
+    secrets:
+      NTFY_CHANNEL: ${{ secrets.NTFY_CHANNEL }}
     with:
       title: "Kubernetes Apply Failed"
       message: |
