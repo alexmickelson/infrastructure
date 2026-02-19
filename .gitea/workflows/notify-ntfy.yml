@@ -28,8 +28,8 @@ jobs:
         working-directory: /home/gitea-runner
         run: |
           set -e
-          curl -f -H "Title: ${{ inputs.title }}" \
+          echo "${{ inputs.message }}" | curl -f -H "Title: ${{ inputs.title }}" \
                -H "Priority: ${{ inputs.priority }}" \
                -H "Tags: ${{ inputs.tags }}" \
-               --data-raw "${{ inputs.message }}" \
+               --data-binary "@-" \
                "https://ntfy.sh/${{ secrets.NTFY_CHANNEL }}"
