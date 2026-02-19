@@ -27,7 +27,8 @@ jobs:
       - name: Send ntfy notification
         working-directory: /home/gitea-runner
         run: |
-          curl -H "Title: ${{ inputs.title }}" \
+          set -e
+          curl -f -H "Title: ${{ inputs.title }}" \
                -H "Priority: ${{ inputs.priority }}" \
                -H "Tags: ${{ inputs.tags }}" \
                -d "${{ inputs.message }}" \
