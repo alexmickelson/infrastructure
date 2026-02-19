@@ -18,3 +18,22 @@ jobs:
           docker compose pull -q
           docker compose run --rm libation
           echo "Libation sync completed at $(date)"
+
+  notify-on-failure:
+    runs-on: home-server
+    needs: sync-audiobooks
+    if: failure()
+    uses: ./.gitea/workflows/notify-ntfy.yml
+    secrets:
+      NTFY_CHANNEL: ${{ secrets.NTFY_CHANNEL }}
+    with:
+      title: "Libation Sync Failed"
+      message: |
+        Failed to sync audiobooks with Libation
+        Workflow: ${{ gitea.workflow }}
+        Repository: ${{ gitea.repository }}
+        Job: sync-audiobooks
+        Status: ${{ needs.sync-audiobooks.result }}
+      action_url: "https://git.alexmickelson.guru/${{ gitea.repository }}/actions/runs/${{ gitea.run_number }}"
+      priority: "high"
+      tags: "rotating_light,audiobooks"

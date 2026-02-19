@@ -28,3 +28,22 @@ jobs:
         -e JELLYFIN_PASSWORD=$JELLYFIN_PASSWORD \
           jellyfin_management \
             -m jellyfin.update_unindexed
+
+  notify-on-failure:
+    runs-on: home-server
+    needs: run-python
+    if: failure()
+    uses: ./.gitea/workflows/notify-ntfy.yml
+    secrets:
+      NTFY_CHANNEL: ${{ secrets.NTFY_CHANNEL }}
+    with:
+      title: "Jellyfin Playlist Update Failed"
+      message: |
+        Failed to update Jellyfin playlists
+        Workflow: ${{ gitea.workflow }}
+        Repository: ${{ gitea.repository }}
+        Job: run-python
+        Status: ${{ needs.run-python.result }}
+      action_url: "https://git.alexmickelson.guru/${{ gitea.repository }}/actions/runs/${{ gitea.run_number }}"
+      priority: "high"
+      tags: "rotating_light,jellyfin"
