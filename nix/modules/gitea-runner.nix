@@ -27,6 +27,7 @@
         kubectl
         kubernetes-helm
         curl
+        sudo
       ];
       settings = {
         container = { 
