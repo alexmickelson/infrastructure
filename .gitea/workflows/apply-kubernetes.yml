@@ -62,10 +62,6 @@ jobs:
       title: "Kubernetes Apply Failed"
       message: |
         Failed to apply kubernetes configs
-        Workflow: ${{ gitea.workflow }}
-        Repository: ${{ gitea.repository }}
-        Job: update-infrastructure
-        Status: ${{ needs.update-infrastructure.result }}
       action_url: "https://git.alexmickelson.guru/${{ gitea.repository }}/actions/runs/${{ gitea.run_number }}"
       priority: "high"
       tags: "rotating_light,kubernetes"

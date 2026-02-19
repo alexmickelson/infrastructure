@@ -1,29 +1,31 @@
-name: Cleanup NixOS Generations
+name: Cleanup Docker
 on:
   schedule:
-    - cron: '0 2 * * 0'  # Every Sunday at 2am
+    - cron: '0 3 1,15 * *'  # 1st and 15th of every month at 3am
   workflow_dispatch:
 
 jobs:
-  cleanup-generations:
+  cleanup-docker:
     runs-on: [home-server]
     steps:
-      - name: Cleanup old NixOS generations
+      - name: Cleanup Docker resources
         run: |
-          echo "Deleting generations older than 7 days..."
-          sudo nix-collect-garbage --delete-older-than 7d
+          echo ""
+          echo "Removing unused images..."
+          docker image prune -a -f --filter "until=336h"
+
 
   notify-on-failure:
     runs-on: home-server
-    needs: cleanup-generations
+    needs: cleanup-docker
     if: failure()
     uses: ./.gitea/workflows/notify-ntfy.yml
     secrets:
       NTFY_CHANNEL: ${{ secrets.NTFY_CHANNEL }}
     with:
-      title: "NixOS Cleanup Failed"
+      title: "Docker Cleanup Failed"
       message: |
-        Failed to cleanup old NixOS generations
+        Failed to cleanup Docker resources
       action_url: "https://git.alexmickelson.guru/${{ gitea.repository }}/actions/runs/${{ gitea.run_number }}"
       priority: "high"
-      tags: "rotating_light,nixos"
+      tags: "rotating_light,docker"

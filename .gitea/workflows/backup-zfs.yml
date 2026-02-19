@@ -36,10 +36,6 @@ jobs:
       title: "ZFS Backup Failed"
       message: |
         Failed to backup ZFS datasets
-        Workflow: ${{ gitea.workflow }}
-        Repository: ${{ gitea.repository }}
-        Job: update-infrastructure
-        Status: ${{ needs.update-infrastructure.result }}
       action_url: "https://git.alexmickelson.guru/${{ gitea.repository }}/actions/runs/${{ gitea.run_number }}"
       priority: "high"
       tags: "rotating_light,backup"
