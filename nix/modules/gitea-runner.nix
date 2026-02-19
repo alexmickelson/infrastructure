@@ -26,6 +26,7 @@
         lzop
         kubectl
         kubernetes-helm
+        curl
       ];
       settings = {
         container = { 

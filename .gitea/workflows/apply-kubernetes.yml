@@ -64,5 +64,3 @@ jobs:
       message: "Failed to apply kubernetes configs in ${{ gitea.repository }} - Run: ${{ gitea.run_number }}"
       priority: "high"
       tags: "rotating_light,kubernetes"
-    secrets:
-      NTFY_CHANNEL: ${{ secrets.NTFY_CHANNEL }}
