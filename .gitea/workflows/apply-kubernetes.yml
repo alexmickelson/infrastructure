@@ -61,6 +61,11 @@ jobs:
     uses: ./.gitea/workflows/notify-ntfy.yml
     with:
       title: "Kubernetes Apply Failed"
-      message: "Failed to apply kubernetes configs in ${{ gitea.repository }} - Run: ${{ gitea.run_number }}"
+      message: |
+        Failed to apply kubernetes configs
+        Repository: ${{ gitea.repository }}
+        Run: ${{ gitea.run_number }}
+        Job: update-infrastructure
+        Status: ${{ needs.update-infrastructure.result }}
       priority: "high"
       tags: "rotating_light,kubernetes"
