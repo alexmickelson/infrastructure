@@ -50,9 +50,6 @@ jobs:
           kubectl apply -f kubernetes/homepage/
           kubectl rollout restart deployment/homepage -n homepage
 
-      - name: test failure notification
-        run: |
-          exit 1
 
   notify-on-failure:
     runs-on: home-server
