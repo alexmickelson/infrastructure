@@ -31,5 +31,5 @@ jobs:
           curl -f -H "Title: ${{ inputs.title }}" \
                -H "Priority: ${{ inputs.priority }}" \
                -H "Tags: ${{ inputs.tags }}" \
-               -d "${{ inputs.message }}" \
+               --data-raw "${{ inputs.message }}" \
                "https://ntfy.sh/${{ secrets.NTFY_CHANNEL }}"
