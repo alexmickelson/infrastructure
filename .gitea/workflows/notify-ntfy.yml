@@ -22,7 +22,7 @@ on:
 
 jobs:
   send-notification:
-    runs-on: home-server
+    runs-on: [home-server]
     steps:
       - name: Send ntfy notification
         run: |
