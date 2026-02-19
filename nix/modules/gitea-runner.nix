@@ -59,11 +59,7 @@
       users = [ "gitea-runner" ];
       commands = [
         {
-          command = "${pkgs.nix}/bin/nix-collect-garbage";
-          options = [ "NOPASSWD" "SETENV" ];
-        }
-        {
-          command = "${pkgs.nix}/bin/nix-env";
+          command = "/run/current-system/sw/bin/nix-collect-garbage";
           options = [ "NOPASSWD" "SETENV" ];
         }
       ];
