@@ -128,6 +128,11 @@
   ];
   services.envfs.enable = true;
 
+  security.sudo = {
+    enable = true;
+    wheelNeedsPassword = true;
+  };
+
   # printing
   services.printing = {
     enable = true;

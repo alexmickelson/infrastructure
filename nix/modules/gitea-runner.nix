@@ -27,7 +27,6 @@
         kubectl
         kubernetes-helm
         curl
-        sudo
       ];
       settings = {
         container = { 
@@ -61,7 +60,11 @@
       commands = [
         {
           command = "${pkgs.nix}/bin/nix-collect-garbage";
-          options = [ "NOPASSWD" ];
+          options = [ "NOPASSWD" "SETENV" ];
+        }
+        {
+          command = "${pkgs.nix}/bin/nix-env";
+          options = [ "NOPASSWD" "SETENV" ];
         }
       ];
     }
