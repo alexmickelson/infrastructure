@@ -69,7 +69,6 @@ jobs:
         Repository: ${{ gitea.repository }}
         Job: update-infrastructure
         Status: ${{ needs.update-infrastructure.result }}
-        Time: ${{ gitea.run_started_at }}
-      action_url: "https://git.alexmickelson.guru/${{ gitea.repository }}/actions/runs/${{ gitea.run_number }}/jobs/${{ gitea.job }}"
+      action_url: "https://git.alexmickelson.guru/${{ gitea.repository }}/actions/runs/${{ gitea.run_number }}"
       priority: "high"
       tags: "rotating_light,kubernetes"

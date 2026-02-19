@@ -32,15 +32,21 @@ jobs:
         working-directory: /home/gitea-runner
         run: |
           set -e
-          ACTION_HEADER=""
           if [ -n "${{ inputs.action_url }}" ]; then
-            ACTION_HEADER='-H "Actions: view, View Logs, ${{ inputs.action_url }}"'
-          fi
-          cat <<EOF | curl -f -H "Title: ${{ inputs.title }}" \
-               -H "Priority: ${{ inputs.priority }}" \
-               -H "Tags: ${{ inputs.tags }}" \
-               $ACTION_HEADER \
-               --data-binary "@-" \
-               "https://ntfy.sh/${{ secrets.NTFY_CHANNEL }}"
+            cat <<EOF | curl -f -H "Title: ${{ inputs.title }}" \
+                 -H "Priority: ${{ inputs.priority }}" \
+                 -H "Tags: ${{ inputs.tags }}" \
+                 -H "Actions: view, View Logs, ${{ inputs.action_url }}" \
+                 --data-binary "@-" \
+                 "https://ntfy.sh/${{ secrets.NTFY_CHANNEL }}"
           ${{ inputs.message }}
           EOF
+          else
+            cat <<EOF | curl -f -H "Title: ${{ inputs.title }}" \
+                 -H "Priority: ${{ inputs.priority }}" \
+                 -H "Tags: ${{ inputs.tags }}" \
+                 --data-binary "@-" \
+                 "https://ntfy.sh/${{ secrets.NTFY_CHANNEL }}"
+          ${{ inputs.message }}
+          EOF
+          fi
