@@ -1,0 +1,33 @@
+name: Notify NTFY
+on:
+  workflow_call:
+    inputs:
+      title:
+        required: true
+        type: string
+      message:
+        required: true
+        type: string
+      priority:
+        required: false
+        type: string
+        default: "default"
+      tags:
+        required: false
+        type: string
+        default: "warning"
+    secrets:
+      NTFY_CHANNEL:
+        required: true
+
+jobs:
+  send-notification:
+    runs-on: home-server
+    steps:
+      - name: Send ntfy notification
+        run: |
+          curl -H "Title: ${{ inputs.title }}" \
+               -H "Priority: ${{ inputs.priority }}" \
+               -H "Tags: ${{ inputs.tags }}" \
+               -d "${{ inputs.message }}" \
+               "https://ntfy.sh/${{ secrets.NTFY_CHANNEL }}"

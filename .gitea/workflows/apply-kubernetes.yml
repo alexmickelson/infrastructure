@@ -49,3 +49,16 @@ jobs:
         run: |
           kubectl apply -f kubernetes/homepage/
           kubectl rollout restart deployment/homepage -n homepage
+
+  notify-on-failure:
+    runs-on: home-server
+    needs: update-infrastructure
+    if: failure()
+    uses: ./.gitea/workflows/notify-ntfy.yml
+    with:
+      title: "Kubernetes Apply Failed"
+      message: "Failed to apply kubernetes configs in ${{ gitea.repository }} - Run: ${{ gitea.run_number }}"
+      priority: "high"
+      tags: "rotating_light,kubernetes"
+    secrets:
+      NTFY_CHANNEL: ${{ secrets.NTFY_CHANNEL }}
