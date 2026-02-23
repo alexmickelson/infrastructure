@@ -66,7 +66,9 @@ in {
     # vscode-fhs
     # aider-chat-full
 
-    codex
+    # codex
+    elixir
+    elixir-ls
   ];
   fonts.fontconfig.enable = true;
   programs.firefox = {
