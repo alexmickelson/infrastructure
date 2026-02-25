@@ -23,6 +23,8 @@
     jellyfin-tui
     bluetui
     nexusmods-app-unfree
+    elixir
+    elixir-ls
   ];
 
   programs.ghostty = {
