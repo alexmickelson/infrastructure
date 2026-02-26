@@ -69,6 +69,7 @@ in {
     elixir
     elixir-ls
     inotify-tools
+    watchman
   ];
   fonts.fontconfig.enable = true;
   programs.firefox = {
