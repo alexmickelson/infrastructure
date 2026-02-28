@@ -41,7 +41,6 @@ in {
     iperf 
     #makemkv
     #elixir_1_18
-    #inotify-tools
     # gnome-themes-extra
     uv
     ghostty
@@ -69,6 +68,8 @@ in {
     # codex
     elixir
     elixir-ls
+    inotify-tools
+    watchman
   ];
   fonts.fontconfig.enable = true;
   programs.firefox = {
