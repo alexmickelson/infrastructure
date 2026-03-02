@@ -1,4 +1,3 @@
-
 { config, pkgs, ... }:
 
 {
@@ -13,10 +12,11 @@
   #   "hid_microsoft" # Xbox One Elite 2 controller driver preferred by Steam
   #   "uinput"
   # ];
-  boot.kernelPackages = pkgs.linuxPackages_6_6;
-  boot.kernelParams = [
-    "amdgpu.discovery=1"
-  ];
+  boot.kernelPackages = pkgs.linuxPackages_6_1;
+  #boot.kernelParams = [
+  #  "amdgpu.discovery=1"
+  #];
+  hardware.enableRedistributableFirmware = true;
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -86,7 +86,10 @@
     libva-utils
     libcec
     flirc
+
+    
     kdePackages.kdeconnect-kde
+
   ];
   services.openssh.enable = true;
   services.tailscale.enable = true;
