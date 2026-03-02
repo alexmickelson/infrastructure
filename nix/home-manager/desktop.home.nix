@@ -22,7 +22,8 @@
     bitwarden-desktop
     jellyfin-tui
     bluetui
-    nexusmods-app-unfree
+    bitwarden-desktop
+    
     elixir
     elixir-ls
   ];

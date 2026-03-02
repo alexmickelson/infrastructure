@@ -104,20 +104,18 @@
     mangohud
     mlocate
 
-    wineWowPackages.stable
-    wine
-    (wine.override { wineBuild = "wine64"; })
-    wine64
-    wineWowPackages.staging
-    winetricks
-    wineWowPackages.waylandFull
+    # wineWowPackages.stable
+    # wine
+    # (wine.override { wineBuild = "wine64"; })
+    # wine64
+    # wineWowPackages.staging
+    # winetricks
+    # wineWowPackages.waylandFull
 
-    mesa-gl-headers
-    mesa
-    driversi686Linux.mesa
-    mesa-demos
-
-    android-tools
+    # mesa-gl-headers
+    # mesa
+    # driversi686Linux.mesa
+    # mesa-demos
   ];
   services.tailscale.enable = true;
   services.openssh.enable = true;
@@ -161,9 +159,22 @@
   };
 
   # fingerprint
-  services.fprintd.enable = true;
-  security.pam.services.sudo.fprintAuth = true;
-  security.pam.services.gdm.fprintAuth = true;
+  # services.fprintd = {
+  #   enable = true;
+  #   package = pkgs.fprintd.override {
+  #     libfprint = pkgs.libfprint;
+  #   };
+  # };
+  # services.gnome.gnome-keyring.enable = true;
+  # security.polkit.enable = true;
+
+  # security.pam.services.gdm.fprintAuth = true;
+  # security.pam.services.gdm.enableGnomeKeyring = true;
+
+  # security.pam.services.sudo.fprintAuth = true;
+  # services.udev.extraRules = ''
+  #   ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="04f3", ATTR{idProduct}=="0c3d", TEST=="power/control", ATTR{power/control}="on"
+  # '';
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
