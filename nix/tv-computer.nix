@@ -86,7 +86,7 @@
     libva-utils
     libcec
     flirc
-
+    kdePackages.kdeconnect-kde
   ];
   services.openssh.enable = true;
   services.tailscale.enable = true;

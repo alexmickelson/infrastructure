@@ -22,7 +22,9 @@
     bitwarden-desktop
     jellyfin-tui
     bluetui
-    bitwarden-desktop
+    # bitwarden-desktop
+
+    lazydocker
     
     elixir
     elixir-ls

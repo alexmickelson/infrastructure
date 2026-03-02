@@ -103,6 +103,7 @@
     iperf
     mangohud
     mlocate
+    kdePackages.kdeconnect-kde
 
     # wineWowPackages.stable
     # wine
@@ -175,6 +176,7 @@
   # services.udev.extraRules = ''
   #   ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="04f3", ATTR{idProduct}=="0c3d", TEST=="power/control", ATTR{power/control}="on"
   # '';
+
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
