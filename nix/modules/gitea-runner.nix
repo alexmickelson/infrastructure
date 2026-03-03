@@ -90,7 +90,7 @@
     
     Environment = lib.mkForce [
       "PATH=/run/wrappers/bin:/etc/profiles/per-user/gitea-runner/bin:/run/current-system/sw/bin"
-      "NIX_PATH=nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixpkgs"
+      "NIX_PATH=nixpkgs=${pkgs.path}"
     ];
     
     DynamicUser = lib.mkForce false;
