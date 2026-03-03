@@ -12,7 +12,8 @@
   #   "hid_microsoft" # Xbox One Elite 2 controller driver preferred by Steam
   #   "uinput"
   # ];
-  boot.kernelPackages = pkgs.linuxPackages_6_1;
+  boot.kernelPackages = pkgs.linuxPackages_lts;
+  #boot.kernelPackages = pkgs.linuxPackages_6_1;
   #boot.kernelParams = [
   #  "amdgpu.discovery=1"
   #];
