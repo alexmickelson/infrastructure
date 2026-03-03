@@ -27,6 +27,7 @@
         kubectl
         kubernetes-helm
         curl
+        nodejs_24
       ];
       settings = {
         container = { 
