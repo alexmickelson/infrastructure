@@ -49,6 +49,7 @@
     extraGroups = [ "docker" ];
     packages = with pkgs; [
       kubernetes-helm
+      nodejs_24
     ];
     shell = pkgs.bash;
   };
