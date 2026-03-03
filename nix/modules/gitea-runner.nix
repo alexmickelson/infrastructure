@@ -88,7 +88,10 @@
     User = lib.mkForce "gitea-runner";
     Group = lib.mkForce "gitea-runner";
     
-    Environment = lib.mkForce [ "PATH=/run/wrappers/bin:/etc/profiles/per-user/gitea-runner/bin:/run/current-system/sw/bin" ];
+    Environment = lib.mkForce [
+      "PATH=/run/wrappers/bin:/etc/profiles/per-user/gitea-runner/bin:/run/current-system/sw/bin"
+      "NIX_PATH=nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixpkgs"
+    ];
     
     DynamicUser = lib.mkForce false;
     PrivateDevices = lib.mkForce false;
