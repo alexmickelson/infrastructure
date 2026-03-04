@@ -28,6 +28,8 @@
         kubernetes-helm
         curl
         nodejs_24
+        openssl
+        gettext
       ];
       settings = {
         container = { 
@@ -50,6 +52,8 @@
     packages = with pkgs; [
       kubernetes-helm
       nodejs_24
+      openssl
+      gettext
     ];
     shell = pkgs.bash;
   };
