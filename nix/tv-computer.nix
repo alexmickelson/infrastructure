@@ -17,6 +17,11 @@
   #boot.kernelParams = [
   #  "amdgpu.discovery=1"
   #];
+  hardware.graphics = {
+    enable = true;
+    package = pkgs.mesa;
+    package32 = pkgs.pkgsi686Linux.mesa;
+  };
   hardware.enableRedistributableFirmware = true;
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
