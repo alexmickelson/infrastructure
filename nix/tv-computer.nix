@@ -14,15 +14,10 @@
   
   boot.kernelPackages = pkgs.linuxPackages_6_6;
   # boot.kernelPackages = pkgs.linuxPackages_6_1;
-  # services.displayManager.gdm.wayland = false;
+  services.displayManager.gdm.wayland = false;
   #boot.kernelParams = [
   #  "amdgpu.discovery=1"
   #];
-  # hardware.graphics = {
-  #   enable = true;
-  #   package = pkgs.mesa;
-  #   package32 = pkgs.pkgsi686Linux.mesa;
-  # };
   hardware.enableRedistributableFirmware = true;
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
