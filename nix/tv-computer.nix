@@ -5,7 +5,6 @@
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  #boot.kernelPackages = pkgs.linuxKernel.kernels.linux_6_6;
   # boot.extraModulePackages = with config.boot.kernelPackages; [ xpadneo ];
   # boot.kernelModules = [ "hid_xpadneo" ];
   # boot.kernelModules = [
@@ -13,7 +12,8 @@
   #   "uinput"
   # ];
   
-  boot.kernelPackages = pkgs.linuxPackages_6_1;
+  boot.kernelPackages = pkgs.linuxPackages_6_6;
+  # boot.kernelPackages = pkgs.linuxPackages_6_1;
   services.displayManager.gdm.wayland = false;
   #boot.kernelParams = [
   #  "amdgpu.discovery=1"
