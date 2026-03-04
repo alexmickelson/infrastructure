@@ -14,7 +14,14 @@
   
   boot.kernelPackages = pkgs.linuxPackages_6_6;
   # boot.kernelPackages = pkgs.linuxPackages_6_1;
-  services.displayManager.gdm.wayland = false;
+  services.xserver.enable = true;
+
+  services.xserver.displayManager.gdm = {
+    enable = true;
+    wayland = false;
+  };
+
+  services.xserver.desktopManager.gnome.enable = true;
   #boot.kernelParams = [
   #  "amdgpu.discovery=1"
   #];
@@ -39,12 +46,6 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # services.xserver.enable = true;
-  # services.displayManager.gdm.enable = true;
-  # services.desktopManager.gnome.enable = true;
-  services.xserver.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
   services.xserver.xkb = {
     layout = "us";
     variant = "";
