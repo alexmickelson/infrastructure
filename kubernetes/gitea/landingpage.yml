@@ -488,7 +488,6 @@ data:
       const feed = document.getElementById('activity-feed');
       if (!feed) return;
       const baseUrl = window.GITEA_SUB_URL || '';
-      const username = 'alex';
 
       function timeAgo(dateStr) {
         const diff = (Date.now() - new Date(dateStr)) / 1000;
@@ -503,104 +502,79 @@ data:
         return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
       }
 
-      const opIcon = {
-        commit:'📝', push:'📤', mirror_sync_push:'🔄',
-        create_repo:'📁', fork:'🍴',
-        open_issue:'🔴', close_issue:'🟢', reopen_issue:'🔴',
-        comment_issue:'💬', comment_pull:'💬',
-        open_pull_request:'🔀', close_pull_request:'🔀',
-        merge_pull_request:'✅', approve_pull_request:'✅',
-        create_branch:'🌿', delete_branch:'🌿',
-        create_tag:'🏷️', delete_tag:'🏷️',
-      };
-
-      let events;
+      let doc;
       try {
-        const resp = await fetch(
-          `${baseUrl}/api/v1/users/${username}/activities/feeds?only-performed-by=true&limit=20`,
-          { credentials: 'include' }
-        );
+        const resp = await fetch(`${baseUrl}/alex.rss`);
         if (!resp.ok) {
           feed.innerHTML = `<div style="padding:24px;text-align:center;color:#8b949e">Activity unavailable (HTTP ${resp.status})</div>`;
           return;
         }
-        events = await resp.json();
+        const text = await resp.text();
+        doc = new DOMParser().parseFromString(text, 'application/xml');
       } catch (e) {
-        console.error('activity feed error', e);
+        console.error('activity rss error', e);
         feed.innerHTML = `<div style="padding:24px;text-align:center;color:#8b949e">Could not load activity</div>`;
         return;
       }
 
-      if (!events || events.length === 0) {
+      const items = Array.from(doc.querySelectorAll('channel > item')).slice(0, 20);
+      if (items.length === 0) {
         feed.innerHTML = `<div style="padding:24px;text-align:center;color:#8b949e">No public activity yet.</div>`;
         return;
       }
 
       feed.innerHTML = '';
-      for (const ev of events) {
-        const repoFull = ev.repo ? (ev.repo.full_name || ev.repo.name || '') : '';
-        const repoUrl = repoFull ? `${baseUrl}/${esc(repoFull)}` : '#';
-        const repoLink = repoFull ? `<a href="${repoUrl}">${esc(repoFull)}</a>` : 'unknown repo';
-        const op = ev.op_type || '';
-        const icon = opIcon[op] || '⚡';
-        const when = timeAgo(ev.created);
+      for (const item of items) {
+        const title = item.querySelector('title')?.textContent || '';
+        const link  = item.querySelector('link')?.textContent || '#';
+        const pubDate = item.querySelector('pubDate')?.textContent || '';
+        const description = item.querySelector('description')?.textContent || '';
+        const when = pubDate ? timeAgo(pubDate) : '';
 
-        let headline = '';
+        // Guess icon from title
+        let icon = '⚡';
+        const t = title.toLowerCase();
+        if (t.includes('push') || t.includes('commit')) icon = '📤';
+        else if (t.includes('creat') && t.includes('repo')) icon = '📁';
+        else if (t.includes('fork')) icon = '🍴';
+        else if (t.includes('open') && t.includes('issue')) icon = '🔴';
+        else if (t.includes('clos') && t.includes('issue')) icon = '🟢';
+        else if (t.includes('pull request') || t.includes('merge')) icon = '🔀';
+        else if (t.includes('tag')) icon = '🏷️';
+        else if (t.includes('branch')) icon = '🌿';
+        else if (t.includes('comment')) icon = '💬';
+        else if (t.includes('release')) icon = '🚀';
+
+        // Extract commit lines from description HTML
         let commitsHtml = '';
-
-        if (op === 'commit' || op === 'push' || op === 'mirror_sync_push') {
-          let branch = ev.ref_name || '';
-          if (branch.startsWith('refs/heads/')) branch = branch.slice(11);
-          const branchUrl = branch ? `${repoUrl}/src/branch/${esc(branch)}` : repoUrl;
-          headline = `Pushed to <a href="${branchUrl}">${esc(branch) || 'branch'}</a> in ${repoLink}`;
-          let commits = [];
-          try {
-            const c = typeof ev.content === 'string' ? JSON.parse(ev.content) : (ev.content || {});
-            commits = c.Commits || [];
-          } catch(_) {}
-          if (commits.length > 0) {
-            commitsHtml = '<div class="activity-commits">' +
-              commits.slice(0, 3).map(c => {
-                const sha = (c.Sha1 || '').slice(0, 7);
-                const msg = esc((c.Message || '').split('\n')[0]);
-                return `<div class="activity-commit-line">
-                  <a class="activity-commit-sha" href="${repoUrl}/commit/${esc(c.Sha1 || '')}">${sha}</a>
-                  <span class="activity-commit-text">${msg}</span>
-                </div>`;
-              }).join('') +
-              (commits.length > 3 ? `<div class="activity-commit-line" style="color:#484f58">+${commits.length - 3} more</div>` : '') +
-              '</div>';
-          }
-        } else if (op === 'create_repo') {
-          headline = `Created repository ${repoLink}`;
-        } else if (op === 'fork') {
-          headline = `Forked ${repoLink}`;
-        } else if (op === 'open_issue') {
-          headline = `Opened an issue in ${repoLink}`;
-        } else if (op === 'close_issue') {
-          headline = `Closed an issue in ${repoLink}`;
-        } else if (op === 'open_pull_request') {
-          headline = `Opened a pull request in ${repoLink}`;
-        } else if (op === 'merge_pull_request') {
-          headline = `Merged a pull request in ${repoLink}`;
-        } else if (op === 'create_branch') {
-          headline = `Created a branch in ${repoLink}`;
-        } else if (op === 'create_tag') {
-          headline = `Created a tag in ${repoLink}`;
-        } else {
-          headline = `Activity in ${repoLink}`;
+        const descDoc = new DOMParser().parseFromString(description, 'text/html');
+        const commitEls = descDoc.querySelectorAll('li');
+        if (commitEls.length > 0) {
+          commitsHtml = '<div class="activity-commits">' +
+            Array.from(commitEls).slice(0, 3).map(li => {
+              const anchor = li.querySelector('a');
+              const sha = anchor ? esc(anchor.textContent.trim().slice(0, 7)) : '';
+              const shaHref = anchor ? esc(anchor.getAttribute('href') || '#') : '#';
+              const msg = esc(li.textContent.replace(anchor?.textContent || '', '').trim().replace(/^[-–:]\s*/, ''));
+              return `<div class="activity-commit-line">
+                ${sha ? `<a class="activity-commit-sha" href="${shaHref}">${sha}</a>` : ''}
+                <span class="activity-commit-text">${msg}</span>
+              </div>`;
+            }).join('') +
+            (commitEls.length > 3 ? `<div class="activity-commit-line" style="color:#484f58">+${commitEls.length - 3} more</div>` : '') +
+            '</div>';
         }
 
-        const item = document.createElement('div');
-        item.className = 'activity-item';
-        item.innerHTML = `
+        const el = document.createElement('div');
+        el.className = 'activity-item';
+        el.innerHTML = `
           <div class="activity-op-icon">${icon}</div>
           <div class="activity-body">
-            <div class="activity-headline">${headline}</div>
+            <div class="activity-headline"><a href="${esc(link)}">${esc(title)}</a></div>
             ${commitsHtml}
           </div>
           <span class="activity-time">${when}</span>
         `;
-        feed.appendChild(item);
+        feed.appendChild(el);
       }
     })();
