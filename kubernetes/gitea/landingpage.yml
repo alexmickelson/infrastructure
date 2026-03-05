@@ -34,6 +34,21 @@ data:
         </div>
       </section>
 
+      <section class="activity-section">
+        <div class="section-header">
+          <h2>Recent Activity</h2>
+          <span class="subtitle">What Alex has been up to</span>
+          <a href="/alex" class="view-all-link">View full profile →</a>
+        </div>
+        <div id="activity-feed" class="activity-feed">
+          <div class="skeleton-activity"></div>
+          <div class="skeleton-activity"></div>
+          <div class="skeleton-activity"></div>
+          <div class="skeleton-activity"></div>
+          <div class="skeleton-activity"></div>
+        </div>
+      </section>
+
     </div>
     <script>
       window.GITEA_APP_URL = "{{AppUrl}}";
@@ -243,6 +258,103 @@ data:
       font-size: 0.95rem;
     }
 
+    /* Activity section */
+    .activity-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+    .view-all-link {
+      font-size: 0.85rem;
+      color: #58a6ff;
+      text-decoration: none;
+      margin-left: auto;
+    }
+    .view-all-link:hover { text-decoration: underline; }
+    .activity-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border: 1px solid #21262d;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .skeleton-activity {
+      height: 52px;
+      background: linear-gradient(90deg, #161b22 25%, #21262d 50%, #161b22 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-top: 1px solid #0d1117;
+    }
+    .skeleton-activity:first-child { border-top: none; }
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 16px;
+      background: #161b22;
+      border-top: 1px solid #21262d;
+      font-size: 0.875rem;
+      transition: background 0.15s;
+    }
+    .activity-item:first-child { border-top: none; }
+    .activity-item:hover { background: #1c2128; }
+    .activity-op-icon {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #21262d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      margin-top: 1px;
+    }
+    .activity-body { flex: 1; min-width: 0; }
+    .activity-headline { color: #e6edf3; line-height: 1.5; }
+    .activity-headline a {
+      color: #58a6ff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .activity-headline a:hover { text-decoration: underline; }
+    .activity-commits {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .activity-commit-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: #8b949e;
+      overflow: hidden;
+    }
+    .activity-commit-sha {
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: #58a6ff;
+      flex-shrink: 0;
+      text-decoration: none;
+    }
+    .activity-commit-sha:hover { text-decoration: underline; }
+    .activity-commit-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .activity-time {
+      flex-shrink: 0;
+      font-size: 0.78rem;
+      color: #484f58;
+      margin-left: auto;
+      padding-left: 12px;
+      white-space: nowrap;
+    }
+
   custom-landing.js: |
     (async function () {
       const grid = document.getElementById('repo-grid');
@@ -370,4 +482,125 @@ data:
       }
 
       loadRepos();
+    })();
+
+    (async function loadActivity() {
+      const feed = document.getElementById('activity-feed');
+      if (!feed) return;
+      const baseUrl = window.GITEA_SUB_URL || '';
+      const username = 'alex';
+
+      function timeAgo(dateStr) {
+        const diff = (Date.now() - new Date(dateStr)) / 1000;
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+        if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+        if (diff < 2592000) return Math.floor(diff / 86400) + 'd ago';
+        if (diff < 31536000) return Math.floor(diff / 2592000) + 'mo ago';
+        return Math.floor(diff / 31536000) + 'y ago';
+      }
+      function esc(str) {
+        return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      }
+
+      const opIcon = {
+        commit:'📝', push:'📤', mirror_sync_push:'🔄',
+        create_repo:'📁', fork:'🍴',
+        open_issue:'🔴', close_issue:'🟢', reopen_issue:'🔴',
+        comment_issue:'💬', comment_pull:'💬',
+        open_pull_request:'🔀', close_pull_request:'🔀',
+        merge_pull_request:'✅', approve_pull_request:'✅',
+        create_branch:'🌿', delete_branch:'🌿',
+        create_tag:'🏷️', delete_tag:'🏷️',
+      };
+
+      let events;
+      try {
+        const resp = await fetch(
+          `${baseUrl}/api/v1/users/${username}/activities/feeds?only-performed-by=true&limit=20`,
+          { credentials: 'include' }
+        );
+        if (!resp.ok) {
+          feed.innerHTML = `<div style="padding:24px;text-align:center;color:#8b949e">Activity unavailable (HTTP ${resp.status})</div>`;
+          return;
+        }
+        events = await resp.json();
+      } catch (e) {
+        console.error('activity feed error', e);
+        feed.innerHTML = `<div style="padding:24px;text-align:center;color:#8b949e">Could not load activity</div>`;
+        return;
+      }
+
+      if (!events || events.length === 0) {
+        feed.innerHTML = `<div style="padding:24px;text-align:center;color:#8b949e">No public activity yet.</div>`;
+        return;
+      }
+
+      feed.innerHTML = '';
+      for (const ev of events) {
+        const repoFull = ev.repo ? (ev.repo.full_name || ev.repo.name || '') : '';
+        const repoUrl = repoFull ? `${baseUrl}/${esc(repoFull)}` : '#';
+        const repoLink = repoFull ? `<a href="${repoUrl}">${esc(repoFull)}</a>` : 'unknown repo';
+        const op = ev.op_type || '';
+        const icon = opIcon[op] || '⚡';
+        const when = timeAgo(ev.created);
+
+        let headline = '';
+        let commitsHtml = '';
+
+        if (op === 'commit' || op === 'push' || op === 'mirror_sync_push') {
+          let branch = ev.ref_name || '';
+          if (branch.startsWith('refs/heads/')) branch = branch.slice(11);
+          const branchUrl = branch ? `${repoUrl}/src/branch/${esc(branch)}` : repoUrl;
+          headline = `Pushed to <a href="${branchUrl}">${esc(branch) || 'branch'}</a> in ${repoLink}`;
+          let commits = [];
+          try {
+            const c = typeof ev.content === 'string' ? JSON.parse(ev.content) : (ev.content || {});
+            commits = c.Commits || [];
+          } catch(_) {}
+          if (commits.length > 0) {
+            commitsHtml = '<div class="activity-commits">' +
+              commits.slice(0, 3).map(c => {
+                const sha = (c.Sha1 || '').slice(0, 7);
+                const msg = esc((c.Message || '').split('\n')[0]);
+                return `<div class="activity-commit-line">
+                  <a class="activity-commit-sha" href="${repoUrl}/commit/${esc(c.Sha1 || '')}">${sha}</a>
+                  <span class="activity-commit-text">${msg}</span>
+                </div>`;
+              }).join('') +
+              (commits.length > 3 ? `<div class="activity-commit-line" style="color:#484f58">+${commits.length - 3} more</div>` : '') +
+              '</div>';
+          }
+        } else if (op === 'create_repo') {
+          headline = `Created repository ${repoLink}`;
+        } else if (op === 'fork') {
+          headline = `Forked ${repoLink}`;
+        } else if (op === 'open_issue') {
+          headline = `Opened an issue in ${repoLink}`;
+        } else if (op === 'close_issue') {
+          headline = `Closed an issue in ${repoLink}`;
+        } else if (op === 'open_pull_request') {
+          headline = `Opened a pull request in ${repoLink}`;
+        } else if (op === 'merge_pull_request') {
+          headline = `Merged a pull request in ${repoLink}`;
+        } else if (op === 'create_branch') {
+          headline = `Created a branch in ${repoLink}`;
+        } else if (op === 'create_tag') {
+          headline = `Created a tag in ${repoLink}`;
+        } else {
+          headline = `Activity in ${repoLink}`;
+        }
+
+        const item = document.createElement('div');
+        item.className = 'activity-item';
+        item.innerHTML = `
+          <div class="activity-op-icon">${icon}</div>
+          <div class="activity-body">
+            <div class="activity-headline">${headline}</div>
+            ${commitsHtml}
+          </div>
+          <span class="activity-time">${when}</span>
+        `;
+        feed.appendChild(item);
+      }
     })();
