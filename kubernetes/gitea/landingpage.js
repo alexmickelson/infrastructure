@@ -87,9 +87,10 @@
     card.href = esc(repoUrl);
     card.innerHTML = `
       <div class="repo-card-header">
+        <span class="repo-icon">📦</span>
         <span class="repo-name">${esc(shortName)}</span>
       </div>
-      <div class="repo-desc" style="color:#8b949e;font-size:0.85em">${esc(repoName)}</div>
+      <div class="repo-desc">${esc(repoName)}</div>
       <div class="repo-commit">
         <span class="commit-dot"></span>
         <span class="commit-msg">${esc(commitMsg)}</span>
@@ -147,9 +148,12 @@
     const description = item.querySelector('description')?.textContent || '';
     const when = pubDate ? timeAgo(pubDate) : '';
 
-    // Strip HTML from title for plain text display
+    // Parse title HTML — Gitea only puts <a> tags in it, safe to use as innerHTML
     const titleDoc = new DOMParser().parseFromString(title, 'text/html');
     const titleText = titleDoc.body.textContent || title;
+    // Preserve links but strip any unsafe tags (only <a> expected from Gitea)
+    titleDoc.body.querySelectorAll('*:not(a)').forEach(el => el.replaceWith(el.textContent));
+    const titleHtmlSafe = titleDoc.body.innerHTML;
 
     let icon = '⚡';
     const t = titleText.toLowerCase();
@@ -192,7 +196,7 @@
     el.innerHTML = `
       <div class="activity-op-icon">${icon}</div>
       <div class="activity-body">
-        <div class="activity-headline"><a href="${esc(link)}">${esc(titleText)}</a></div>
+        <div class="activity-headline">${titleHtmlSafe}</div>
         ${commitsHtml}
       </div>
       <span class="activity-time">${when}</span>
