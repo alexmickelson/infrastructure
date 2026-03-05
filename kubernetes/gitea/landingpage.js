@@ -1,11 +1,17 @@
+const baseUrl = window.GITEA_SUB_URL || "";
 const httpService = {
-  baseUrl: window.GITEA_SUB_URL || "",
 
   async fetchRss() {
-    const resp = await fetch(`${this.baseUrl}/alex.rss`);
+    const resp = await fetch(`${baseUrl}/alex.rss`);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const text = await resp.text();
     return new DOMParser().parseFromString(text, "application/xml");
+  },
+
+  async fetchHeatmap(username = "alex") {
+    const resp = await fetch(`${baseUrl}/api/v1/users/${username}/heatmap`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    return resp.json(); // [{timestamp: unix_seconds, contributions: number}]
   },
 };
 
@@ -94,7 +100,7 @@ const dataDomain = {
           : repoName,
         pubDate: item.querySelector("pubDate")?.textContent || "",
         firstCommit:
-          this.parseCommits(
+          dataDomain.parseCommits(
             item.querySelector("description")?.textContent || "",
           )[0] || null,
       });
@@ -120,14 +126,14 @@ const dataDomain = {
       .slice(0, limit)
       .map((item) => {
         const rawTitle = item.querySelector("title")?.textContent || "";
-        const titleText = this.titlePlainText(rawTitle);
+        const titleText = dataDomain.titlePlainText(rawTitle);
         return {
-          titleHtmlSafe: this.safeTitleHtml(rawTitle),
+          titleHtmlSafe: dataDomain.safeTitleHtml(rawTitle),
           titleText,
           link: item.querySelector("link")?.textContent || "#",
           pubDate: item.querySelector("pubDate")?.textContent || "",
-          icon: this.activityIcon(titleText),
-          commits: this.parseCommits(
+          icon: dataDomain.activityIcon(titleText),
+          commits: dataDomain.parseCommits(
             item.querySelector("description")?.textContent || "",
           ).slice(0, 3),
         };
@@ -221,11 +227,25 @@ const uiRendering = {
     }
   },
 
-  activityMapRender(xmlDoc) {
+  async activityMapRender() {
     const container = document.getElementById("activity-heatmap");
     if (!container) return;
 
-    const counts = dataDomain.parseAllActivityDates(xmlDoc);
+    let heatmapData;
+    try {
+      heatmapData = await httpService.fetchHeatmap();
+    } catch (e) {
+      container.innerHTML = `<div class="error-msg">Could not load heatmap (${e.message})</div>`;
+      return;
+    }
+
+    // Build counts map from API data
+    const counts = new Map();
+    for (const { timestamp, contributions } of heatmapData) {
+      const d = new Date(timestamp * 1000);
+      const key = d.toISOString().slice(0, 10);
+      counts.set(key, (counts.get(key) || 0) + (contributions || 1));
+    }
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -245,7 +265,7 @@ const uiRendering = {
     const svgW = padLeft + cols * step;
     const svgH = padTop + rows * step;
 
-    const LEVELS = ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353"];
+    const LEVELS = ["#2d333b", "#0e4429", "#006d32", "#26a641", "#39d353"];
     const countToLevel = (n) =>
       n === 0 ? 0 : n === 1 ? 1 : n <= 3 ? 2 : n <= 6 ? 3 : 4;
 
@@ -356,9 +376,9 @@ const uiRendering = {
     try {
       const xmlDoc = await httpService.fetchRss();
       await Promise.all([
-        this.renderRepos(xmlDoc),
-        this.renderActivity(xmlDoc),
-        this.activityMapRender(xmlDoc),
+        uiRendering.renderRepos(xmlDoc),
+        uiRendering.renderActivity(xmlDoc),
+        uiRendering.activityMapRender(),
       ]);
     } catch (e) {
       console.error("Gitea landing: RSS fetch failed", e);
