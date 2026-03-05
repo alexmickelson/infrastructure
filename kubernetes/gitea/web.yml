@@ -36,6 +36,8 @@ spec:
               value: wauiofnasufnweaiufbsdklfjb23456
             - name: GITEA__server__ROOT_URL
               value: "https://git.alexmickelson.guru/"
+            - name: GITEA__server__LOCAL_ROOT_URL
+              value: "http://gitea-gitea-web-svc.beefalo-newton.ts.net:3000/"
             - name: GITEA__server__SSH_DOMAIN
               value: "gitea-gitea-web-svc.beefalo-newton.ts.net"
             - name: GITEA__server__SSH_PORT
