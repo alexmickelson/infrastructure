@@ -37,6 +37,12 @@
   --text-xs: 0.75rem;
 }
 
+/* override gitea defaults */
+.page-content > #alex-landing:first-child {
+  margin-top: 0 !important;
+}
+
+
 #alex-landing {
   min-height: 100vh;
   background: var(--color-bg-page);
@@ -49,7 +55,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: var(--space-xl) var(--space-lg) 60px;
+  padding-top: var(--space-xl);
+  padding-right: var(--space-lg);
+  padding-bottom: 60px;
+  padding-left: var(--space-lg);
   text-align: center;
 }
 .hero-inner {
