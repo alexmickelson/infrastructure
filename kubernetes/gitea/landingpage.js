@@ -1,10 +1,16 @@
-(async function loadRepos() {
-  const grid = document.getElementById('repo-grid');
-  if (!grid) return;
+const httpService = {
+  baseUrl: window.GITEA_SUB_URL || '',
 
-  const baseUrl = window.GITEA_SUB_URL || '';
+  async fetchRss() {
+    const resp = await fetch(`${this.baseUrl}/alex.rss`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const text = await resp.text();
+    return new DOMParser().parseFromString(text, 'application/xml');
+  },
+};
 
-  function timeAgo(dateStr) {
+const dataDomain = {
+  timeAgo(dateStr) {
     const diff = (Date.now() - new Date(dateStr)) / 1000;
     if (diff < 60) return 'just now';
     if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
@@ -12,195 +18,193 @@
     if (diff < 2592000) return Math.floor(diff / 86400) + 'd ago';
     if (diff < 31536000) return Math.floor(diff / 2592000) + 'mo ago';
     return Math.floor(diff / 31536000) + 'y ago';
-  }
+  },
 
-  function esc(str) {
-    return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
+  esc(str) {
+    return (str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  },
 
-  let doc;
-  try {
-    const resp = await fetch(`${baseUrl}/alex.rss`);
-    if (!resp.ok) {
-      grid.innerHTML = `<div class="error-msg">Could not load feed (HTTP ${resp.status}). <a href="${baseUrl}/explore/repos" style="color:#58a6ff">Browse manually →</a></div>`;
-      return;
-    }
-    const text = await resp.text();
-    doc = new DOMParser().parseFromString(text, 'application/xml');
-  } catch (e) {
-    console.error('Gitea landing: RSS fetch failed', e);
-    grid.innerHTML = `<div class="error-msg">Could not load repositories. <a href="${baseUrl}/explore/repos" style="color:#58a6ff">Browse manually →</a></div>`;
-    return;
-  }
+  safeTitleHtml(rawTitleText) {
+    const doc = new DOMParser().parseFromString(rawTitleText, 'text/html');
+    doc.body.querySelectorAll('*:not(a)').forEach(el => el.replaceWith(el.textContent));
+    return doc.body.innerHTML;
+  },
 
-  const items = Array.from(doc.querySelectorAll('channel > item'));
-  if (items.length === 0) {
-    grid.innerHTML = `<div class="error-msg">No activity found.</div>`;
-    return;
-  }
+  titlePlainText(rawTitleText) {
+    const doc = new DOMParser().parseFromString(rawTitleText, 'text/html');
+    return doc.body.textContent || rawTitleText;
+  },
 
-  // Deduplicate: one card per repo (most recent entry wins)
-  const seen = new Map();
-  for (const item of items) {
-    const titleHtml = item.querySelector('title')?.textContent || '';
-    const titleDoc = new DOMParser().parseFromString(titleHtml, 'text/html');
-    const anchors = titleDoc.querySelectorAll('a');
-    if (anchors.length < 2) continue;
-    // last anchor in the title is the repo link
-    const repoAnchor = anchors[anchors.length - 1];
-    const repoName = repoAnchor.textContent.trim();
-    if (!repoName || seen.has(repoName)) continue;
-    seen.set(repoName, { repoName, repoUrl: repoAnchor.getAttribute('href') || '#', item });
-  }
+  activityIcon(titleText) {
+    const t = titleText.toLowerCase();
+    if (t.includes('push') || t.includes('commit')) return '📤';
+    if (t.includes('creat') && t.includes('repo')) return '📁';
+    if (t.includes('fork')) return '🍴';
+    if (t.includes('open') && t.includes('issue')) return '🔴';
+    if (t.includes('clos') && t.includes('issue')) return '🟢';
+    if (t.includes('pull request') || t.includes('merge')) return '🔀';
+    if (t.includes('tag')) return '🏷️';
+    if (t.includes('branch')) return '🌿';
+    if (t.includes('comment')) return '💬';
+    if (t.includes('release')) return '🚀';
+    return '⚡';
+  },
 
-  if (seen.size === 0) {
-    grid.innerHTML = `<div class="error-msg">No repositories found in feed.</div>`;
-    return;
-  }
-
-  grid.innerHTML = '';
-  for (const { repoName, repoUrl, item } of seen.values()) {
-    const pubDate = item.querySelector('pubDate')?.textContent || '';
-    const description = item.querySelector('description')?.textContent || '';
-    const when = pubDate ? timeAgo(pubDate) : '';
-
-    // Parse first commit from description: <a href="commit-url">sha</a>\ncommit message
-    const descDoc = new DOMParser().parseFromString(description, 'text/html');
-    const firstAnchor = descDoc.querySelector('a');
-    let commitMsg = '';
-    let commitUrl = '#';
-    if (firstAnchor) {
-      commitUrl = firstAnchor.getAttribute('href') || '#';
-      let node = firstAnchor.nextSibling;
+  parseCommits(descriptionText) {
+    const doc = new DOMParser().parseFromString(descriptionText, 'text/html');
+    return Array.from(doc.querySelectorAll('a')).map(anchor => {
+      const sha = anchor.textContent.trim().slice(0, 7);
+      const href = anchor.getAttribute('href') || '#';
+      let msg = '';
+      let node = anchor.nextSibling;
       while (node) {
         const t = (node.textContent || '').trim();
-        if (t) { commitMsg = t; break; }
+        if (t) { msg = t; break; }
         node = node.nextSibling;
       }
-      if (!commitMsg) commitMsg = firstAnchor.textContent.trim().slice(0, 7);
+      return { sha, href, msg };
+    });
+  },
+
+  parseRepos(xmlDoc) {
+    const items = Array.from(xmlDoc.querySelectorAll('channel > item'));
+    const seen = new Map();
+    for (const item of items) {
+      const titleHtml = item.querySelector('title')?.textContent || '';
+      const titleDoc = new DOMParser().parseFromString(titleHtml, 'text/html');
+      const anchors = titleDoc.querySelectorAll('a');
+      if (anchors.length < 2) continue;
+      const repoAnchor = anchors[anchors.length - 1];
+      const repoName = repoAnchor.textContent.trim();
+      if (!repoName || seen.has(repoName)) continue;
+      seen.set(repoName, {
+        repoName,
+        repoUrl: repoAnchor.getAttribute('href') || '#',
+        shortName: repoName.includes('/') ? repoName.split('/').pop() : repoName,
+        pubDate: item.querySelector('pubDate')?.textContent || '',
+        firstCommit: this.parseCommits(item.querySelector('description')?.textContent || '')[0] || null,
+      });
     }
+    return Array.from(seen.values());
+  },
 
-    const shortName = repoName.includes('/') ? repoName.split('/').pop() : repoName;
+  parseActivity(xmlDoc, limit = 20) {
+    return Array.from(xmlDoc.querySelectorAll('channel > item'))
+      .slice(0, limit)
+      .map(item => {
+        const rawTitle = item.querySelector('title')?.textContent || '';
+        const titleText = this.titlePlainText(rawTitle);
+        return {
+          titleHtmlSafe: this.safeTitleHtml(rawTitle),
+          titleText,
+          link: item.querySelector('link')?.textContent || '#',
+          pubDate: item.querySelector('pubDate')?.textContent || '',
+          icon: this.activityIcon(titleText),
+          commits: this.parseCommits(item.querySelector('description')?.textContent || '').slice(0, 3),
+        };
+      });
+  },
+};
 
-    const card = document.createElement('a');
-    card.className = 'repo-card';
-    card.href = esc(repoUrl);
-    card.innerHTML = `
-      <div class="repo-card-header">
-        <span class="repo-icon">📦</span>
-        <span class="repo-name">${esc(shortName)}</span>
-      </div>
-      <div class="repo-desc">${esc(repoName)}</div>
-      <div class="repo-commit">
-        <span class="commit-dot"></span>
-        <span class="commit-msg">${esc(commitMsg)}</span>
-        <span class="commit-time">${esc(when)}</span>
-      </div>
-    `.trim();
-    grid.appendChild(card);
-  }
-})();
+const uiRendering = {
+  async renderRepos(xmlDoc) {
+    const grid = document.getElementById('repo-grid');
+    if (!grid) return;
 
-(async function loadActivity() {
-  const feed = document.getElementById('activity-feed');
-  if (!feed) return;
-  const baseUrl = window.GITEA_SUB_URL || '';
 
-  function timeAgo(dateStr) {
-    const diff = (Date.now() - new Date(dateStr)) / 1000;
-    if (diff < 60) return 'just now';
-    if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
-    if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
-    if (diff < 2592000) return Math.floor(diff / 86400) + 'd ago';
-    if (diff < 31536000) return Math.floor(diff / 2592000) + 'mo ago';
-    return Math.floor(diff / 31536000) + 'y ago';
-  }
-  function esc(str) {
-    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  let doc;
-  try {
-    const resp = await fetch(`${baseUrl}/alex.rss`);
-    if (!resp.ok) {
-      feed.innerHTML = `<div style="padding:24px;text-align:center;color:#8b949e">Activity unavailable (HTTP ${resp.status})</div>`;
+    const repos = dataDomain.parseRepos(xmlDoc);
+    if (repos.length === 0) {
+      grid.innerHTML = `<div class="error-msg">No repositories found in feed.</div>`;
       return;
     }
-    const text = await resp.text();
-    doc = new DOMParser().parseFromString(text, 'application/xml');
-  } catch (e) {
-    console.error('activity rss error', e);
-    feed.innerHTML = `<div style="padding:24px;text-align:center;color:#8b949e">Could not load activity</div>`;
-    return;
-  }
 
-  const items = Array.from(doc.querySelectorAll('channel > item')).slice(0, 20);
-  if (items.length === 0) {
-    feed.innerHTML = `<div style="padding:24px;text-align:center;color:#8b949e">No public activity yet.</div>`;
-    return;
-  }
+    grid.innerHTML = '';
+    for (const { shortName, repoName, repoUrl, pubDate, firstCommit } of repos) {
+      const when = dataDomain.timeAgo(pubDate);
+      const commitMsg = firstCommit?.msg || firstCommit?.sha || '';
 
-  feed.innerHTML = '';
-  for (const item of items) {
-    const title = item.querySelector('title')?.textContent || '';
-    const link  = item.querySelector('link')?.textContent || '#';
-    const pubDate = item.querySelector('pubDate')?.textContent || '';
-    const description = item.querySelector('description')?.textContent || '';
-    const when = pubDate ? timeAgo(pubDate) : '';
+      const card = document.createElement('a');
+      card.className = 'repo-card';
+      card.href = dataDomain.esc(repoUrl);
+      card.innerHTML = `
+        <div class="repo-card-header">
+          <span class="repo-icon">📦</span>
+          <span class="repo-name">${dataDomain.esc(shortName)}</span>
+        </div>
+        <div class="repo-desc">${dataDomain.esc(repoName)}</div>
+        <div class="repo-commit">
+          <span class="commit-dot"></span>
+          <span class="commit-msg">${dataDomain.esc(commitMsg)}</span>
+          <span class="commit-time">${dataDomain.esc(when)}</span>
+        </div>
+      `.trim();
+      grid.appendChild(card);
+    }
+  },
 
-    // Parse title HTML — Gitea only puts <a> tags in it, safe to use as innerHTML
-    const titleDoc = new DOMParser().parseFromString(title, 'text/html');
-    const titleText = titleDoc.body.textContent || title;
-    // Preserve links but strip any unsafe tags (only <a> expected from Gitea)
-    titleDoc.body.querySelectorAll('*:not(a)').forEach(el => el.replaceWith(el.textContent));
-    const titleHtmlSafe = titleDoc.body.innerHTML;
+  async renderActivity(xmlDoc) {
+    const feed = document.getElementById('activity-feed');
+    if (!feed) return;
 
-    let icon = '⚡';
-    const t = titleText.toLowerCase();
-    if (t.includes('push') || t.includes('commit')) icon = '📤';
-    else if (t.includes('creat') && t.includes('repo')) icon = '📁';
-    else if (t.includes('fork')) icon = '🍴';
-    else if (t.includes('open') && t.includes('issue')) icon = '🔴';
-    else if (t.includes('clos') && t.includes('issue')) icon = '🟢';
-    else if (t.includes('pull request') || t.includes('merge')) icon = '🔀';
-    else if (t.includes('tag')) icon = '🏷️';
-    else if (t.includes('branch')) icon = '🌿';
-    else if (t.includes('comment')) icon = '💬';
-    else if (t.includes('release')) icon = '🚀';
-
-    // Parse commits from description: <a href="commit-url">sha</a>\ncommit message\n\n...
-    let commitsHtml = '';
-    const descDoc = new DOMParser().parseFromString(description, 'text/html');
-    const commitAnchors = Array.from(descDoc.querySelectorAll('a')).slice(0, 3);
-    if (commitAnchors.length > 0) {
-      const lines = commitAnchors.map(anchor => {
-        const sha = esc(anchor.textContent.trim().slice(0, 7));
-        const shaHref = esc(anchor.getAttribute('href') || '#');
-        let msg = '';
-        let node = anchor.nextSibling;
-        while (node) {
-          const t = (node.textContent || '').trim();
-          if (t) { msg = esc(t); break; }
-          node = node.nextSibling;
-        }
-        return `<div class="activity-commit-line">
-          <a class="activity-commit-sha" href="${shaHref}">${sha}</a>
-          <span class="activity-commit-text">${msg}</span>
-        </div>`;
-      }).join('');
-      commitsHtml = `<div class="activity-commits">${lines}</div>`;
+    const items = dataDomain.parseActivity(xmlDoc);
+    if (items.length === 0) {
+      feed.innerHTML = `<div class="error-msg">No public activity yet.</div>`;
+      return;
     }
 
-    const el = document.createElement('div');
-    el.className = 'activity-item';
-    el.innerHTML = `
-      <div class="activity-op-icon">${icon}</div>
-      <div class="activity-body">
-        <div class="activity-headline">${titleHtmlSafe}</div>
-        ${commitsHtml}
-      </div>
-      <span class="activity-time">${when}</span>
-    `;
-    feed.appendChild(el);
-  }
-})();
+    feed.innerHTML = '';
+    for (const { titleHtmlSafe, icon, pubDate, commits } of items) {
+      const when = dataDomain.timeAgo(pubDate);
+
+      const commitsHtml = commits.length === 0 ? '' :
+        `<div class="activity-commits">` +
+        commits.map(({ sha, href, msg }) => `
+          <div class="activity-commit-line">
+            <a class="activity-commit-sha" href="${dataDomain.esc(href)}">${dataDomain.esc(sha)}</a>
+            <span class="activity-commit-text">${dataDomain.esc(msg)}</span>
+          </div>`).join('') +
+        `</div>`;
+
+      const el = document.createElement('div');
+      el.className = 'activity-item';
+      el.innerHTML = `
+        <div class="activity-op-icon">${icon}</div>
+        <div class="activity-body">
+          <div class="activity-headline-row">
+            <div class="activity-headline">${titleHtmlSafe}</div>
+            <span class="activity-time">${when}</span>
+          </div>
+          ${commitsHtml}
+        </div>
+      `;
+      feed.appendChild(el);
+    }
+  },
+
+  async render() {
+    const baseUrl = httpService.baseUrl;
+
+    let xmlDoc;
+    try {
+      xmlDoc = await httpService.fetchRss();
+    } catch (e) {
+      console.error('Gitea landing: RSS fetch failed', e);
+      const grid = document.getElementById('repo-grid');
+      const feed = document.getElementById('activity-feed');
+      if (grid) grid.innerHTML = `<div class="error-msg">Could not load feed (${e.message}). <a href="${baseUrl}/explore/repos" style="color:#58a6ff">Browse manually →</a></div>`;
+      if (feed) feed.innerHTML = `<div class="error-msg">Could not load activity (${e.message})</div>`;
+      return;
+    }
+
+    await Promise.all([
+      this.renderRepos(xmlDoc),
+      this.renderActivity(xmlDoc),
+    ]);
+  },
+};
+
+document.addEventListener('DOMContentLoaded', () => uiRendering.render());
