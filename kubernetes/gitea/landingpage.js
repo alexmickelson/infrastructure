@@ -1,4 +1,4 @@
-(async function () {
+(async function loadRepos() {
   const grid = document.getElementById('repo-grid');
   if (!grid) return;
 
@@ -14,113 +14,90 @@
     return Math.floor(diff / 31536000) + 'y ago';
   }
 
-  function escapeHtml(str) {
-    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  function esc(str) {
+    return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  function langDot(lang) {
-    const colors = {
-      Go:'#00ADD8', Python:'#3572A5', JavaScript:'#f1e05a', TypeScript:'#2b7489',
-      Rust:'#dea584', Java:'#b07219', 'C#':'#178600', Nix:'#7e7eff',
-      Shell:'#89e051', HTML:'#e34c26', CSS:'#563d7c', Elixir:'#6e4a7e',
-    };
-    return colors[lang]
-      ? `<span style="width:10px;height:10px;border-radius:50%;background:${colors[lang]};display:inline-block;flex-shrink:0"></span>`
-      : '📦';
-  }
-
-  async function fetchJson(url) {
-    const resp = await fetch(url, { credentials: 'include' });
-    if (!resp.ok) throw new Error(resp.status);
-    return resp.json();
-  }
-
-  async function getLatestCommit(repo) {
-    try {
-      const commits = await fetchJson(
-        `${baseUrl}/api/v1/repos/${encodeURIComponent(repo.full_name)}/commits?limit=1&page=1`
-      );
-      if (commits && commits.length > 0) return commits[0];
-    } catch (_) {}
-    return null;
-  }
-
-  async function loadRepos() {
-    let repos;
-    try {
-      const resp = await fetch(`${baseUrl}/api/v1/repos/search?sort=updated&order=desc&limit=12`, {
-        credentials: 'include',
-      });
-      if (!resp.ok) {
-        const msg = resp.status === 401 || resp.status === 403
-          ? `Sign in to see repositories (HTTP ${resp.status})`
-          : `API error: HTTP ${resp.status}`;
-        grid.innerHTML = `<div class="error-msg">${msg}. <a href="${baseUrl}/explore/repos" style="color:#58a6ff">Browse manually →</a></div>`;
-        return;
-      }
-      const json = await resp.json();
-      repos = json.data || json;
-    } catch (e) {
-      console.error('Gitea landing: repo fetch failed', e);
-      grid.innerHTML = `<div class="error-msg">
-        Could not load repositories (${e.message}). <a href="${baseUrl}/explore/repos" style="color:#58a6ff">Browse manually →</a>
-      </div>`;
+  let doc;
+  try {
+    const resp = await fetch(`${baseUrl}/alex.rss`);
+    if (!resp.ok) {
+      grid.innerHTML = `<div class="error-msg">Could not load feed (HTTP ${resp.status}). <a href="${baseUrl}/explore/repos" style="color:#58a6ff">Browse manually →</a></div>`;
       return;
     }
-
-    if (!repos || repos.length === 0) {
-      grid.innerHTML = `<div class="error-msg">No public repositories found.</div>`;
-      return;
-    }
-
-    repos.sort((a, b) => new Date(b.updated) - new Date(a.updated));
-
-    grid.innerHTML = '';
-    for (const repo of repos) {
-      const card = document.createElement('a');
-      card.className = 'repo-card';
-      card.href = `${baseUrl}/${escapeHtml(repo.full_name)}`;
-      card.dataset.repoName = repo.full_name;
-      card.innerHTML = `
-        <div class="repo-card-header">
-          <span class="repo-icon">${langDot(repo.language)}</span>
-          <span class="repo-name">${escapeHtml(repo.name)}</span>
-          ${repo.private ? '<span class="repo-private">private</span>' : ''}
-        </div>
-        <div class="repo-desc">${escapeHtml(repo.description) || '<em style="color:#484f58">No description</em>'}</div>
-        <div class="repo-meta">
-          ${repo.language ? `<span>${langDot(repo.language)} ${escapeHtml(repo.language)}</span>` : ''}
-          <span>⭐ ${repo.stars_count || 0}</span>
-          <span>🍴 ${repo.forks_count || 0}</span>
-          <span>🕒 ${timeAgo(repo.updated)}</span>
-        </div>
-        <div class="repo-commit" id="commit-${CSS.escape(repo.full_name)}">
-          <span class="commit-dot"></span>
-          <span class="commit-msg" style="color:#484f58">loading commit…</span>
-        </div>
-      `.trim();
-      grid.appendChild(card);
-    }
-
-    await Promise.all(repos.map(async (repo) => {
-      const commit = await getLatestCommit(repo);
-      const el = document.getElementById(`commit-${CSS.escape(repo.full_name)}`);
-      if (!el) return;
-      if (commit) {
-        const msg = commit.commit?.message?.split('\n')[0] || '';
-        const when = timeAgo(commit.commit?.committer?.date || commit.created);
-        el.innerHTML = `
-          <span class="commit-dot"></span>
-          <span class="commit-msg">${escapeHtml(msg)}</span>
-          <span class="commit-time">${when}</span>
-        `;
-      } else {
-        el.innerHTML = `<span class="commit-dot" style="background:#484f58"></span><span class="commit-msg" style="color:#484f58">no commits visible</span>`;
-      }
-    }));
+    const text = await resp.text();
+    doc = new DOMParser().parseFromString(text, 'application/xml');
+  } catch (e) {
+    console.error('Gitea landing: RSS fetch failed', e);
+    grid.innerHTML = `<div class="error-msg">Could not load repositories. <a href="${baseUrl}/explore/repos" style="color:#58a6ff">Browse manually →</a></div>`;
+    return;
   }
 
-  loadRepos();
+  const items = Array.from(doc.querySelectorAll('channel > item'));
+  if (items.length === 0) {
+    grid.innerHTML = `<div class="error-msg">No activity found.</div>`;
+    return;
+  }
+
+  // Deduplicate: one card per repo (most recent entry wins)
+  const seen = new Map();
+  for (const item of items) {
+    const titleHtml = item.querySelector('title')?.textContent || '';
+    const titleDoc = new DOMParser().parseFromString(titleHtml, 'text/html');
+    const anchors = titleDoc.querySelectorAll('a');
+    if (anchors.length < 2) continue;
+    // last anchor in the title is the repo link
+    const repoAnchor = anchors[anchors.length - 1];
+    const repoName = repoAnchor.textContent.trim();
+    if (!repoName || seen.has(repoName)) continue;
+    seen.set(repoName, { repoName, repoUrl: repoAnchor.getAttribute('href') || '#', item });
+  }
+
+  if (seen.size === 0) {
+    grid.innerHTML = `<div class="error-msg">No repositories found in feed.</div>`;
+    return;
+  }
+
+  grid.innerHTML = '';
+  for (const { repoName, repoUrl, item } of seen.values()) {
+    const pubDate = item.querySelector('pubDate')?.textContent || '';
+    const description = item.querySelector('description')?.textContent || '';
+    const when = pubDate ? timeAgo(pubDate) : '';
+
+    // Parse first commit from description: <a href="commit-url">sha</a>\ncommit message
+    const descDoc = new DOMParser().parseFromString(description, 'text/html');
+    const firstAnchor = descDoc.querySelector('a');
+    let commitMsg = '';
+    let commitUrl = '#';
+    if (firstAnchor) {
+      commitUrl = firstAnchor.getAttribute('href') || '#';
+      let node = firstAnchor.nextSibling;
+      while (node) {
+        const t = (node.textContent || '').trim();
+        if (t) { commitMsg = t; break; }
+        node = node.nextSibling;
+      }
+      if (!commitMsg) commitMsg = firstAnchor.textContent.trim().slice(0, 7);
+    }
+
+    const shortName = repoName.includes('/') ? repoName.split('/').pop() : repoName;
+
+    const card = document.createElement('a');
+    card.className = 'repo-card';
+    card.href = esc(repoUrl);
+    card.innerHTML = `
+      <div class="repo-card-header">
+        <span class="repo-name">${esc(shortName)}</span>
+      </div>
+      <div class="repo-desc" style="color:#8b949e;font-size:0.85em">${esc(repoName)}</div>
+      <div class="repo-commit">
+        <span class="commit-dot"></span>
+        <span class="commit-msg">${esc(commitMsg)}</span>
+        <span class="commit-time">${esc(when)}</span>
+      </div>
+    `.trim();
+    grid.appendChild(card);
+  }
 })();
 
 (async function loadActivity() {
@@ -170,8 +147,12 @@
     const description = item.querySelector('description')?.textContent || '';
     const when = pubDate ? timeAgo(pubDate) : '';
 
+    // Strip HTML from title for plain text display
+    const titleDoc = new DOMParser().parseFromString(title, 'text/html');
+    const titleText = titleDoc.body.textContent || title;
+
     let icon = '⚡';
-    const t = title.toLowerCase();
+    const t = titleText.toLowerCase();
     if (t.includes('push') || t.includes('commit')) icon = '📤';
     else if (t.includes('creat') && t.includes('repo')) icon = '📁';
     else if (t.includes('fork')) icon = '🍴';
@@ -183,23 +164,27 @@
     else if (t.includes('comment')) icon = '💬';
     else if (t.includes('release')) icon = '🚀';
 
+    // Parse commits from description: <a href="commit-url">sha</a>\ncommit message\n\n...
     let commitsHtml = '';
     const descDoc = new DOMParser().parseFromString(description, 'text/html');
-    const commitEls = descDoc.querySelectorAll('li');
-    if (commitEls.length > 0) {
-      commitsHtml = '<div class="activity-commits">' +
-        Array.from(commitEls).slice(0, 3).map(li => {
-          const anchor = li.querySelector('a');
-          const sha = anchor ? esc(anchor.textContent.trim().slice(0, 7)) : '';
-          const shaHref = anchor ? esc(anchor.getAttribute('href') || '#') : '#';
-          const msg = esc(li.textContent.replace(anchor?.textContent || '', '').trim().replace(/^[-–:]\s*/, ''));
-          return `<div class="activity-commit-line">
-            ${sha ? `<a class="activity-commit-sha" href="${shaHref}">${sha}</a>` : ''}
-            <span class="activity-commit-text">${msg}</span>
-          </div>`;
-        }).join('') +
-        (commitEls.length > 3 ? `<div class="activity-commit-line" style="color:#484f58">+${commitEls.length - 3} more</div>` : '') +
-        '</div>';
+    const commitAnchors = Array.from(descDoc.querySelectorAll('a')).slice(0, 3);
+    if (commitAnchors.length > 0) {
+      const lines = commitAnchors.map(anchor => {
+        const sha = esc(anchor.textContent.trim().slice(0, 7));
+        const shaHref = esc(anchor.getAttribute('href') || '#');
+        let msg = '';
+        let node = anchor.nextSibling;
+        while (node) {
+          const t = (node.textContent || '').trim();
+          if (t) { msg = esc(t); break; }
+          node = node.nextSibling;
+        }
+        return `<div class="activity-commit-line">
+          <a class="activity-commit-sha" href="${shaHref}">${sha}</a>
+          <span class="activity-commit-text">${msg}</span>
+        </div>`;
+      }).join('');
+      commitsHtml = `<div class="activity-commits">${lines}</div>`;
     }
 
     const el = document.createElement('div');
@@ -207,7 +192,7 @@
     el.innerHTML = `
       <div class="activity-op-icon">${icon}</div>
       <div class="activity-body">
-        <div class="activity-headline"><a href="${esc(link)}">${esc(title)}</a></div>
+        <div class="activity-headline"><a href="${esc(link)}">${esc(titleText)}</a></div>
         ${commitsHtml}
       </div>
       <span class="activity-time">${when}</span>
