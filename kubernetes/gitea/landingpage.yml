@@ -406,7 +406,7 @@ data:
       async function loadRepos() {
         let repos;
         try {
-          const resp = await fetch(`${baseUrl}/api/v1/repos/search?sort=newest&order=desc&limit=12`, {
+          const resp = await fetch(`${baseUrl}/api/v1/repos/search?sort=updated&order=desc&limit=12`, {
             credentials: 'include',
           });
           if (!resp.ok) {
