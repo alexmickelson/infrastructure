@@ -34,17 +34,26 @@ spec:
               value: "gitea"
             - name: GITEA__database__PASSWD
               value: wauiofnasufnweaiufbsdklfjb23456
-            - name: GITEA__server__ROOT_URL
-              value: "https://git.alexmickelson.guru/"
+            - name: GITEA__server__PROTOCOL
+              value: "http"
+            - name: GITEA__server__DOMAIN
+              value: "git.alexmickelson.guru"
+            - name: GITEA__server__PUBLIC_URL_DETECTION
+              value: "auto"
             - name: GITEA__server__LOCAL_ROOT_URL
-              value: "http://gitea-gitea-web-svc.beefalo-newton.ts.net:3000/"
+              value: "http://gitea-web-svc.gitea.svc.cluster.local:3000/"
             - name: GITEA__server__SSH_DOMAIN
               value: "gitea-gitea-web-svc.beefalo-newton.ts.net"
             - name: GITEA__server__SSH_PORT
               value: "22"
+            # security
+            - name: GITEA__service__ENABLE_BASIC_AUTHENTICATION
+              value: "false"
             - name: GITEA__service__DISABLE_REGISTRATION
               value: "true"
             - name: GITEA__service__ALLOW_ONLY_EXTERNAL_REGISTRATION
+              value: "false"
+            - name: GITEA__openid__ENABLE_OPENID_SIGNIN
               value: "false"
             - name: GITEA__openid__ENABLE_OPENID_SIGNUP
               value: "false"
@@ -57,6 +66,18 @@ spec:
             - name: localtime
               mountPath: /etc/localtime
               readOnly: true
+            - name: landing-page
+              mountPath: /data/gitea/templates/home.tmpl
+              subPath: home.tmpl
+              readOnly: true
+            - name: landing-page
+              mountPath: /data/gitea/public/assets/css/custom-landing.css
+              subPath: custom-landing.css
+              readOnly: true
+            - name: landing-page
+              mountPath: /data/gitea/public/assets/js/custom-landing.js
+              subPath: custom-landing.js
+              readOnly: true
       volumes:
         - name: gitea-data
           hostPath:
@@ -68,6 +89,9 @@ spec:
         - name: localtime
           hostPath:
             path: /etc/localtime
+        - name: landing-page
+          configMap:
+            name: gitea-landing-page
 
 ---
 apiVersion: v1

@@ -1,0 +1,391 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitea-landing-page
+  namespace: gitea
+data:
+  home.tmpl: |
+    {{template "base/head" .}}
+    <link rel="stylesheet" href="{{AppSubUrl}}/assets/css/custom-landing.css">
+    <div class="page-content home" id="alex-landing">
+
+      <section class="hero">
+        <div class="hero-inner">
+          <div class="avatar-ring">
+            <span class="initials">AM</span>
+          </div>
+          <h1>Alex Mickelson</h1>
+          <p class="tagline">Software engineer. Builder of useful things. Probably over-engineering something right now.</p>
+          <div class="hero-links">
+            <a href="/explore/repos" class="btn-primary">Browse All Projects</a>
+            <a href="/user/login" class="btn-ghost">Sign In</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="projects-section">
+        <div class="section-header">
+          <h2>Recent Projects</h2>
+          <span class="subtitle">Latest commits across all repositories</span>
+        </div>
+        <div id="repo-grid" class="repo-grid">
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+        </div>
+      </section>
+
+    </div>
+    <script>
+      window.GITEA_APP_URL = "{{AppUrl}}";
+      window.GITEA_SUB_URL = "{{AppSubUrl}}";
+    </script>
+    <script src="{{AppSubUrl}}/assets/js/custom-landing.js"></script>
+    {{template "base/footer" .}}
+
+  custom-landing.css: |
+    #alex-landing {
+      min-height: 100vh;
+      background: #0d1117;
+      color: #e6edf3;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* Hero */
+    .hero {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 80px 24px 60px;
+      text-align: center;
+    }
+    .hero-inner {
+      max-width: 640px;
+    }
+    .avatar-ring {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #58a6ff, #bc8cff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      box-shadow: 0 0 0 4px #21262d, 0 0 0 8px #58a6ff44;
+    }
+    .initials {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #0d1117;
+      letter-spacing: -1px;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin: 0 0 12px;
+      background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .tagline {
+      font-size: 1.1rem;
+      color: #8b949e;
+      margin: 0 0 32px;
+      line-height: 1.6;
+    }
+    .hero-links {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      padding: 10px 24px;
+      border-radius: 8px;
+      background: #238636;
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: #2ea043; }
+    .btn-ghost {
+      padding: 10px 24px;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+      color: #e6edf3;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-ghost:hover { border-color: #58a6ff; background: #58a6ff11; }
+
+    /* Projects section */
+    .projects-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+    .section-header {
+      margin-bottom: 24px;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .section-header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0;
+      color: #e6edf3;
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      color: #8b949e;
+    }
+
+    /* Grid */
+    .repo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    /* Skeleton loaders */
+    .skeleton-card {
+      height: 160px;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #161b22 25%, #21262d 50%, #161b22 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* Repo cards */
+    .repo-card {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 12px;
+      padding: 20px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+    .repo-card:hover {
+      border-color: #58a6ff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px #58a6ff1a;
+    }
+    .repo-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .repo-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .repo-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #58a6ff;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .repo-private {
+      font-size: 0.7rem;
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      padding: 1px 6px;
+      color: #8b949e;
+      flex-shrink: 0;
+    }
+    .repo-desc {
+      font-size: 0.875rem;
+      color: #8b949e;
+      line-height: 1.5;
+      flex: 1;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .repo-commit {
+      font-size: 0.8rem;
+      color: #6e7681;
+      border-top: 1px solid #21262d;
+      padding-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+    }
+    .commit-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #238636;
+      flex-shrink: 0;
+    }
+    .commit-msg {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+    }
+    .commit-time {
+      color: #484f58;
+      flex-shrink: 0;
+    }
+    .repo-meta {
+      display: flex;
+      gap: 14px;
+      font-size: 0.8rem;
+      color: #6e7681;
+    }
+    .repo-meta span { display: flex; align-items: center; gap: 4px; }
+
+    /* Error state */
+    .error-msg {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px;
+      color: #8b949e;
+      font-size: 0.95rem;
+    }
+
+  custom-landing.js: |
+    (async function () {
+      const grid = document.getElementById('repo-grid');
+      if (!grid) return;
+
+      const baseUrl = window.GITEA_SUB_URL || '';
+
+      function timeAgo(dateStr) {
+        const diff = (Date.now() - new Date(dateStr)) / 1000;
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+        if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+        if (diff < 2592000) return Math.floor(diff / 86400) + 'd ago';
+        if (diff < 31536000) return Math.floor(diff / 2592000) + 'mo ago';
+        return Math.floor(diff / 31536000) + 'y ago';
+      }
+
+      function escapeHtml(str) {
+        return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      }
+
+      function langDot(lang) {
+        const colors = {
+          Go:'#00ADD8', Python:'#3572A5', JavaScript:'#f1e05a', TypeScript:'#2b7489',
+          Rust:'#dea584', Java:'#b07219', 'C#':'#178600', Nix:'#7e7eff',
+          Shell:'#89e051', HTML:'#e34c26', CSS:'#563d7c', Elixir:'#6e4a7e',
+        };
+        return colors[lang]
+          ? `<span style="width:10px;height:10px;border-radius:50%;background:${colors[lang]};display:inline-block;flex-shrink:0"></span>`
+          : '📦';
+      }
+
+      async function fetchJson(url) {
+        const resp = await fetch(url, { credentials: 'include' });
+        if (!resp.ok) throw new Error(resp.status);
+        return resp.json();
+      }
+
+      async function getLatestCommit(repo) {
+        try {
+          const commits = await fetchJson(
+            `${baseUrl}/api/v1/repos/${encodeURIComponent(repo.full_name)}/commits?limit=1&page=1`
+          );
+          if (commits && commits.length > 0) return commits[0];
+        } catch (_) {}
+        return null;
+      }
+
+      // Sort by most recently updated
+      async function loadRepos() {
+        let repos;
+        try {
+          repos = await fetchJson(
+            `${baseUrl}/api/v1/repos/search?sort=newest&order=desc&limit=12&token=`
+          );
+          repos = repos.data || repos;
+        } catch (e) {
+          grid.innerHTML = `<div class="error-msg">
+            Could not load repositories. <a href="${baseUrl}/explore/repos" style="color:#58a6ff">Browse manually →</a>
+          </div>`;
+          return;
+        }
+
+        if (!repos || repos.length === 0) {
+          grid.innerHTML = `<div class="error-msg">No public repositories found.</div>`;
+          return;
+        }
+
+        // Sort by updated desc (API may already do this)
+        repos.sort((a, b) => new Date(b.updated) - new Date(a.updated));
+
+        // Render cards immediately, then fill in commits async
+        grid.innerHTML = '';
+        for (const repo of repos) {
+          const card = document.createElement('a');
+          card.className = 'repo-card';
+          card.href = `${baseUrl}/${escapeHtml(repo.full_name)}`;
+          card.dataset.repoName = repo.full_name;
+          card.innerHTML = `
+            <div class="repo-card-header">
+              <span class="repo-icon">${langDot(repo.language)}</span>
+              <span class="repo-name">${escapeHtml(repo.name)}</span>
+              ${repo.private ? '<span class="repo-private">private</span>' : ''}
+            </div>
+            <div class="repo-desc">${escapeHtml(repo.description) || '<em style="color:#484f58">No description</em>'}</div>
+            <div class="repo-meta">
+              ${repo.language ? `<span>${langDot(repo.language)} ${escapeHtml(repo.language)}</span>` : ''}
+              <span>⭐ ${repo.stars_count || 0}</span>
+              <span>🍴 ${repo.forks_count || 0}</span>
+              <span>🕒 ${timeAgo(repo.updated)}</span>
+            </div>
+            <div class="repo-commit" id="commit-${CSS.escape(repo.full_name)}">
+              <span class="commit-dot"></span>
+              <span class="commit-msg" style="color:#484f58">loading commit…</span>
+            </div>
+          `.trim();
+          grid.appendChild(card);
+        }
+
+        // Fetch commits in parallel
+        await Promise.all(repos.map(async (repo) => {
+          const commit = await getLatestCommit(repo);
+          const el = document.getElementById(`commit-${CSS.escape(repo.full_name)}`);
+          if (!el) return;
+          if (commit) {
+            const msg = commit.commit?.message?.split('\n')[0] || '';
+            const when = timeAgo(commit.commit?.committer?.date || commit.created);
+            el.innerHTML = `
+              <span class="commit-dot"></span>
+              <span class="commit-msg">${escapeHtml(msg)}</span>
+              <span class="commit-time">${when}</span>
+            `;
+          } else {
+            el.innerHTML = `<span class="commit-dot" style="background:#484f58"></span><span class="commit-msg" style="color:#484f58">no commits visible</span>`;
+          }
+        }));
+      }
+
+      loadRepos();
+    })();
