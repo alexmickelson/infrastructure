@@ -37,7 +37,7 @@ jobs:
                  -H "Tags: ${{ inputs.tags }}" \
                  -H "Actions: view, View Logs, ${{ inputs.action_url }}" \
                  --data-binary "@-" \
-                 "https://ntfy.sh/${{ secrets.NTFY_CHANNEL }}"
+                 "https://ntfy.sh/$NTFY_CHANNEL"
           ${{ inputs.message }}
           EOF
           else
@@ -45,7 +45,7 @@ jobs:
                  -H "Priority: ${{ inputs.priority }}" \
                  -H "Tags: ${{ inputs.tags }}" \
                  --data-binary "@-" \
-                 "https://ntfy.sh/${{ secrets.NTFY_CHANNEL }}"
+                 "https://ntfy.sh/$NTFY_CHANNEL"
           ${{ inputs.message }}
           EOF
           fi
