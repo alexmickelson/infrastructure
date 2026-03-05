@@ -10,7 +10,6 @@
   <section class="projects-section">
     <div class="section-header">
       <h2>Recent Projects</h2>
-      <span class="subtitle">Latest commits across all repositories</span>
     </div>
     <div id="repo-grid" class="repo-grid">
       <div class="skeleton-card"></div>
@@ -25,7 +24,6 @@
   <section class="activity-section">
     <div class="section-header">
       <h2>Recent Activity</h2>
-      <span class="subtitle">What Alex has been up to</span>
       <a href="/alex" class="view-all-link">View full profile →</a>
     </div>
     <div id="activity-feed" class="activity-feed">
@@ -42,6 +40,7 @@
   window.GITEA_APP_URL = "{{AppUrl}}";
   window.GITEA_SUB_URL = "{{AppSubUrl}}";
 </script>
-<script src="{{AppSubUrl}}/assets/js/custom-landing.js?v=4"></script>
-<link rel="stylesheet" href="{{AppSubUrl}}/assets/css/custom-landing.css?v=4">
+<!-- update version when changed to reset cloudflare cache -->
+<script src="{{AppSubUrl}}/assets/js/custom-landing.js?v=5"></script>
+<link rel="stylesheet" href="{{AppSubUrl}}/assets/css/custom-landing.css?v=5">
 {{template "base/footer" .}}

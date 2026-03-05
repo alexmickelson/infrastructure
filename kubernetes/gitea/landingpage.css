@@ -84,10 +84,7 @@
   margin: 0;
   color: var(--color-text);
 }
-.subtitle {
-  font-size: 0.9rem;
-  color: var(--color-text-muted);
-}
+
 
 /* Grid */
 .repo-grid {
