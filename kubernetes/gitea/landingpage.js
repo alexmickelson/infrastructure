@@ -393,4 +393,4 @@ const uiRendering = {
   },
 };
 
-document.addEventListener("DOMContentLoaded", () => uiRendering.render());
+document.addEventListener("DOMContentLoaded", uiRendering.render);
