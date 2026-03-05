@@ -28,6 +28,8 @@
     
     elixir
     elixir-ls
+    inotify-tools
+    watchman
   ];
 
   programs.ghostty = {
