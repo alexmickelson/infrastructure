@@ -54,9 +54,19 @@ jobs:
         env:
           CLOUDFLARED_GITEA_TOKEN: ${{ secrets.CLOUDFLARED_GITEA_TOKEN }}
         run: |
+          kubectl apply -f kubernetes/gitea/namespace.yml
+          kubectl create configmap gitea-landing-page \
+            -n gitea \
+            --from-file=home.tmpl=kubernetes/gitea/landingpage.html \
+            --from-file=custom-landing.css=kubernetes/gitea/landingpage.css \
+            --from-file=custom-landing.js=kubernetes/gitea/landingpage.js \
+            --dry-run=client -o yaml | kubectl apply -f -
+
           for file in kubernetes/gitea/*.yml; do
             cat "$file" | envsubst | kubectl apply -f -
           done
+
+          kubectl rollout restart deployment/gitea-web -n gitea
 
   notify-on-failure:
     runs-on: home-server
