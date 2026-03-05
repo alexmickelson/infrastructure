@@ -20,13 +20,12 @@ on:
         required: false
         type: string
         default: ""
-    secrets:
-      NTFY_CHANNEL:
-        required: true
 
 jobs:
   send-notification:
     runs-on: [home-server]
+    env:
+      NTFY_CHANNEL: ${{ secrets.NTFY_CHANNEL }}
     steps:
       - name: Send ntfy notification
         working-directory: /home/gitea-runner
