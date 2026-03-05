@@ -11,11 +11,7 @@ data:
 
       <section class="hero">
         <div class="hero-inner">
-          <div class="avatar-ring">
-            <span class="initials">AM</span>
-          </div>
           <h1>Alex Mickelson</h1>
-          <p class="tagline">Software engineer. Builder of useful things. Probably over-engineering something right now.</p>
           <div class="hero-links">
             <a href="/explore/repos" class="btn-primary">Browse All Projects</a>
             <a href="/user/login" class="btn-ghost">Sign In</a>
@@ -65,23 +61,6 @@ data:
     .hero-inner {
       max-width: 640px;
     }
-    .avatar-ring {
-      width: 96px;
-      height: 96px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #58a6ff, #bc8cff);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 24px;
-      box-shadow: 0 0 0 4px #21262d, 0 0 0 8px #58a6ff44;
-    }
-    .initials {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #0d1117;
-      letter-spacing: -1px;
-    }
     .hero h1 {
       font-size: 3rem;
       font-weight: 800;
@@ -91,12 +70,7 @@ data:
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .tagline {
-      font-size: 1.1rem;
-      color: #8b949e;
-      margin: 0 0 32px;
-      line-height: 1.6;
-    }
+
     .hero-links {
       display: flex;
       gap: 12px;
@@ -317,17 +291,25 @@ data:
         return null;
       }
 
-      // Sort by most recently updated
       async function loadRepos() {
         let repos;
         try {
-          repos = await fetchJson(
-            `${baseUrl}/api/v1/repos/search?sort=newest&order=desc&limit=12&token=`
-          );
-          repos = repos.data || repos;
+          const resp = await fetch(`${baseUrl}/api/v1/repos/search?sort=newest&order=desc&limit=12`, {
+            credentials: 'include',
+          });
+          if (!resp.ok) {
+            const msg = resp.status === 401 || resp.status === 403
+              ? `Sign in to see repositories (HTTP ${resp.status})`
+              : `API error: HTTP ${resp.status}`;
+            grid.innerHTML = `<div class="error-msg">${msg}. <a href="${baseUrl}/explore/repos" style="color:#58a6ff">Browse manually →</a></div>`;
+            return;
+          }
+          const json = await resp.json();
+          repos = json.data || json;
         } catch (e) {
+          console.error('Gitea landing: repo fetch failed', e);
           grid.innerHTML = `<div class="error-msg">
-            Could not load repositories. <a href="${baseUrl}/explore/repos" style="color:#58a6ff">Browse manually →</a>
+            Could not load repositories (${e.message}). <a href="${baseUrl}/explore/repos" style="color:#58a6ff">Browse manually →</a>
           </div>`;
           return;
         }
