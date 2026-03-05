@@ -28,6 +28,8 @@ spec:
           imagePullPolicy: Always
           args:
             - tunnel
+            - --metrics
+            - 0.0.0.0:2000
             - run
           env:
             - name: TUNNEL_TOKEN
@@ -35,3 +37,10 @@ spec:
                 secretKeyRef:
                   name: cloudflared-gitea-token
                   key: token
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 2000
+            failureThreshold: 1
+            initialDelaySeconds: 10
+            periodSeconds: 10
