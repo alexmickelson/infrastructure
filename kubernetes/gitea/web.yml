@@ -57,6 +57,10 @@ spec:
               value: "false"
             - name: GITEA__openid__ENABLE_OPENID_SIGNUP
               value: "false"
+            - name: GITEA__ui__DEFAULT_THEME
+              value: "gitea-dark"
+            - name: GITEA__ui__THEMES
+              value: "gitea-dark"
           volumeMounts:
             - name: gitea-data
               mountPath: /data
