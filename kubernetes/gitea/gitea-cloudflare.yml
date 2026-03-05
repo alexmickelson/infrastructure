@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflared-gitea-token
+  namespace: gitea
+type: Opaque
+stringData:
+  token: $CLOUDFLARED_GITEA_TOKEN
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflared-gitea
+  namespace: gitea
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudflared-gitea
+  template:
+    metadata:
+      labels:
+        app: cloudflared-gitea
+    spec:
+      containers:
+        - name: cloudflared
+          image: cloudflare/cloudflared:latest
+          imagePullPolicy: Always
+          args:
+            - tunnel
+            - run
+          env:
+            - name: TUNNEL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflared-gitea-token
+                  key: token
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 2000
+            failureThreshold: 1
+            initialDelaySeconds: 10
+            periodSeconds: 10

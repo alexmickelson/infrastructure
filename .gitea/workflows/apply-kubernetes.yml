@@ -50,6 +50,13 @@ jobs:
           kubectl apply -f kubernetes/homepage/
           kubectl rollout restart deployment/homepage -n homepage
 
+      - name: gitea
+        env:
+          CLOUDFLARED_GITEA_TOKEN: ${{ secrets.CLOUDFLARED_GITEA_TOKEN }}
+        run: |
+          for file in kubernetes/gitea/*.yml; do
+            cat "$file" | envsubst | kubectl apply -f -
+          done
 
   notify-on-failure:
     runs-on: home-server
