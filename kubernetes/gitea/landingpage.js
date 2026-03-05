@@ -102,6 +102,19 @@ const dataDomain = {
     return Array.from(seen.values());
   },
 
+  parseAllActivityDates(xmlDoc) {
+    const counts = new Map();
+    for (const item of Array.from(xmlDoc.querySelectorAll("channel > item"))) {
+      const pubDate = item.querySelector("pubDate")?.textContent || "";
+      if (!pubDate) continue;
+      const d = new Date(pubDate);
+      if (isNaN(d)) continue;
+      const key = d.toISOString().slice(0, 10);
+      counts.set(key, (counts.get(key) || 0) + 1);
+    }
+    return counts;
+  },
+
   parseActivity(xmlDoc, limit = 20) {
     return Array.from(xmlDoc.querySelectorAll("channel > item"))
       .slice(0, limit)
@@ -208,6 +221,135 @@ const uiRendering = {
     }
   },
 
+  activityMapRender(xmlDoc) {
+    const container = document.getElementById("activity-heatmap");
+    if (!container) return;
+
+    const counts = dataDomain.parseAllActivityDates(xmlDoc);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Align start to Sunday 52 weeks ago
+    const startDate = new Date(today);
+    startDate.setDate(startDate.getDate() - 52 * 7);
+    startDate.setDate(startDate.getDate() - startDate.getDay());
+
+    const cellSize = 11;
+    const gap = 2;
+    const step = cellSize + gap;
+    const cols = 53;
+    const rows = 7;
+    const padLeft = 28;
+    const padTop = 20;
+    const svgW = padLeft + cols * step;
+    const svgH = padTop + rows * step;
+
+    const LEVELS = ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353"];
+    const countToLevel = (n) =>
+      n === 0 ? 0 : n === 1 ? 1 : n <= 3 ? 2 : n <= 6 ? 3 : 4;
+
+    // Collect month labels (one per column where the month changes)
+    const monthLabels = new Map();
+    let lastMonth = -1;
+    for (let col = 0; col < cols; col++) {
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + col * 7);
+      if (d.getMonth() !== lastMonth) {
+        lastMonth = d.getMonth();
+        monthLabels.set(col, d.toLocaleString("default", { month: "short" }));
+      }
+    }
+
+    const ns = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("width", svgW);
+    svg.setAttribute("height", svgH);
+    svg.setAttribute("class", "heatmap-svg");
+    svg.setAttribute("aria-label", "Activity heatmap");
+
+    // Month labels
+    for (const [col, name] of monthLabels) {
+      const t = document.createElementNS(ns, "text");
+      t.setAttribute("x", padLeft + col * step);
+      t.setAttribute("y", 12);
+      t.setAttribute("class", "heatmap-month");
+      t.textContent = name;
+      svg.appendChild(t);
+    }
+
+    // Day-of-week labels (Sun / Tue / Thu / Sat)
+    ["Sun", "", "Tue", "", "Thu", "", "Sat"].forEach((label, i) => {
+      if (!label) return;
+      const t = document.createElementNS(ns, "text");
+      t.setAttribute("x", 0);
+      t.setAttribute("y", padTop + i * step + cellSize - 2);
+      t.setAttribute("class", "heatmap-day");
+      t.textContent = label;
+      svg.appendChild(t);
+    });
+
+    // Day cells
+    for (let col = 0; col < cols; col++) {
+      for (let row = 0; row < rows; row++) {
+        const d = new Date(startDate);
+        d.setDate(d.getDate() + col * 7 + row);
+        if (d > today) continue;
+
+        const key = d.toISOString().slice(0, 10);
+        const count = counts.get(key) || 0;
+
+        const rect = document.createElementNS(ns, "rect");
+        rect.setAttribute("x", padLeft + col * step);
+        rect.setAttribute("y", padTop + row * step);
+        rect.setAttribute("width", cellSize);
+        rect.setAttribute("height", cellSize);
+        rect.setAttribute("rx", 2);
+        rect.setAttribute("fill", LEVELS[countToLevel(count)]);
+        rect.setAttribute("data-date", key);
+        rect.setAttribute("data-count", count);
+
+        const title = document.createElementNS(ns, "title");
+        title.textContent = count > 0
+          ? `${count} activit${count === 1 ? "y" : "ies"} on ${key}`
+          : `No activity on ${key}`;
+        rect.appendChild(title);
+        svg.appendChild(rect);
+      }
+    }
+
+    // Legend
+    const legendY = svgH + 6;
+    const legendG = document.createElementNS(ns, "g");
+    const legendLabel = document.createElementNS(ns, "text");
+    legendLabel.setAttribute("x", padLeft);
+    legendLabel.setAttribute("y", legendY + cellSize - 2);
+    legendLabel.setAttribute("class", "heatmap-day");
+    legendLabel.textContent = "Less";
+    legendG.appendChild(legendLabel);
+    LEVELS.forEach((color, i) => {
+      const r = document.createElementNS(ns, "rect");
+      r.setAttribute("x", padLeft + 32 + i * step);
+      r.setAttribute("y", legendY);
+      r.setAttribute("width", cellSize);
+      r.setAttribute("height", cellSize);
+      r.setAttribute("rx", 2);
+      r.setAttribute("fill", color);
+      legendG.appendChild(r);
+    });
+    const moreLabel = document.createElementNS(ns, "text");
+    moreLabel.setAttribute("x", padLeft + 32 + LEVELS.length * step + 4);
+    moreLabel.setAttribute("y", legendY + cellSize - 2);
+    moreLabel.setAttribute("class", "heatmap-day");
+    moreLabel.textContent = "More";
+    legendG.appendChild(moreLabel);
+    svg.setAttribute("height", svgH + cellSize + 12);
+    svg.appendChild(legendG);
+
+    container.innerHTML = "";
+    container.appendChild(svg);
+  },
+
   async render() {
     const baseUrl = httpService.baseUrl;
 
@@ -216,6 +358,7 @@ const uiRendering = {
       await Promise.all([
         this.renderRepos(xmlDoc),
         this.renderActivity(xmlDoc),
+        this.activityMapRender(xmlDoc),
       ]);
     } catch (e) {
       console.error("Gitea landing: RSS fetch failed", e);

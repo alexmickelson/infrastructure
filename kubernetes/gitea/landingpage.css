@@ -329,3 +329,30 @@
   white-space: nowrap;
   padding-top: 3px;
 }
+
+/* ── Heatmap ─────────────────────────────────────────────── */
+.heatmap-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg) var(--space-xl);
+}
+.activity-heatmap {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  overflow-x: auto;
+}
+.heatmap-svg {
+  display: block;
+}
+.heatmap-month {
+  font-size: 9px;
+  fill: var(--color-text-muted, #8b949e);
+  font-family: inherit;
+}
+.heatmap-day {
+  font-size: 9px;
+  fill: var(--color-text-muted, #8b949e);
+  font-family: inherit;
+}

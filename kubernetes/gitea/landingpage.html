@@ -1,6 +1,5 @@
 {{template "base/head" .}}
 <div class="page-content home" id="alex-landing">
-
   <section class="hero">
     <div class="hero-inner">
       <h1>Alex Mickelson</h1>
@@ -21,6 +20,13 @@
     </div>
   </section>
 
+  <section class="heatmap-section">
+    <div class="section-header">
+      <h2>Activity</h2>
+    </div>
+    <div id="activity-heatmap" class="activity-heatmap"></div>
+  </section>
+
   <section class="activity-section">
     <div class="section-header">
       <h2>Recent Activity</h2>
@@ -34,13 +40,12 @@
       <div class="skeleton-activity"></div>
     </div>
   </section>
-
 </div>
 <script>
   window.GITEA_APP_URL = "{{AppUrl}}";
   window.GITEA_SUB_URL = "{{AppSubUrl}}";
 </script>
 <!-- update version when changed to reset cloudflare cache -->
-<script src="{{AppSubUrl}}/assets/js/custom-landing.js?v=7"></script>
-<link rel="stylesheet" href="{{AppSubUrl}}/assets/css/custom-landing.css?v=7">
+<script  src="{{AppSubUrl}}/assets/js/custom-landing.js?v=8"></script>
+<link href="{{AppSubUrl}}/assets/css/custom-landing.css?v=8" rel="stylesheet" />
 {{template "base/footer" .}}
