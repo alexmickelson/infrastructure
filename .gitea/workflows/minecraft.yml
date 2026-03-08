@@ -1,21 +1,27 @@
 name: deploy minecraft
 on: [workflow_dispatch]
 jobs:
-  update-repo:
-    uses: ./.gitea/workflows/update-repo.yml
-    runs-on: home-server
   minecraft:
     runs-on: home-server
-    needs: update-repo
     env:
       KUBECONFIG: /home/gitea-runner/.kube/config
     defaults:
       run:
         working-directory: /home/gitea-runner/infrastructure
     steps:
+      - name: checkout repo
+        working-directory: /home/gitea-runner
+        run: |
+          if [ -d "infrastructure" ]; then
+            cd infrastructure
+            echo "Infrastructure folder exists. Resetting to the most recent commit."
+            git reset --hard HEAD
+            git pull https://x-access-token:${{ secrets.GITEA_TOKEN }}@git.alexmickelson.guru/${{ gitea.repository }} $(git rev-parse --abbrev-ref HEAD)
+          else
+            git clone https://x-access-token:${{ secrets.GITEA_TOKEN }}@git.alexmickelson.guru/${{ gitea.repository }}.git
+          fi
       - name: deploy minecraft
         run: |
-          
           for file in kubernetes/minecraft/*.yml; do
             cat "$file" | envsubst | kubectl apply -f -
           done
