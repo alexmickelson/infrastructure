@@ -1,0 +1,21 @@
+name: Apply Kuberentes Configs
+on: [workflow_dispatch]
+jobs:
+  update-repo:
+    uses: ./.gitea/workflows/update-repo.yml
+    runs-on: home-server
+  update-infrastructure:
+    runs-on: home-server
+    needs: update-repo-folder
+    env:
+      KUBECONFIG: /home/gitea-runner/.kube/config
+    defaults:
+      run:
+        working-directory: /home/gitea-runner/infrastructure
+    steps:
+      - name: update home server containers
+        run: |
+          
+          for file in kubernetes/minecraft/*.yml; do
+            cat "$file" | envsubst | kubectl apply -f -
+          done

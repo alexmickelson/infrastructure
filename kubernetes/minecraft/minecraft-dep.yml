@@ -66,6 +66,38 @@ spec:
             memory: "6Gi"
           limits:
             memory: "8Gi"
+      - name: minecraft-cobblemon
+        image: itzg/minecraft-server:java21
+        stdin: true
+        tty: true
+        env:
+        - name: EULA
+          value: "true"
+        - name: TYPE
+          value: "AUTO_CURSEFORGE"
+        - name: CF_SLUG
+          value: "cobblemon-fabric"
+        - name: CF_API_KEY
+          value: "$CF_API_KEY"
+        - name: MEMORY
+          value: "4G"
+        - name: SERVER_PORT
+          value: "2222"
+        - name: RCON_PORT
+          value: "25576"
+        - name: CF_OVERRIDES_EXCLUSIONS
+          value: |
+            # Not applicable for server side
+            shaderpacks/**
+            resourcepacks/**
+        volumeMounts:
+        - name: cobblemon-data
+          mountPath: /data
+        resources:
+          requests:
+            memory: "4Gi"
+          limits:
+            memory: "6Gi"
       volumes:
       - name: minecraft-data
         hostPath:
@@ -83,18 +115,7 @@ spec:
         hostPath:
           path: /dev/net/tun
           type: CharDevice
----
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: minecraft
-#   namespace: minecraft
-# spec:
-#   selector:
-#     app: minecraft
-#   ports:
-#   - name: minecraft
-#     protocol: TCP
-#     port: 25565
-#     targetPort: 25565
-#   type: ClusterIP
+      - name: cobblemon-data
+        hostPath:
+          path: /data/minecraft/cobblemon-data
+          type: DirectoryOrCreate
