@@ -6,6 +6,7 @@ jobs:
     runs-on: home-server
   minecraft:
     runs-on: home-server
+    needs: update-repo
     env:
       KUBECONFIG: /home/gitea-runner/.kube/config
     defaults:
