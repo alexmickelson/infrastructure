@@ -21,6 +21,8 @@ jobs:
             git clone https://x-access-token:${{ secrets.GITEA_TOKEN }}@git.alexmickelson.guru/${{ gitea.repository }}.git
           fi
       - name: deploy minecraft
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
         run: |
           for file in kubernetes/minecraft/*.yml; do
             cat "$file" | envsubst | kubectl apply -f -
