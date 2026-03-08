@@ -4,7 +4,7 @@ jobs:
   update-repo:
     uses: ./.gitea/workflows/update-repo.yml
     runs-on: home-server
-  update-infrastructure:
+  minecraft:
     runs-on: home-server
     needs: update-repo-folder
     env:
@@ -13,7 +13,7 @@ jobs:
       run:
         working-directory: /home/gitea-runner/infrastructure
     steps:
-      - name: update home server containers
+      - name: deploy minecraft
         run: |
           
           for file in kubernetes/minecraft/*.yml; do
