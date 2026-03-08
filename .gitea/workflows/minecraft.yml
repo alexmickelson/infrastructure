@@ -1,4 +1,4 @@
-name: Apply Kuberentes Configs
+name: deploy minecraft
 on: [workflow_dispatch]
 jobs:
   update-repo:
