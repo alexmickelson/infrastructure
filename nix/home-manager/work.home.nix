@@ -8,6 +8,14 @@ let
     (fetchTarball "https://github.com/nix-community/nixGL/archive/main.tar.gz")
     { };
 in {
+  imports = [ ./fish.home.nix ];
+
+  customFish = {
+    bluetuiAliases = true;
+    dotnetPackage = pkgs.dotnetCorePackages.sdk_8_0;
+    bitwardenSshAgent = true;
+  };
+
   home.username = "alexm";
   home.homeDirectory = "/home/alexm";
   nixpkgs.config.allowUnfree = true;
@@ -90,47 +98,7 @@ in {
       window-width = "120"; 
     };
   };
-  programs.fish = {
-    enable = true;
-    shellInit = ''
-      # https://gist.github.com/thomd/7667642
-      export LS_COLORS=':di=95'
 
-      function commit
-        git add --all
-        git commit -m "$argv"
-        git pull
-        git push
-      end
-
-      # have ctrl+backspace delete previous word
-      bind \e\[3\;5~ kill-word
-      # have ctrl+delete delete following word
-      bind \b  backward-kill-word
-
-      alias blue="bluetui"
-      alias jelly="jellyfin-tui"
-
-      set -U fish_user_paths ~/.local/bin $fish_user_paths
-      set -U fish_user_paths ~/bin $fish_user_paths
-      set -U fish_user_paths ~/.dotnet $fish_user_paths
-      set -U fish_user_paths ~/.dotnet/tools $fish_user_paths
-      set fish_pager_color_selected_background --background='00399c'
-
-      export VISUAL=vim
-      export EDITOR="$VISUAL"
-      export DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1
-      export DOTNET_CLI_TELEMETRY_OPTOUT=1
-      export DOTNET_ROOT=${pkgs.dotnetCorePackages.sdk_8_0}
-
-      set -x LIBVIRT_DEFAULT_URI qemu:///system
-      set -x TERM xterm-256color # ghostty
-
-      source "$HOME/.cargo/env.fish"
-
-      export SSH_AUTH_SOCK=/home/alexm/.bitwarden-ssh-agent.sock # ssh agent
-    '';
-  };
   home.file = {
     ".config/lazydocker/config.yml".text = ''
       gui:
