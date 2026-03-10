@@ -24,16 +24,16 @@ in {
     jwt-cli
     fish
     kubectl
-    (lazydocker.overrideAttrs (oldAttrs: rec {
-      version = "0.24.1";
-      src = pkgs.fetchFromGitHub {
-        owner = "jesseduffield";
-        repo = "lazydocker";
-        rev = "v${version}";
-        hash = "sha256-cVjDdrxmGt+hj/WWP9B3BT739k9SSr4ryye5qWb3XNM=";
-      };
-    }))
-    # lazydocker
+    # (lazydocker.overrideAttrs (oldAttrs: rec {
+    #   version = "0.24.4";
+    #   src = pkgs.fetchFromGitHub {
+    #     owner = "jesseduffield";
+    #     repo = "lazydocker";
+    #     rev = "v${version}";
+    #     hash = "sha256-cW90/yblSLBkcR4ZdtcSI9MXFjOUxyEectjRn9vZwvg=";
+    #   };
+    # }))
+    lazydocker
     traceroute
     (with dotnetCorePackages; combinePackages [ sdk_8_0 sdk_9_0 ])
     nodejs_22
