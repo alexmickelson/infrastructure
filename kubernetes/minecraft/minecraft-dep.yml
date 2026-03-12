@@ -76,7 +76,7 @@ spec:
         - name: TYPE
           value: "AUTO_CURSEFORGE"
         - name: CF_SLUG
-          value: "cobblemon-fabric"
+          value: "cobbleverse-cobblemon"
         - name: CF_API_KEY
           value: "$CF_API_KEY"
         - name: MEMORY
