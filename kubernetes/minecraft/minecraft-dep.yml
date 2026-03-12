@@ -75,6 +75,8 @@ spec:
           value: "true"
         - name: TYPE
           value: "AUTO_CURSEFORGE"
+        - name: CF_SLUG
+          value: "cobbleverse-cobblemon"
         - name: CF_MODPACK_ZIP
           value: "/modpacks/COBBLEVERSE-1.7.30-CF.zip"
         - name: CF_API_KEY
