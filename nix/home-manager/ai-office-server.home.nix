@@ -1,5 +1,12 @@
 { pkgs, ... }:
 {
+  imports = [ ./fish.home.nix ];
+
+  customFish = {
+    dotnetPackage = pkgs.dotnetCorePackages.sdk_8_0;
+    bitwardenSshAgent = true;
+  };
+
   home.packages = with pkgs; [
     vscode-fhs
     gnome-software
@@ -43,37 +50,7 @@
       package = pkgs.gnome-themes-extra;
     };
   };
-  programs.fish = {
-    enable = true;
-    shellInit = ''
-function commit
-  git add --all
-  git commit -m "$argv"
-  git push
-end
 
-# have ctrl+backspace delete previous word
-bind \e\[3\;5~ kill-word
-# have ctrl+delete delete following word
-bind \b  backward-kill-word
-
-set -U fish_user_paths ~/.local/bin $fish_user_paths
-#set -U fish_user_paths ~/.dotnet $fish_user_paths
-#set -U fish_user_paths ~/.dotnet/tools $fish_user_paths
-
-export VISUAL=vim
-export EDITOR="$VISUAL"
-export DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1
-export DOTNET_CLI_TELEMETRY_OPTOUT=1
-export DOTNET_ROOT=${pkgs.dotnetCorePackages.sdk_8_0}
-
-set -x LIBVIRT_DEFAULT_URI qemu:///system
-
-set -x TERM xterm-256color # ghostty
-export SSH_AUTH_SOCK=/home/alex/.bitwarden-ssh-agent.sock # ssh agent
-
-     '';
-    };
     home.file = {
     ".config/lazydocker/config.yml".text = ''
 gui:
