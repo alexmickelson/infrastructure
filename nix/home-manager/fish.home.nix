@@ -58,7 +58,6 @@ in {
           alias jelly="jellyfin-tui"
         '')
 
-
         (lib.optionalString (cfg.dotnetPackage != null) ''
           export DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1
           export DOTNET_CLI_TELEMETRY_OPTOUT=1
