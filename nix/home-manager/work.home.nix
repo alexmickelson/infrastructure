@@ -12,7 +12,7 @@ in {
 
   customFish = {
     bluetuiAliases = true;
-    dotnetPackage = pkgs.dotnetCorePackages.sdk_8_0;
+    dotnetPackage = with pkgs.dotnetCorePackages; combinePackages [ sdk_8_0 sdk_9_0 ];
     bitwardenSshAgent = true;
   };
 
