@@ -21,53 +21,53 @@ spec:
         app: minecraft
     spec:
       containers:
-      - name: tailscale
-        image: tailscale/tailscale:latest
-        env:
-        - name: TS_STATE_DIR
-          value: "/var/lib/tailscale"
-        - name: TS_KUBE_SECRET
-          value: ""
-        - name: TS_AUTHKEY
-          value: "tskey-auth-REPLACE_ME"
-        - name: TS_HOSTNAME
-          value: "minecraft"
-        volumeMounts:
-        - name: tailscale-data
-          mountPath: /var/lib/tailscale
-        - name: dev-tun
-          mountPath: /dev/net/tun
-        securityContext:
-          capabilities:
-            add:
-            - NET_ADMIN
-            - SYS_MODULE
-      - name: minecraft
-        image: itzg/minecraft-server:java21
-        stdin: true
-        tty: true
-        env:
-        - name: EULA
-          value: "true"
-        - name: MEMORY
-          value: "6G"
-        - name: CF_OVERRIDES_EXCLUSIONS
-          value: |
-            # Not applicable for server side
-            shaderpacks/**
-        volumeMounts:
-        - name: minecraft-data
-          mountPath: /data
-        - name: modpacks
-          mountPath: /modpacks
-          readOnly: true
-        resources:
-          requests:
-            memory: "6Gi"
-          limits:
-            memory: "8Gi"
+      # - name: tailscale
+      #   image: tailscale/tailscale:latest
+      #   env:
+      #   - name: TS_STATE_DIR
+      #     value: "/var/lib/tailscale"
+      #   - name: TS_KUBE_SECRET
+      #     value: ""
+      #   - name: TS_AUTHKEY
+      #     value: "tskey-auth-REPLACE_ME"
+      #   - name: TS_HOSTNAME
+      #     value: "minecraft"
+      #   volumeMounts:
+      #   - name: tailscale-data
+      #     mountPath: /var/lib/tailscale
+      #   - name: dev-tun
+      #     mountPath: /dev/net/tun
+      #   securityContext:
+      #     capabilities:
+      #       add:
+      #       - NET_ADMIN
+      #       - SYS_MODULE
+      # - name: minecraft
+      #   image: itzg/minecraft-server:java25
+      #   stdin: true
+      #   tty: true
+      #   env:
+      #   - name: EULA
+      #     value: "true"
+      #   - name: MEMORY
+      #     value: "6G"
+      #   - name: CF_OVERRIDES_EXCLUSIONS
+      #     value: |
+      #       # Not applicable for server side
+      #       shaderpacks/**
+      #   volumeMounts:
+      #   - name: minecraft-data
+      #     mountPath: /data
+      #   - name: modpacks
+      #     mountPath: /modpacks
+      #     readOnly: true
+      #   resources:
+      #     requests:
+      #       memory: "6Gi"
+      #     limits:
+      #       memory: "8Gi"
       - name: minecraft-cobblemon
-        image: itzg/minecraft-server:java21
+        image: itzg/minecraft-server:java25
         stdin: true
         tty: true
         env:
