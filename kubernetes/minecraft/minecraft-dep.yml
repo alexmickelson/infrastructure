@@ -67,7 +67,7 @@ spec:
       #     limits:
       #       memory: "8Gi"
       - name: minecraft-cobblemon
-        image: itzg/minecraft-server:java25
+        image: itzg/minecraft-server:java21
         stdin: true
         tty: true
         env:
