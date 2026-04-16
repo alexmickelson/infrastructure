@@ -24,6 +24,8 @@ spec:
           env:
             - name: SEARXNG_BASE_URL
               value: "http://server.alexmickelson.guru:4446/"
+            - name: SEARXNG_PORT
+              value: "8080"
           volumeMounts:
             - name: config
               mountPath: /etc/searxng

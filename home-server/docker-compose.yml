@@ -149,7 +149,6 @@ services:
       - USERNAME=alex
       - PASSWORD=alex
 
-  
   # searxng:
   #   image: docker.io/searxng/searxng:latest
   #   container_name: searxng
