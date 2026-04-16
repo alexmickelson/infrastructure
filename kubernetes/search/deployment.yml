@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: searxng
-  namespace: searchngx
+  namespace: searxng
 spec:
   replicas: 1
   strategy:

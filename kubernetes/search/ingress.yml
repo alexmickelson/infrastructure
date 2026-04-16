@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: searxng-ingress
-  namespace: searchngx
+  namespace: searxng
   annotations:
     cert-manager.io/cluster-issuer: cloudflare-issuer
 spec:
