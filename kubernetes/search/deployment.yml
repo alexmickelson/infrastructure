@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: searxng
+  namespace: searchngx
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: searxng
+  template:
+    metadata:
+      labels:
+        app: searxng
+    spec:
+      containers:
+        - name: searxng
+          image: docker.io/searxng/searxng:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SEARXNG_BASE_URL
+              value: "http://server.alexmickelson.guru:4446/"
+          volumeMounts:
+            - name: config
+              mountPath: /etc/searxng
+            - name: data
+              mountPath: /var/cache/searxng
+      volumes:
+        - name: config
+          hostPath:
+            path: /data/searxng
+            type: DirectoryOrCreate
+        - name: data
+          hostPath:
+            path: /data/searxng-data
+            type: DirectoryOrCreate
