@@ -26,6 +26,13 @@ spec:
               value: "http://server.alexmickelson.guru:4446/"
             - name: SEARXNG_PORT
               value: "8080"
+              # kubectl create secret generic searxng-secret --from-literal=secret-key=$(openssl rand -hex 32) -n searxng
+              # kubectl get secret searxng-secret -n searxng -o jsonpath='{.data.secret-key}' | base64 -d
+            - name: SEARXNG_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: searxng-secret
+                  key: secret-key
           volumeMounts:
             - name: config
               mountPath: /etc/searxng
