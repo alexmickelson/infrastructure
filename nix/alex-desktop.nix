@@ -74,7 +74,6 @@
   home-manager.users.alex = { pgks, ...}: {
     home.stateVersion = "24.11";
     imports = [
-      ./home-manager/alex.home.nix
       ./home-manager/desktop.home.nix
     ];
   };

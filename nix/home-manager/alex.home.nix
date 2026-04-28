@@ -2,9 +2,10 @@
 {
   imports = [ ./fish.home.nix ];
 
-  customFish = {
-    bluetuiAliases = true;
-  };
+  # replicate on each device
+  # customFish = {
+  #   bluetuiAliases = true;
+  # };
   home.packages = with pkgs; [
     k9s
     jwt-cli
@@ -30,9 +31,6 @@
     uv
     bluetui
   ];
-  programs.direnv = {
-    enable = true;
-  };
   programs.ghostty = {
     enable = true;
     enableFishIntegration = true;
@@ -50,7 +48,7 @@ gui:
     ".config/k9s/config.yaml".text = ''
 k9s:
   liveViewAutoRefresh: true
-  screenDumpDir: /home/alexm/.local/state/k9s/screen-dumps
+  screenDumpDir: /home/alex/.local/state/k9s/screen-dumps
   refreshRate: 2
   maxConnRetry: 5
   readOnly: false
@@ -90,7 +88,7 @@ k9s:
       critical: 90
       warn: 70
   namespace:
-    lockFavorites: false
+    lockFavorites: false`
     '';
   };
 }
