@@ -43,12 +43,12 @@
   margin: 0 !important;
 }
 
-
 #alex-landing {
   min-height: 100vh;
   background: var(--color-bg-page);
   color: var(--color-text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 /* Hero */
@@ -69,7 +69,11 @@
   font-size: var(--text-hero);
   font-weight: 800;
   margin: 0 0 var(--space-xs);
-  background: linear-gradient(135deg, var(--color-text) 0%, var(--color-accent) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-text) 0%,
+    var(--color-accent) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -95,7 +99,6 @@
   color: var(--color-text);
 }
 
-
 /* Grid */
 .repo-grid {
   display: grid;
@@ -107,13 +110,22 @@
 .skeleton-card {
   height: 160px;
   border-radius: var(--radius-lg);
-  background: linear-gradient(90deg, var(--color-bg-card) 25%, var(--color-border) 50%, var(--color-bg-card) 75%);
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-card) 25%,
+    var(--color-border) 50%,
+    var(--color-bg-card) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
 }
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* Repo cards */
@@ -127,7 +139,10 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2xs);
-  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
   cursor: pointer;
 }
 .repo-card:hover {
@@ -204,7 +219,11 @@
   font-size: var(--text-sm);
   color: var(--color-text-subtle);
 }
-.repo-meta span { display: flex; align-items: center; gap: 4px; }
+.repo-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 
 /* Error state */
 .error-msg {
@@ -227,7 +246,9 @@
   text-decoration: none;
   margin-left: auto;
 }
-.view-all-link:hover { text-decoration: underline; }
+.view-all-link:hover {
+  text-decoration: underline;
+}
 .activity-feed {
   display: flex;
   flex-direction: column;
@@ -238,12 +259,19 @@
 }
 .skeleton-activity {
   height: 52px;
-  background: linear-gradient(90deg, var(--color-bg-card) 25%, var(--color-border) 50%, var(--color-bg-card) 75%);
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-card) 25%,
+    var(--color-border) 50%,
+    var(--color-bg-card) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
   border-top: 1px solid var(--color-bg-page);
 }
-.skeleton-activity:first-child { border-top: none; }
+.skeleton-activity:first-child {
+  border-top: none;
+}
 .activity-item {
   display: flex;
   align-items: flex-start;
@@ -254,8 +282,12 @@
   font-size: var(--text-base);
   transition: background 0.15s;
 }
-.activity-item:first-child { border-top: none; }
-.activity-item:hover { background: var(--color-bg-card-hover); }
+.activity-item:first-child {
+  border-top: none;
+}
+.activity-item:hover {
+  background: var(--color-bg-card-hover);
+}
 .activity-op-icon {
   flex-shrink: 0;
   width: 28px;
@@ -268,7 +300,10 @@
   font-size: var(--text-sm);
   margin-top: 2px;
 }
-.activity-body { flex: 1; min-width: 0; }
+.activity-body {
+  flex: 1;
+  min-width: 0;
+}
 .activity-headline-row {
   display: flex;
   align-items: baseline;
@@ -289,7 +324,9 @@
   text-decoration: none;
   font-weight: 500;
 }
-.activity-headline a:hover { text-decoration: underline; }
+.activity-headline a:hover {
+  text-decoration: underline;
+}
 .activity-commits {
   margin-top: 5px;
   display: flex;
@@ -315,7 +352,10 @@
   flex-shrink: 0;
   text-decoration: none;
 }
-.activity-commit-sha:hover { color: var(--color-accent); text-decoration: none; }
+.activity-commit-sha:hover {
+  color: var(--color-accent);
+  text-decoration: none;
+}
 .activity-commit-text {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -355,4 +395,45 @@
   font-size: 9px;
   fill: var(--color-text-muted, #8b949e);
   font-family: inherit;
+}
+
+/* ── GitHub Link Section ─────────────────────────────────── */
+.github-link-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg) var(--space-xl);
+}
+.github-link-container {
+  text-align: center;
+  padding: calc(var(--space-xl) * 0.6) var(--space-xl);
+  background: linear-gradient(135deg, var(--color-bg-card) 0%, #1a1f27 100%);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 24px var(--color-accent-shadow);
+}
+.github-link-container p {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--color-text);
+  font-weight: 500;
+  line-height: 1.6;
+}
+.github-link {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.3rem;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.github-link:hover {
+  color: var(--color-white);
+  text-decoration: none;
+  transform: translateX(4px);
+}
+.github-icon {
+  flex-shrink: 0;
+  vertical-align: middle;
 }

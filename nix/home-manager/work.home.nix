@@ -48,7 +48,6 @@ in {
     nmap
     iperf 
     #makemkv
-    #elixir_1_18
     # gnome-themes-extra
     uv
     ghostty
@@ -73,11 +72,14 @@ in {
     # vscode-fhs
     # aider-chat-full
 
-    # codex
-    elixir
-    elixir-ls
+    codex
+    # elixir
+    # elixir-ls
+    beamMinimal28Packages.elixir_1_19
+    beamMinimal28Packages.elixir-ls
     inotify-tools
     watchman
+    
   ];
   fonts.fontconfig.enable = true;
   programs.firefox = {
@@ -233,6 +235,7 @@ in {
       name = "Adwaita-dark";
       package = pkgs.gnome-themes-extra;
     };
+    gtk4.theme = config.gtk.theme;
   };
   programs.home-manager.enable = true;
 }

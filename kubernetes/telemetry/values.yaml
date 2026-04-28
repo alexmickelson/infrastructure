@@ -1,0 +1,19 @@
+opencost:
+  prometheus:
+    internal:
+      enabled: false
+    external:
+      enabled: true
+      url: http://prometheus-server.prometheus-system.svc.cluster.local:80
+  metrics:
+    kubeStateMetrics:
+      emitKsmV1Metrics: false
+      emitKsmV1MetricsOnly: false
+  ui:
+    enabled: true
+    ingress:
+      enabled: true
+      hosts:
+        - host: opencost.alex-kube.duckdns.org
+          paths:
+            - /

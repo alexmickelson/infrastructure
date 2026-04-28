@@ -15,11 +15,10 @@
             snow = {
               npm = "@ai-sdk/openai-compatible";
               options = {
-                baseURL = "http://ai-snow.reindeer-pinecone.ts.net:9292/v1";
+                baseURL = "https://ai-snow.reindeer-pinecone.ts.net:9292/v1";
               };
               models = {
-                "gpt-oss-120b" = { };
-                "devstral-123b" = { };
+                "qwen3.5-122b" = { };
               };
             };
             home = {
@@ -37,7 +36,7 @@
                 baseURL = "http://ai-office-server:8081/v1";
               };
               models = {
-                "gpt-oss-20b" = { };
+                "qwen3.5-122b" = { };
               };
             };
           };
