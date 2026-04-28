@@ -11,13 +11,11 @@
     ghostty
     nodejs_24
     pnpm
-    legcord
     ffmpeg
     gh
     bitwarden-desktop
     jellyfin-tui
     bluetui
-    # bitwarden-desktop
 
     lazydocker
     

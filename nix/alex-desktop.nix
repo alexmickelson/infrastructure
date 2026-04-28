@@ -96,27 +96,12 @@
     fish
     git
     zfs
-    gcc-unwrapped
+    gcc
     iputils
     tmux
     libguestfs-with-appliance
     iperf
-    mangohud
     mlocate
-    kdePackages.kdeconnect-kde
-
-    # wineWowPackages.stable
-    # wine
-    # (wine.override { wineBuild = "wine64"; })
-    # wine64
-    # wineWowPackages.staging
-    # winetricks
-    # wineWowPackages.waylandFull
-
-    # mesa-gl-headers
-    # mesa
-    # driversi686Linux.mesa
-    # mesa-demos
   ];
   services.tailscale.enable = true;
   services.openssh.enable = true;

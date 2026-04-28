@@ -48,6 +48,6 @@ ports:
   protocol: TCP
 endpoints:
 - addresses:
-  - 100.122.128.107
+  - 100.110.207.108
   conditions:
     ready: true

@@ -14,7 +14,6 @@
     btop
     nix-index
     usbutils
-    makemkv
     mbuffer
     lzop
     lsof
