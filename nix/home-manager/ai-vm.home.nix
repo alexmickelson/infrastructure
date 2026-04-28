@@ -41,7 +41,7 @@
     };
   };
 
-    home.file = {
+  home.file = {
     ".config/lazydocker/config.yml".text = ''
 gui:
   returnImmediately: true
