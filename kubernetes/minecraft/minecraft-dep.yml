@@ -69,6 +69,8 @@ spec:
           value: "AUTO_CURSEFORGE"
         - name: CF_SLUG
           value: "create-ultimate-selection-2"
+        - name: CF_MODPACK_ZIP
+          value: "/modpacks/Create Ultimate Selection 2 Serverpack MC 1.21.1-8.3.0.zip"
         - name: CF_API_KEY
           value: "$CF_API_KEY"
         - name: MEMORY
@@ -85,6 +87,9 @@ spec:
         volumeMounts:
         - name: create-data
           mountPath: /data
+        - name: modpacks
+          mountPath: /modpacks
+          readOnly: true
         resources:
           requests:
             memory: "6Gi"
@@ -94,4 +99,8 @@ spec:
       - name: create-data
         hostPath:
           path: /data/minecraft/create-data
+          type: DirectoryOrCreate
+      - name: modpacks
+        hostPath:
+          path: /data/minecraft/modpacks
           type: DirectoryOrCreate
