@@ -70,7 +70,7 @@ spec:
         - name: CF_SLUG
           value: "create-ultimate-selection-2"
         - name: CF_MODPACK_ZIP
-          value: "/modpacks/Create Ultimate Selection 2 Serverpack MC 1.21.1-8.3.0.zip"
+          value: "/modpacks/Create Ultimate Selection 2 MC 1.21.1-8.3.0.zip"
         - name: CF_API_KEY
           value: "$CF_API_KEY"
         - name: MEMORY
