@@ -21,52 +21,44 @@ spec:
         app: minecraft
     spec:
       containers:
-      # - name: tailscale
-      #   image: tailscale/tailscale:latest
-      #   env:
-      #   - name: TS_STATE_DIR
-      #     value: "/var/lib/tailscale"
-      #   - name: TS_KUBE_SECRET
-      #     value: ""
-      #   - name: TS_AUTHKEY
-      #     value: "tskey-auth-REPLACE_ME"
-      #   - name: TS_HOSTNAME
-      #     value: "minecraft"
-      #   volumeMounts:
-      #   - name: tailscale-data
-      #     mountPath: /var/lib/tailscale
-      #   - name: dev-tun
-      #     mountPath: /dev/net/tun
-      #   securityContext:
-      #     capabilities:
-      #       add:
-      #       - NET_ADMIN
-      #       - SYS_MODULE
-      # - name: minecraft
-      #   image: itzg/minecraft-server:java25
+      # - name: minecraft-cobblemon
+      #   image: itzg/minecraft-server:java21
       #   stdin: true
       #   tty: true
       #   env:
       #   - name: EULA
       #     value: "true"
+      #   - name: TYPE
+      #     value: "AUTO_CURSEFORGE"
+      #   - name: CF_SLUG
+      #     value: "cobbleverse-cobblemon"
+      #   - name: CF_MODPACK_ZIP
+      #     value: "/modpacks/COBBLEVERSE-1.7.30-CF.zip"
+      #   - name: CF_API_KEY
+      #     value: "$CF_API_KEY"
       #   - name: MEMORY
-      #     value: "6G"
+      #     value: "4G"
+      #   - name: SERVER_PORT
+      #     value: "2222"
+      #   - name: RCON_PORT
+      #     value: "25576"
       #   - name: CF_OVERRIDES_EXCLUSIONS
       #     value: |
       #       # Not applicable for server side
       #       shaderpacks/**
+      #       resourcepacks/**
       #   volumeMounts:
-      #   - name: minecraft-data
+      #   - name: cobblemon-data
       #     mountPath: /data
       #   - name: modpacks
       #     mountPath: /modpacks
       #     readOnly: true
       #   resources:
       #     requests:
-      #       memory: "6Gi"
+      #       memory: "4Gi"
       #     limits:
-      #       memory: "8Gi"
-      - name: minecraft-cobblemon
+      #       memory: "6Gi"
+      - name: minecraft-create
         image: itzg/minecraft-server:java21
         stdin: true
         tty: true
@@ -76,13 +68,11 @@ spec:
         - name: TYPE
           value: "AUTO_CURSEFORGE"
         - name: CF_SLUG
-          value: "cobbleverse-cobblemon"
-        - name: CF_MODPACK_ZIP
-          value: "/modpacks/COBBLEVERSE-1.7.30-CF.zip"
+          value: "create-ultimate-selection-2"
         - name: CF_API_KEY
           value: "$CF_API_KEY"
         - name: MEMORY
-          value: "4G"
+          value: "6G"
         - name: SERVER_PORT
           value: "2222"
         - name: RCON_PORT
@@ -93,34 +83,15 @@ spec:
             shaderpacks/**
             resourcepacks/**
         volumeMounts:
-        - name: cobblemon-data
+        - name: create-data
           mountPath: /data
-        - name: modpacks
-          mountPath: /modpacks
-          readOnly: true
         resources:
           requests:
-            memory: "4Gi"
-          limits:
             memory: "6Gi"
+          limits:
+            memory: "8Gi"
       volumes:
-      - name: minecraft-data
+      - name: create-data
         hostPath:
-          path: /data/minecraft/data
-          type: DirectoryOrCreate
-      - name: modpacks
-        hostPath:
-          path: /data/minecraft/modpacks
-          type: DirectoryOrCreate
-      - name: tailscale-data
-        hostPath:
-          path: /data/minecraft/tailscale
-          type: DirectoryOrCreate
-      - name: dev-tun
-        hostPath:
-          path: /dev/net/tun
-          type: CharDevice
-      - name: cobblemon-data
-        hostPath:
-          path: /data/minecraft/cobblemon-data
+          path: /data/minecraft/create-data
           type: DirectoryOrCreate
