@@ -9,9 +9,6 @@ spec:
       port: 8085
       targetPort: 8085
     - name: create
-      port: 2222
-      targetPort: 2222
-    - name: vanilla
       port: 25565
       targetPort: 25565
   selector:
