@@ -4,8 +4,11 @@
   imports =
     [
       <home-manager/nixos>
+      ./modules/k3s.nix
       # /etc/nixos/cachix.nix
     ];
+
+  services.k3s.nodeIp = "100.112.73.80"
   nix = {
     extraOptions = ''
       experimental-features = nix-command flakes
@@ -18,8 +21,6 @@
   networking.hostName = "ai-office-server";
   networking.networkmanager.enable = true;
   networking.firewall.enable = true;
-  
-
 
   time.timeZone = "America/Denver";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -121,12 +122,8 @@
     ffmpeg
     dbus
 
-
-    # protontricks stuff?
     freetype
-    # freetype.bin
     fontconfig
-    # libxcrypt-compat
     libpng
     zlib
 
@@ -146,9 +143,6 @@
 
   programs.steam = {
     enable = true;
-    # remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-    # dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    # localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
   };
   hardware.graphics.extraPackages = with pkgs; [ freetype libxkbcommon ];
   hardware.graphics.extraPackages32 = with pkgs.pkgsi686Linux; [ freetype libxkbcommon ];
@@ -165,7 +159,6 @@
     capSysAdmin = true;
     openFirewall = true;
   };
-
 
   hardware.graphics = {
     enable32Bit = true;

@@ -9,6 +9,8 @@
       ./modules/pci-passthrough.nix
       ./modules/gitea-runner.nix
     ];
+  services.k3s.nodeIp = "100.110.207.108"; # when changed, need to regenerate kubeconfig
+
   security.pam.loginLimits = [
     {
       domain = "*";
