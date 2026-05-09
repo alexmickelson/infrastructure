@@ -21,6 +21,8 @@
     (with dotnetCorePackages; combinePackages [ sdk_8_0 sdk_9_0 ])
     pnpm
     kubectl
+    k9s
+    kubernetes-helm
   ];
 
   nixpkgs.config.allowUnfree = true;
