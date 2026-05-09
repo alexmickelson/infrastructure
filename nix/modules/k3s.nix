@@ -15,7 +15,6 @@
       role = "server";
       extraFlags = toString [
         "--disable=traefik"
-        "--write-kubeconfig-mode=644"
         "--node-ip=${ip}"
         "--bind-address ${ip}"
         "--node-external-ip ${ip}"
