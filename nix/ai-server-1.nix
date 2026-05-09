@@ -8,7 +8,7 @@
       # /etc/nixos/cachix.nix
     ];
 
-  services.k3s.nodeIp = "100.112.73.80"
+  services.k3s.nodeIp = "100.112.73.80";
   nix = {
     extraOptions = ''
       experimental-features = nix-command flakes
