@@ -28,14 +28,14 @@
       ];
       serverAddr = "https://${ip}:6443";
     };
-    networking.firewall.allowedTCPPorts = [
-      443
-      80
-      10250
-    ];
-    networking.firewall.allowedUDPPorts = [
-      443
-      80
-    ];
+    # networking.firewall.allowedTCPPorts = [
+    #   443
+    #   80
+    #   10250
+    # ];
+    # networking.firewall.allowedUDPPorts = [
+    #   443
+    #   80
+    # ];
   };
 }
