@@ -19,6 +19,7 @@
         "--bind-address=${ip}"
         "--node-external-ip=${ip}"
         "--tls-san=${ip}"
+        "--node-taint=" # let server bet worker and control plane`
         "--kubelet-arg=eviction-hard="
         "--kubelet-arg=eviction-soft="
         "--kubelet-arg=eviction-soft-grace-period="
