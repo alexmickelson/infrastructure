@@ -80,12 +80,14 @@ in {
     inotify-tools
     watchman
     
+    pi-coding-agent
   ];
   fonts.fontconfig.enable = true;
   programs.firefox = {
     enable = true;
     package = config.lib.nixGL.wrap pkgs.firefox;
     nativeMessagingHosts = [ pkgs.firefoxpwa ];
+    configPath = "${config.xdg.configHome}/mozilla/firefox";
   };
 
   programs.direnv = { enable = true; };
