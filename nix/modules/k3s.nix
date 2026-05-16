@@ -1,6 +1,4 @@
-
 { config, lib, ... }:
-
 {
   options.services.k3s.nodeIp = lib.mkOption {
     type = lib.types.str;
@@ -13,29 +11,19 @@
     services.k3s = {
       enable = true;
       role = "server";
+      # No serverAddr — this node IS the server
       extraFlags = toString [
         "--disable=traefik"
+        "--disable-cloud-controller"
         "--node-ip=${ip}"
-        "--bind-address ${ip}"
-        "--node-external-ip ${ip}"
-        "--tls-san ${ip}"
-
-        # Disable disk-based evictions
+        "--bind-address=${ip}"
+        "--node-external-ip=${ip}"
+        "--tls-san=${ip}"
         "--kubelet-arg=eviction-hard="
         "--kubelet-arg=eviction-soft="
         "--kubelet-arg=eviction-soft-grace-period="
         "--kubelet-arg=eviction-pressure-transition-period=0s"
       ];
-      serverAddr = "https://${ip}:6443";
     };
-    # networking.firewall.allowedTCPPorts = [
-    #   443
-    #   80
-    #   10250
-    # ];
-    # networking.firewall.allowedUDPPorts = [
-    #   443
-    #   80
-    # ];
   };
 }
