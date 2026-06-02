@@ -10,6 +10,8 @@ metadata:
   namespace: jellyfin
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: jellyfin
@@ -23,15 +25,17 @@ spec:
         fsGroup: 1000
         supplementalGroups:
           - 303 # render group for GPU access
+          - 26 # video group for GPU access
       containers:
         - name: jellyfin
-          image: jellyfin/jellyfin
+          image: jellyfin/jellyfin:2026051806
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
+            privileged: true
           volumeMounts:
-            - name: dri-device
-              mountPath: /dev/dri/renderD128
+            - name: dri
+              mountPath: /dev/dri
             - name: config-volume
               mountPath: /config
             - name: cache-volume
@@ -70,10 +74,10 @@ spec:
         - name: home-videos-volume
           hostPath:
             path: /data/nextcloud/html/data/alex/files/Documents/home-video
-        - name: dri-device
+        - name: dri
           hostPath:
-            path: /dev/dri/renderD128
-            type: CharDevice
+            path: /dev/dri
+            type: Directory
       restartPolicy: Always
 ---
 apiVersion: v1
@@ -85,10 +89,10 @@ spec:
   selector:
     app: jellyfin
   ports:
-  - name: http
-    protocol: TCP
-    port: 8096
-    targetPort: 8096
+    - name: http
+      protocol: TCP
+      port: 8096
+      targetPort: 8096
   type: ClusterIP
 ---
 apiVersion: networking.k8s.io/v1
@@ -101,17 +105,17 @@ metadata:
 spec:
   ingressClassName: nginx
   tls:
-  - hosts:
-    - jellyfin.alexmickelson.guru
-    secretName: jellyfin-tls
+    - hosts:
+        - jellyfin.alexmickelson.guru
+      secretName: jellyfin-tls
   rules:
-  - host: jellyfin.alexmickelson.guru
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: jellyfin
-            port:
-              number: 8096
+    - host: jellyfin.alexmickelson.guru
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: jellyfin
+                port:
+                  number: 8096
