@@ -55,7 +55,6 @@ in {
     (config.lib.nixGL.wrap ghostty)
     wl-clipboard
     jellyfin-tui
-    firefoxpwa
     bluetui
     #nixfmt-classic
     opencodeFlake.packages.${pkgs.stdenv.hostPlatform.system}.opencode
@@ -86,7 +85,6 @@ in {
   programs.firefox = {
     enable = true;
     package = config.lib.nixGL.wrap pkgs.firefox;
-    nativeMessagingHosts = [ pkgs.firefoxpwa ];
     configPath = "${config.xdg.configHome}/mozilla/firefox";
   };
 
