@@ -15,6 +15,12 @@ in {
     };
 
     bitwardenSshAgent = lib.mkEnableOption "Bitwarden SSH agent (sets SSH_AUTH_SOCK)";
+
+    appendConfig = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = "Arbitrary string to append to the end of the fish config.";
+    };
   };
 
   config = {
@@ -67,6 +73,8 @@ in {
         (lib.optionalString cfg.bitwardenSshAgent ''
           export SSH_AUTH_SOCK=$HOME/.bitwarden-ssh-agent.sock
         '')
+
+        (lib.optionalString (cfg.appendConfig != null) cfg.appendConfig)
 
       ]);
     };

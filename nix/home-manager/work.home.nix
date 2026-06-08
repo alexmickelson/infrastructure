@@ -14,11 +14,30 @@ in {
     bluetuiAliases = true;
     dotnetPackage = with pkgs.dotnetCorePackages; combinePackages [ sdk_8_0 sdk_9_0 ];
     bitwardenSshAgent = true;
+    appendConfig = ''
+      function codex
+        docker run --rm -it \
+          -u node \
+          -e HOME=/home/node \
+          -v "$PWD:/workspace" \
+          -v "$HOME/.codex:/home/node/.codex" \
+          -w /workspace \
+          node:22-bookworm \
+          bash -lc '
+            npm install -g --prefix "$HOME/.local" @openai/codex &&
+            export PATH="$HOME/.local/bin:$PATH" &&
+            exec codex
+          '
+      end
+    '';
   };
 
   home.username = "alexm";
   home.homeDirectory = "/home/alexm";
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    permittedInsecurePackages = [ "electron-39.8.10" ];
+  };
   home.packages = with pkgs; [
     k9s
     jwt-cli
@@ -71,7 +90,7 @@ in {
     # vscode-fhs
     # aider-chat-full
 
-    codex
+    # codex
     # elixir
     # elixir-ls
     beamMinimal28Packages.elixir_1_19
