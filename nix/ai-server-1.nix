@@ -14,6 +14,9 @@
       experimental-features = nix-command flakes
     '';
   };
+  nixpkgs.config.permittedInsecurePackages = [ # bitwarden desktop https://github.com/NixOS/nixpkgs/issues/526914 https://github.com/bitwarden/clients/pull/20448
+    "electron-39.8.10"
+  ];
   
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
