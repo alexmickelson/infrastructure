@@ -1,7 +1,9 @@
 { pkgs, ... }:
 {
   imports = [ ./fish.home.nix ];
-
+  nixpkgs.config = {
+    permittedInsecurePackages = [ "electron-39.8.10" ]; # bitwarden desktop https://github.com/NixOS/nixpkgs/issues/526914 https://github.com/bitwarden/clients/pull/20448
+  };
   customFish = {
     dotnetPackage = pkgs.dotnetCorePackages.sdk_8_0;
     bitwardenSshAgent = true;
