@@ -1,0 +1,119 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forgejo-web
+  namespace: forgejo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: forgejo-web
+  template:
+    metadata:
+      labels:
+        app: forgejo-web
+    spec:
+      containers:
+        - name: forgejo
+          image: codeberg.org/forgejo/forgejo:15
+          ports:
+            - containerPort: 3000
+            - containerPort: 22
+          env:
+            - name: USER_UID
+              value: "1000"
+            - name: USER_GID
+              value: "1000"
+            - name: FORGEJO__database__DB_TYPE
+              value: "postgres"
+            - name: FORGEJO__database__HOST
+              value: "forgejo-db-svc:5432"
+            - name: FORGEJO__database__NAME
+              value: "forgejo"
+            - name: FORGEJO__database__USER
+              value: "forgejo"
+            - name: FORGEJO__database__PASSWD
+              value: CHANGE_ME_GENERATE_STRONG_PASSWORD
+            - name: FORGEJO__server__PROTOCOL
+              value: "http"
+            - name: FORGEJO__server__DOMAIN
+              value: "forgejo.alexmickelson.guru"
+            - name: FORGEJO__server__PUBLIC_URL_DETECTION
+              value: "auto"
+            - name: FORGEJO__server__LOCAL_ROOT_URL
+              value: "http://forgejo-web-svc.forgejo.svc.cluster.local:3000/"
+            - name: FORGEJO__server__SSH_DOMAIN
+              value: "forgejo-forgejo-web-svc.beefalo-newton.ts.net"
+            - name: FORGEJO__server__SSH_PORT
+              value: "22"
+            # security
+            - name: FORGEJO__service__ENABLE_BASIC_AUTHENTICATION
+              value: "false"
+            - name: FORGEJO__service__DISABLE_REGISTRATION
+              value: "true"
+            - name: FORGEJO__service__ALLOW_ONLY_EXTERNAL_REGISTRATION
+              value: "false"
+          volumeMounts:
+            - name: forgejo-data
+              mountPath: /data
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+      volumes:
+        - name: forgejo-data
+          hostPath:
+            path: /data/forgejo/data
+            type: DirectoryOrCreate
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: forgejo-web-svc
+  namespace: forgejo
+  annotations:
+    tailscale.com/expose: "true" # exposes IP directly
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000
+    - name: ssh
+      port: 22
+      targetPort: 22
+  selector:
+    app: forgejo-web
+---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: forgejo
+#   namespace: forgejo
+#   annotations:
+#     cert-manager.io/cluster-issuer: cloudflare-issuer
+# spec:
+#   ingressClassName: nginx
+#   tls:
+#     - hosts:
+#         - forgejo.alexmickelson.guru
+#       secretName: forgejo-tls-cert
+#   rules:
+#     - host: forgejo.alexmickelson.guru
+#       http:
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: forgejo-web-svc
+#                 port:
+#                   number: 3000

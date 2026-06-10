@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: forgejo
+  name: forgejo-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: forgejo-db
+  template:
+    metadata:
+      labels:
+        app: forgejo-db
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: "forgejo"
+            - name: POSTGRES_PASSWORD
+              value: CHANGE_ME_GENERATE_STRONG_PASSWORD
+            - name: POSTGRES_DB
+              value: "forgejo"
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-data
+      volumes:
+        - name: postgres-data
+          hostPath:
+            path: /data/forgejo/postgres
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: forgejo-db-svc
+  namespace: forgejo
+  labels:
+    app: forgejo-db
+spec:
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  selector:
+    app: forgejo-db
+  type: ClusterIP
