@@ -20,3 +20,13 @@ kubectl patch configmap argocd-cmd-params-cm \
     --type merge \
     -p '{"data":{"server.insecure":"true"}}'
 ```
+
+
+## tailscale operator setup
+
+```bash
+kubectl create secret generic operator-oauth \
+  --namespace tailscale \
+  --from-literal=client_id="<OAuth client ID>" \
+  --from-literal=client_secret="<OAuth client secret>"
+```

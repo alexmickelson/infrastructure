@@ -14,6 +14,7 @@
       # No serverAddr — this node IS the server
       extraFlags = toString [
         "--disable=traefik"
+        "--disable=servicelb"
         "--disable-cloud-controller"
         "--node-ip=${ip}"
         "--bind-address=${ip}"

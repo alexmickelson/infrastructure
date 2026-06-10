@@ -79,8 +79,8 @@ kind: Service
 metadata:
   name: forgejo-web-svc
   namespace: forgejo
-  annotations:
-    tailscale.com/expose: "true" # exposes IP directly
+  # annotations:
+  #   tailscale.com/expose: "true" # exposes IP directly
 spec:
   type: NodePort
   ports:
