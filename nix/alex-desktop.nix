@@ -5,7 +5,9 @@
     [
       <home-manager/nixos>
     ];
-
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-39.8.10"
+  ];
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
