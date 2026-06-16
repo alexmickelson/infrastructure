@@ -29,6 +29,12 @@ in {
             exec codex
           '
       end
+
+      function k --wraps kubectl --description "Alias for kubectl"
+        kubectl $argv
+      end
+      complete -c k -w kubectl
+      
     '';
   };
 
