@@ -1,5 +1,11 @@
 {
   "python.linting.mypyEnabled": true,
   "python.linting.enabled": true,
-  "cSpell.words": ["pkgs"]
+  "cSpell.words": [
+    "pkgs"
+  ],
+  "chat.tools.terminal.autoApprove": {
+    "kubectl get": true,
+    "kubectl describe": true
+  }
 }
