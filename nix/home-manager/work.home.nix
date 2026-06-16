@@ -69,6 +69,7 @@ in {
     #makemkv
     # gnome-themes-extra
     uv
+    yq
     ghostty
     nixgl.nixGLIntel
     (config.lib.nixGL.wrap ghostty)
@@ -83,6 +84,7 @@ in {
     wiremix
     (config.lib.nixGL.wrap moonlight-qt)
     nvtopPackages.amd
+    argocd
     # jan
     # texlivePackages.jetbrainsmono-otf
     # nerd-fonts.fira-code
