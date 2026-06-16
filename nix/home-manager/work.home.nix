@@ -49,6 +49,7 @@ in {
     jwt-cli
     fish
     kubectl
+    pv
     # (lazydocker.overrideAttrs (oldAttrs: rec {
     #   version = "0.24.4";
     #   src = pkgs.fetchFromGitHub {
