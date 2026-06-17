@@ -14,21 +14,21 @@ in {
     bluetuiAliases = true;
     dotnetPackage = with pkgs.dotnetCorePackages; combinePackages [ sdk_8_0 sdk_9_0 ];
     bitwardenSshAgent = true;
+      # function codex
+      #   docker run --rm -it \
+      #     -u node \
+      #     -e HOME=/home/node \
+      #     -v "$PWD:/workspace" \
+      #     -v "$HOME/.codex:/home/node/.codex" \
+      #     -w /workspace \
+      #     node:22-bookworm \
+      #     bash -lc '
+      #       npm install -g --prefix "$HOME/.local" @openai/codex &&
+      #       export PATH="$HOME/.local/bin:$PATH" &&
+      #       exec codex
+      #     '
+      # end
     appendConfig = ''
-      function codex
-        docker run --rm -it \
-          -u node \
-          -e HOME=/home/node \
-          -v "$PWD:/workspace" \
-          -v "$HOME/.codex:/home/node/.codex" \
-          -w /workspace \
-          node:22-bookworm \
-          bash -lc '
-            npm install -g --prefix "$HOME/.local" @openai/codex &&
-            export PATH="$HOME/.local/bin:$PATH" &&
-            exec codex
-          '
-      end
 
       function k --wraps kubectl --description "Alias for kubectl"
         kubectl $argv
@@ -99,11 +99,14 @@ in {
     # vscode-fhs
     # aider-chat-full
 
-    # codex
+    codex
     # elixir
     # elixir-ls
+    # beamMinimal28Packages.elixir_1_19
+    # beamMinimal28Packages.elixir-ls
+    beamMinimal28Packages.erlang
     beamMinimal28Packages.elixir_1_19
-    beamMinimal28Packages.elixir-ls
+    beamMinimal28Packages.expert
     inotify-tools
     watchman
     

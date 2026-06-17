@@ -28,3 +28,12 @@
     };
   };
 }
+# curl -sfL https://get.k3s.io | \
+#   K3S_URL=https://100.112.73.80:6443 \
+#   K3S_TOKEN="<your-node-token>" \
+#   sh -s - agent \
+#     --node-ip=<worker-tailscale-ip> \
+#     --node-external-ip=<worker-tailscale-ip>
+
+
+# kubectl taint node gpu-worker dedicated=department-server:NoSchedule
