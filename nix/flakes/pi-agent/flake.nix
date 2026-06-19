@@ -7,36 +7,51 @@
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
-
-      # Resolves to whatever `pi` means on the host running `nix run`.
-      # Assumes pi is already installed via home-manager / nix profile,
-      # matching `which pi` -> ~/.nix-profile/bin/pi.
       piSandboxed = pkgs.writeShellApplication {
         name = "pi-sandboxed";
-        runtimeInputs = [ pkgs.bubblewrap ];
+        runtimeInputs = with pkgs; [
+          bubblewrap
+          bashInteractive coreutils findutils gnused gawk gnugrep curl wget git
+          python3 nodejs jq file less man
+          bash
+        ];
         text = ''
           set -euo pipefail
 
           WORKDIR="$(pwd)"
           HOME_DIR="''${HOME:?HOME must be set}"
 
-          if ! command -v pi >/dev/null 2>&1; then
-            echo "error: 'pi' not found on PATH. Is it installed via home-manager / nix profile?" >&2
-            exit 1
+          # Collect unique, existing directories from $PATH
+          path_dirs=$(echo "$PATH" | tr ':' '\n' | sed 's|/$||' | awk '!seen[$0]++ && system("test -d " $0) == 0 {print}')
+
+          path_args=()
+          if [ -n "$path_dirs" ]; then
+            while IFS= read -r path; do
+              path_args+=(--ro-bind "$path" "$path")
+            done <<< "$path_dirs"
           fi
 
-          # Resolve the real binary so PATH lookups inside the sandbox
-          # don't depend on profile symlink quirks.
-          PI_BIN="$(command -v pi)"
+          home_args=()
+          if [ -e "$HOME_DIR/.nix-profile" ]; then
+            home_args+=(--ro-bind "$HOME_DIR/.nix-profile" "$HOME_DIR/.nix-profile")
+          fi
 
-          # Build the bind-mount list. --ro-bind/--bind entries are skipped
-          # if the source path doesn't exist on the host, so this is safe
-          # to run even if ~/.pi hasn't been created yet.
+          pi_args=()
+          if [ -e "$HOME_DIR/.pi" ]; then
+            pi_args+=(--bind "$HOME_DIR/.pi" "$HOME_DIR/.pi")
+          fi
+
+
           BWRAP_ARGS=(
+            "''${path_args[@]}"
+            --ro-bind "${pkgs.bash}/bin/bash" "/bin/bash"
+            --ro-bind "${pkgs.bash}/bin/bash" "/bin/sh"
             --ro-bind /nix /nix
-            --ro-bind /usr /usr
-            --ro-bind /bin /bin
             --ro-bind /etc /etc
+            --ro-bind /run /run
+            --ro-bind /usr /usr
+            --ro-bind /lib /lib
+            --ro-bind /lib64 /lib64
             --proc /proc
             --dev /dev
             --tmpfs /tmp
@@ -46,26 +61,14 @@
             --unshare-all
             --share-net
             --die-with-parent
+            --ro-bind "${pkgs.pi-coding-agent}" "${pkgs.pi-coding-agent}"
+            "''${home_args[@]}"
+            "''${pi_args[@]}"
           )
 
-          # ~/.nix-profile so the pi symlink and any sibling nix-profile
-          # tooling resolve correctly inside the sandbox.
-          if [ -e "$HOME_DIR/.nix-profile" ]; then
-            BWRAP_ARGS+=(--ro-bind "$HOME_DIR/.nix-profile" "$HOME_DIR/.nix-profile")
-          fi
+          echo "running with bubblewrap arguments: ''${BWRAP_ARGS[*]}"
 
-          # ~/.config for API keys, MCP config, etc. (read-only)
-          if [ -e "$HOME_DIR/.config" ]; then
-            BWRAP_ARGS+=(--ro-bind "$HOME_DIR/.config" "$HOME_DIR/.config")
-          fi
-
-          # pi's own config / extensions directory (read-write so the agent
-          # can create session state under ~/.pi/agent/sessions/).
-          if [ -e "$HOME_DIR/.pi" ]; then
-            BWRAP_ARGS+=(--bind "$HOME_DIR/.pi" "$HOME_DIR/.pi")
-          fi
-
-          exec bwrap "''${BWRAP_ARGS[@]}" -- "$PI_BIN" "$@"
+          exec "${pkgs.bubblewrap}/bin/bwrap" "''${BWRAP_ARGS[@]}" -- "${pkgs.pi-coding-agent}/bin/pi" "$@"
         '';
       };
     in {
