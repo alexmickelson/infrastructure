@@ -54,13 +54,18 @@
             BWRAP_ARGS+=(--ro-bind "$HOME_DIR/.nix-profile" "$HOME_DIR/.nix-profile")
           fi
 
+          # ~/.config for API keys, MCP config, etc. (read-only)
+          if [ -e "$HOME_DIR/.config" ]; then
+            BWRAP_ARGS+=(--ro-bind "$HOME_DIR/.config" "$HOME_DIR/.config")
+          fi
+
           # pi's own config / extensions directory (read-write so the agent
           # can create session state under ~/.pi/agent/sessions/).
           if [ -e "$HOME_DIR/.pi" ]; then
             BWRAP_ARGS+=(--bind "$HOME_DIR/.pi" "$HOME_DIR/.pi")
           fi
 
-          exec bwrap "''${BWRAP_ARGS[@]}" -- "$PI_BIN" "$@"
+          exec env --preserve-environment bwrap "''${BWRAP_ARGS[@]}" -- "$PI_BIN" "$@"
         '';
       };
     in {
