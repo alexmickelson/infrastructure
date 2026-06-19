@@ -54,10 +54,10 @@
             BWRAP_ARGS+=(--ro-bind "$HOME_DIR/.nix-profile" "$HOME_DIR/.nix-profile")
           fi
 
-          # pi's own config / extensions directory (read-only — the agent
-          # can use its config but can't rewrite it from inside the sandbox).
+          # pi's own config / extensions directory (read-write so the agent
+          # can create session state under ~/.pi/agent/sessions/).
           if [ -e "$HOME_DIR/.pi" ]; then
-            BWRAP_ARGS+=(--ro-bind "$HOME_DIR/.pi" "$HOME_DIR/.pi")
+            BWRAP_ARGS+=(--bind "$HOME_DIR/.pi" "$HOME_DIR/.pi")
           fi
 
           exec bwrap "''${BWRAP_ARGS[@]}" -- "$PI_BIN" "$@"
