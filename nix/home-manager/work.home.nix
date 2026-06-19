@@ -77,7 +77,7 @@ in {
     # gnome-themes-extra
     uv
     yq
-    ghostty
+    # ghostty
     nixgl.nixGLIntel
     (config.lib.nixGL.wrap ghostty)
     wl-clipboard
@@ -239,6 +239,25 @@ in {
       Name=Open a New Private Window
       Exec=nixGLIntel zen --private-window
     '';
+
+    ".scripts/record-transcribe-wrapper.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        # Run the record-transcribe script in ghostty.
+        NIXGL="$(command -v nixGLIntel 2>/dev/null || true)"
+        if [[ -z "$NIXGL" ]]; then
+          export PATH="$HOME/.nix-profile/bin:$PATH"
+          NIXGL="$(command -v nixGLIntel 2>/dev/null || true)"
+        fi
+        if [[ -n "$NIXGL" ]]; then
+          exec "$NIXGL" ghostty -e /home/alexm/projects/infrastructure/record-transcribe.sh
+        else
+          echo "nixGLIntel not found, running without GPU wrapper."
+          exec ghostty -e /home/alexm/projects/infrastructure/record-transcribe.sh
+        fi
+      '';
+    };
   };
 
   home.sessionVariables = { EDITOR = "vim"; };
@@ -251,6 +270,7 @@ in {
     "org/gnome/settings-daemon/plugins/media-keys" = {
       custom-keybindings = [
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
+        "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
       ];
     };
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" =
@@ -258,6 +278,12 @@ in {
         name = "Launch Ghostty";
         command = "nixGL ghostty";
         binding = "<Super>t";
+      };
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" =
+      {
+        name = "Record and transcribe";
+        command = "${config.home.homeDirectory}/.scripts/record-transcribe-wrapper.sh";
+        binding = "<Super>space";
       };
   };
 
