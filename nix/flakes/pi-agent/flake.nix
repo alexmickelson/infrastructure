@@ -65,7 +65,7 @@
             BWRAP_ARGS+=(--bind "$HOME_DIR/.pi" "$HOME_DIR/.pi")
           fi
 
-          exec env --preserve-environment bwrap "''${BWRAP_ARGS[@]}" -- "$PI_BIN" "$@"
+          exec bwrap "''${BWRAP_ARGS[@]}" -- "$PI_BIN" "$@"
         '';
       };
     in {
