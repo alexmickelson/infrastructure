@@ -18,6 +18,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelParams = [ "amd_iommu=off" "amdgpu.gttsize=126976" "ttm.pages_limit=32505856" ];
+  # boot.kernelParams = [ "amd_iommu=off" "amdgpu.gttsize=122880" "ttm.pages_limit=31457280" ]; # 120gb vram
   
   networking.hostName = "ai-office-server";
   networking.networkmanager.enable = true;

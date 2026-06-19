@@ -110,7 +110,8 @@ in {
     inotify-tools
     watchman
     
-    pi-coding-agent
+    # pi-coding-agent
+    ripgrep
   ];
   fonts.fontconfig.enable = true;
   programs.firefox = {
