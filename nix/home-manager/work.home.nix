@@ -293,7 +293,7 @@ in {
       name = "Adwaita-dark";
       package = pkgs.gnome-themes-extra;
     };
-    gtk4.theme = config.gtk.theme;
+    gtk4.theme = null;
   };
   programs.home-manager.enable = true;
 }
