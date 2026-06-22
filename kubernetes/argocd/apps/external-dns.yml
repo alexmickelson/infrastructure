@@ -32,7 +32,7 @@ spec:
         policy: sync
         txtOwnerId: office-k3s
         extraArgs:
-          cloudflare-proxied: true
+          cloudflare-proxied: false
   destination:
     server: https://kubernetes.default.svc
     namespace: external-dns
