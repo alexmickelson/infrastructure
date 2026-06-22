@@ -1,38 +1,13 @@
 apiVersion: gateway.networking.k8s.io/v1
-kind: Gateway
-metadata:
-  name: envoy-gateway
-  namespace: envoy-gateway-system
-spec:
-  gatewayClassName: envoy
-  listeners:
-    - name: http
-      protocol: HTTP
-      port: 80
-      allowedRoutes:
-        namespaces:
-          from: All
-    - name: https
-      protocol: HTTPS
-      port: 443
-      allowedRoutes:
-        namespaces:
-          from: All
-      tls:
-        mode: Terminate
-        certificateRefs:
-          - kind: Secret
-            name: forgejo-tls-cert
----
-apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: forgejo
+  name: forgejo-web-route
   namespace: forgejo
 spec:
   parentRefs:
     - name: envoy-gateway
-      namespace: envoy-gateway-system
+      namespace: default
+      sectionName: http
   hostnames:
     - forgejo.alexmickelson.guru
   rules:
