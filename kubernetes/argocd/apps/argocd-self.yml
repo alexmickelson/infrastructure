@@ -40,7 +40,7 @@ spec:
       namespace: default
   hostnames:
     - argocd.alexmickelson.guru
-      rules:
+  rules:
     - backendRefs:
         - name: argocd-server
           port: 80
