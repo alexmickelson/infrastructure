@@ -3,12 +3,13 @@
 <https://cert-manager.io/docs/installation/helm/>
 ```bash
 helm repo add jetstack https://charts.jetstack.io --force-update
-helm install \
+helm upgrade --install \
   cert-manager jetstack/cert-manager \
   --namespace cert-manager \
   --create-namespace \
   --version v1.16.2 \
-  --set crds.enabled=true
+  --set crds.enabled=true \
+  --set config.enableGatewayAPI=true
 ```
 
 
