@@ -50,7 +50,7 @@
             --ro-bind /etc/ssl /etc/ssl
             --ro-bind /etc/resolv.conf /etc/resolv.conf
             --ro-bind /etc/hosts /etc/hosts
-            --ro-bind /run/current-system /run/current-system
+            --ro-bind /run/ /run/
             --ro-bind /usr /usr
             --ro-bind /lib /lib
             --ro-bind /lib64 /lib64
