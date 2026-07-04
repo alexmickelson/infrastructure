@@ -30,6 +30,7 @@
     pciutils
     uv
     bluetui
+    neovim
   ];
   programs.ghostty = {
     enable = true;
