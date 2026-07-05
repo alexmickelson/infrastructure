@@ -11,6 +11,7 @@
     nerd-fonts.droid-sans-mono
     ghostty
     tmux
+    neovim
   ];
 
   nixpkgs.config.allowUnfree = true;

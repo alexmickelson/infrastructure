@@ -56,6 +56,7 @@
     watchman
 
     codex
+    neovim
   ];
 
   programs.direnv = {
