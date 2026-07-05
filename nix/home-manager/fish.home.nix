@@ -24,7 +24,7 @@ in {
   };
 
   config = {
-
+    programs.fish = {
       enable = true;
       shellInit = lib.concatStringsSep "\n" (lib.filter (s: s != "") [
 
