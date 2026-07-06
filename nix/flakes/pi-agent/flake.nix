@@ -14,6 +14,7 @@
           bashInteractive coreutils findutils gnused gawk gnugrep curl wget git
           python3 nodejs jq file less man
           bash
+          chromium  # for headless web scraping (playwright)
         ];
         text = ''
           set -euo pipefail
@@ -63,6 +64,7 @@
             --share-net
             --die-with-parent
             --ro-bind "${pkgs.pi-coding-agent}" "${pkgs.pi-coding-agent}"
+            --ro-bind "${pkgs.chromium}" "${pkgs.chromium}"
             "''${home_args[@]}"
             "''${pi_args[@]}"
           )

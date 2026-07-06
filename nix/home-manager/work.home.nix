@@ -105,7 +105,7 @@ in {
     # beamMinimal28Packages.elixir_1_19
     # beamMinimal28Packages.elixir-ls
     beamMinimal28Packages.erlang
-    beamMinimal28Packages.elixir_1_19
+    beamMinimal28Packages.elixir_1_20
     beamMinimal28Packages.expert
     inotify-tools
     watchman
