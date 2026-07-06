@@ -15,6 +15,8 @@
           python3 nodejs jq file less man
           bash
           chromium  # for headless web scraping (playwright)
+          podman     # rootless container runtime
+          fuse    # needed by podman storage driver (fuse-overlayfs)
         ];
         text = ''
           set -euo pipefail
@@ -42,6 +44,11 @@
             pi_args+=(--bind "$HOME_DIR/.pi" "$HOME_DIR/.pi")
           fi
 
+          containers_args=()
+          if [ -d "$HOME_DIR/.local/share/containers" ]; then
+            containers_args+=(--bind "$HOME_DIR/.local/share/containers" "$HOME_DIR/.local/share/containers")
+          fi
+
 
           BWRAP_ARGS=(
             "''${path_args[@]}"
@@ -52,6 +59,7 @@
             --ro-bind /etc/resolv.conf /etc/resolv.conf
             --ro-bind /etc/hosts /etc/hosts
             --ro-bind /run/ /run/
+            --tmpfs "/run/user/$UID"  # writable XDG_RUNTIME_DIR for podman (overlays the ro mount)
             --ro-bind /usr /usr
             --ro-bind /lib /lib
             --ro-bind /lib64 /lib64
@@ -67,6 +75,7 @@
             --ro-bind "${pkgs.chromium}" "${pkgs.chromium}"
             "''${home_args[@]}"
             "''${pi_args[@]}"
+            "''${containers_args[@]}"
           )
 
           echo "running with bubblewrap arguments: ''${BWRAP_ARGS[*]}"
