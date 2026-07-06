@@ -12,17 +12,17 @@
           bashInteractive coreutils findutils gnused gawk gnugrep curl wget git
           python3 nodejs jq file less man
           bash
-          chromium  # for headless web scraping (playwright)
-          podman     # rootless container runtime
-          fuse-overlayfs  # storage driver podman actually shells out to
-          slirp4netns     # rootless container networking
+          chromium
+          podman
+          fuse-overlayfs
+          slirp4netns
+          util-linux   # needed for `mount --make-rshared` inside the sandbox
         ];
         text = ''
           set -euo pipefail
           WORKDIR="$(pwd)"
           HOME_DIR="''${HOME:?HOME must be set}"
 
-          # Collect unique, existing directories from $PATH
           path_dirs=$(echo "$PATH" | tr ':' '\n' | sed 's|/$||' | awk '!seen[$0]++ && system("test -d " $0) == 0 {print}')
           path_args=()
           if [ -n "$path_dirs" ]; then
@@ -69,7 +69,7 @@
             --ro-bind /etc/nsswitch.conf /etc/nsswitch.conf
             "''${etc_containers_args[@]}"
             --ro-bind /run/ /run/
-            --tmpfs "/run/user/$UID"  # writable XDG_RUNTIME_DIR for podman (overlays the ro mount)
+            --tmpfs "/run/user/$UID"
             --ro-bind /sys/fs/cgroup /sys/fs/cgroup
             --ro-bind /usr /usr
             --ro-bind /lib /lib
@@ -91,7 +91,11 @@
             "''${containers_args[@]}"
           )
           echo "running with bubblewrap arguments: ''${BWRAP_ARGS[*]}"
-          exec "${pkgs.bubblewrap}/bin/bwrap" "''${BWRAP_ARGS[@]}" -- "${pkgs.pi-coding-agent}/bin/pi" "$@"
+          exec "${pkgs.bubblewrap}/bin/bwrap" "''${BWRAP_ARGS[@]}" -- \
+            "${pkgs.bash}/bin/bash" -c '
+              mount --make-rshared / 2>/dev/null || true
+              exec "'"${pkgs.pi-coding-agent}"'/bin/pi" "$@"
+            ' _ "$@"
         '';
       };
     in {
