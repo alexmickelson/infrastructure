@@ -58,8 +58,11 @@
             --ro-bind /etc/ssl /etc/ssl
             --ro-bind /etc/resolv.conf /etc/resolv.conf
             --ro-bind /etc/hosts /etc/hosts
+            --ro-bind /etc/subuid /etc/subuid
+            --ro-bind /etc/subgid /etc/subgid
             --ro-bind /run/ /run/
             --tmpfs "/run/user/$UID"  # writable XDG_RUNTIME_DIR for podman (overlays the ro mount)
+            --ro-bind /sys/fs/cgroup /sys/fs/cgroup
             --ro-bind /usr /usr
             --ro-bind /lib /lib
             --ro-bind /lib64 /lib64
