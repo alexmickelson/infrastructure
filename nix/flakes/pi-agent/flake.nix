@@ -1,8 +1,6 @@
 {
   description = "Sandboxed launcher for the pi coding agent (bubblewrap-confined filesystem access)";
-
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
   outputs = { self, nixpkgs }:
     let
       system = "x86_64-linux";
@@ -16,17 +14,16 @@
           bash
           chromium  # for headless web scraping (playwright)
           podman     # rootless container runtime
-          fuse    # needed by podman storage driver (fuse-overlayfs)
+          fuse-overlayfs  # storage driver podman actually shells out to
+          slirp4netns     # rootless container networking
         ];
         text = ''
           set -euo pipefail
-
           WORKDIR="$(pwd)"
           HOME_DIR="''${HOME:?HOME must be set}"
 
           # Collect unique, existing directories from $PATH
           path_dirs=$(echo "$PATH" | tr ':' '\n' | sed 's|/$||' | awk '!seen[$0]++ && system("test -d " $0) == 0 {print}')
-
           path_args=()
           if [ -n "$path_dirs" ]; then
             while IFS= read -r path; do
@@ -48,7 +45,14 @@
           if [ -d "$HOME_DIR/.local/share/containers" ]; then
             containers_args+=(--bind "$HOME_DIR/.local/share/containers" "$HOME_DIR/.local/share/containers")
           fi
+          if [ -d "$HOME_DIR/.config/containers" ]; then
+            containers_args+=(--bind "$HOME_DIR/.config/containers" "$HOME_DIR/.config/containers")
+          fi
 
+          etc_containers_args=()
+          if [ -d /etc/containers ]; then
+            etc_containers_args+=(--ro-bind /etc/containers /etc/containers)
+          fi
 
           BWRAP_ARGS=(
             "''${path_args[@]}"
@@ -60,6 +64,10 @@
             --ro-bind /etc/hosts /etc/hosts
             --ro-bind /etc/subuid /etc/subuid
             --ro-bind /etc/subgid /etc/subgid
+            --ro-bind /etc/passwd /etc/passwd
+            --ro-bind /etc/group /etc/group
+            --ro-bind /etc/nsswitch.conf /etc/nsswitch.conf
+            "''${etc_containers_args[@]}"
             --ro-bind /run/ /run/
             --tmpfs "/run/user/$UID"  # writable XDG_RUNTIME_DIR for podman (overlays the ro mount)
             --ro-bind /sys/fs/cgroup /sys/fs/cgroup
@@ -68,6 +76,8 @@
             --ro-bind /lib64 /lib64
             --proc /proc
             --dev /dev
+            --dev-bind /dev/fuse /dev/fuse
+            --dev-bind /dev/net/tun /dev/net/tun
             --tmpfs /tmp
             --bind "$WORKDIR" "$WORKDIR"
             --chdir "$WORKDIR"
@@ -80,15 +90,12 @@
             "''${pi_args[@]}"
             "''${containers_args[@]}"
           )
-
           echo "running with bubblewrap arguments: ''${BWRAP_ARGS[*]}"
-
           exec "${pkgs.bubblewrap}/bin/bwrap" "''${BWRAP_ARGS[@]}" -- "${pkgs.pi-coding-agent}/bin/pi" "$@"
         '';
       };
     in {
       packages.${system}.default = piSandboxed;
-
       apps.${system}.default = {
         type = "app";
         program = "${piSandboxed}/bin/pi-sandboxed";
