@@ -57,6 +57,24 @@
 
     codex
     neovim
+
+    git
+    gcc
+    gnumake
+    unzip
+    tree-sitter
+    xclip
+    wl-clipboard
+    curl
+    wget
+    ripgrep
+    rustc
+    cargo
+    gzip
+    go
+    python314Packages.pip
+    fd
+    
   ];
 
   programs.direnv = {
