@@ -112,6 +112,7 @@ in {
     
     # pi-coding-agent
     ripgrep
+    neovim
   ];
   fonts.fontconfig.enable = true;
   programs.firefox = {
