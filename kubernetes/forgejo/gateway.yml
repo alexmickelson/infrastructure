@@ -6,7 +6,7 @@ metadata:
 spec:
   parentRefs:
     - name: envoy-gateway
-      namespace: default
+      namespace: envoy-gateway-ingress
   hostnames:
     - forgejo.alexmickelson.guru
   rules:

@@ -55,13 +55,17 @@ spec:
     kind: EnvoyProxy
     name: tailscale-proxy
     namespace: envoy-gateway-system
-
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: envoy-gateway-ingress
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: envoy-gateway
-  namespace: default
+  namespace: envoy-gateway-ingress
   annotations:
     cert-manager.io/cluster-issuer: cloudflare-issuer
     external-dns.alpha.kubernetes.io/target: "100.94.176.125" 
