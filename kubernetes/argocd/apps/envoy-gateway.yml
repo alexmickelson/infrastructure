@@ -62,6 +62,8 @@ kind: Gateway
 metadata:
   name: envoy-gateway
   namespace: default
+  annotations:
+    external-dns.alpha.kubernetes.io/target: "100.94.176.125" 
 spec:
   gatewayClassName: envoy
   listeners:
