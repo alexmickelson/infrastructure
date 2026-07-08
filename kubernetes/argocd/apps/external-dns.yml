@@ -30,9 +30,6 @@ spec:
         domainFilters:
           - alexmickelson.guru
         policy: sync
-        txtOwnerId: office-k3s
-        extraArgs:
-          cloudflare-proxied: false
   destination:
     server: https://kubernetes.default.svc
     namespace: external-dns
