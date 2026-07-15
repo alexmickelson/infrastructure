@@ -75,6 +75,7 @@
     python314Packages.pip
     fd
     
+    argocd
   ];
 
   programs.direnv = {

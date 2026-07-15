@@ -43,7 +43,7 @@ spec:
             - name: FORGEJO__server__LOCAL_ROOT_URL
               value: "http://forgejo-web-svc.forgejo.svc.cluster.local:3000/"
             - name: FORGEJO__server__SSH_DOMAIN
-              value: "forgejo-forgejo-web-svc.beefalo-newton.ts.net"
+              value: "forgejo-forgejo-ssh-svc.beefalo-newton.ts.net"
             - name: FORGEJO__server__SSH_PORT
               value: "22"
             # security
@@ -77,19 +77,28 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: forgejo-ssh-svc
+  namespace: forgejo
+  annotations:
+    tailscale.com/expose: "true"
+spec:
+  ports:
+    - name: ssh
+      port: 22
+      targetPort: 22
+  selector:
+    app: forgejo-web
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: forgejo-web-svc
   namespace: forgejo
-  # annotations:
-  #   tailscale.com/expose: "true" # exposes IP directly
 spec:
-  type: NodePort
   ports:
     - name: http
       port: 3000
       targetPort: 3000
-    - name: ssh
-      port: 22
-      targetPort: 22
   selector:
     app: forgejo-web
 ---
