@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - web.yml
+  - db.yml
+  - namespace.yml
+
+configMapGenerator:
+  - name: forgejo-landing-page
+    files:
+      - home.tmpl=landingpage.html
+      - custom-landing.css=landingpage.css
+      - custom-landing.js=landingpage.js
+    options:
+      disableNameSuffixHash: true

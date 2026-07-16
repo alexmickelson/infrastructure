@@ -53,6 +53,10 @@ spec:
               value: "true"
             - name: FORGEJO__service__ALLOW_ONLY_EXTERNAL_REGISTRATION
               value: "false"
+            - name: FORGEJO__ui__DEFAULT_THEME
+              value: "forgejo-dark"
+            - name: FORGEJO__ui__THEMES
+              value: "forgejo-dark"
           volumeMounts:
             - name: forgejo-data
               mountPath: /data
@@ -61,6 +65,18 @@ spec:
               readOnly: true
             - name: localtime
               mountPath: /etc/localtime
+              readOnly: true
+            - name: landing-page
+              mountPath: /data/gitea/templates/home.tmpl
+              subPath: home.tmpl
+              readOnly: true
+            - name: landing-page
+              mountPath: /data/gitea/public/assets/css/custom-landing.css
+              subPath: custom-landing.css
+              readOnly: true
+            - name: landing-page
+              mountPath: /data/gitea/public/assets/js/custom-landing.js
+              subPath: custom-landing.js
               readOnly: true
       volumes:
         - name: forgejo-data
@@ -73,6 +89,9 @@ spec:
         - name: localtime
           hostPath:
             path: /etc/localtime
+        - name: landing-page
+          configMap:
+            name: forgejo-landing-page
 ---
 apiVersion: v1
 kind: Service

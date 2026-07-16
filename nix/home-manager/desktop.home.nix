@@ -6,6 +6,12 @@
     bluetuiAliases = true;
     dotnetPackage = with pkgs.dotnetCorePackages; combinePackages [ sdk_8_0 sdk_9_0 ];
     bitwardenSshAgent = true;
+    appendConfig = ''
+      function k --wraps kubectl --description "Alias for kubectl"
+        kubectl $argv
+      end
+      complete -c k -w kubectl
+    '';
   };
   home.packages = with pkgs; [
     k9s
