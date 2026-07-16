@@ -7,5 +7,4 @@
         tree
         kubernetes-helm
     ];
-    home-manager.useGlobalPkgs = true;
 }
