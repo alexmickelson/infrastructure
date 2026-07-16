@@ -2,100 +2,124 @@ package main
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"slices"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
+	if err := godotenv.Load(); err != nil {
 		log.Fatal("error loading .env file")
 	}
-	gitea_base_url := "https://git.alexmickelson.guru"
-	forgejo_base_url := "https://forgejo.alexmickelson.guru"
-	gitea_token := os.Getenv("GITEA_TOKEN")
-	forgejo_token := os.Getenv("FORGEJO_TOKEN")
-	// fmt.Printf("gitea token %s, forgejo token %s\n", gitea_token, forgejo_token)
 
-	gitea_repos := read_repos(gitea_base_url, gitea_token)
-	forgejo_repos := read_repos(forgejo_base_url, forgejo_token)
+	giteaRepos := read_repos("https://git.alexmickelson.guru", os.Getenv("GITEA_TOKEN"))
+	forgejoRepos := read_repos("https://forgejo.alexmickelson.guru", os.Getenv("FORGEJO_TOKEN"))
 
-	forgejo_repo_names := make([]string, 0)
-	for _, r := range forgejo_repos {
-		forgejo_repo_names = append(forgejo_repo_names, r.Name)
+	forgejoRepoNames := make([]string, 0, len(forgejoRepos))
+	for _, r := range forgejoRepos {
+		forgejoRepoNames = append(forgejoRepoNames, r.Name)
 	}
-	for _, r := range gitea_repos {
-		if !slices.Contains(forgejo_repo_names, r.Name) {
-			fmt.Println(r.Name, r.Language, r.CloneURL)
+
+	tmpDir, err := os.MkdirTemp("", "gitea-migrate-*")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	for _, giteaRepo := range giteaRepos {
+		if slices.Contains(forgejoRepoNames, giteaRepo.Name) {
+			fmt.Printf("%s: skipped\n", giteaRepo.FullName)
+			continue
 		}
+
+		newRepo := create_repo("https://forgejo.alexmickelson.guru", os.Getenv("FORGEJO_TOKEN"), giteaRepo.Name, giteaRepo.Private)
+
+		clonePath := filepath.Join(tmpDir, giteaRepo.Name)
+		cloneURL := fmt.Sprintf("https://alex:%s@%s", os.Getenv("GITEA_TOKEN"), strings.TrimPrefix(giteaRepo.CloneURL, "https://"))
+		if err := runGit("clone", cloneURL, clonePath); err != nil {
+			fmt.Printf("%s: clone failed - %v\n", giteaRepo.FullName, err)
+			continue
+		}
+
+		pushURL := fmt.Sprintf("https://alex:%s@%s", os.Getenv("FORGEJO_TOKEN"), strings.TrimPrefix(newRepo.CloneURL, "https://"))
+		if err := runGit("-C", clonePath, "remote", "add", "forgejo", pushURL); err != nil {
+			fmt.Printf("%s: remote add failed - %v\n", giteaRepo.FullName, err)
+			continue
+		}
+		if err := runGit("-C", clonePath, "push", "--mirror", "forgejo"); err != nil {
+			fmt.Printf("%s: push failed - %v\n", giteaRepo.FullName, err)
+			continue
+		}
+
+		fmt.Printf("%s: migrated\n", giteaRepo.FullName)
 	}
 }
 
-func read_repos(base_url string, token string) []Repo {
-	req, _ := http.NewRequest("GET", base_url+"/api/v1/user/repos", nil)
+func read_repos(baseURL string, token string) []Repo {
+	req, _ := http.NewRequest("GET", baseURL+"/api/v1/user/repos", nil)
 	req.Header.Set("Authorization", "Bearer "+token)
-	client := &http.Client{}
-	resp, err := client.Do(req)
 
-	if err != nil {
-		fmt.Println("error in request", err)
+	client := &http.Client{
+		Transport: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}},
 	}
-
-	defer resp.Body.Close()
-	response_body, err := io.ReadAll(resp.Body)
+	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("error reading body", err)
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	var repos []Repo
-	json_err := json.Unmarshal(response_body, &repos)
-	if json_err != nil {
-		log.Fatal(json_err)
+	if err := json.Unmarshal(body, &repos); err != nil {
+		log.Fatal(err)
 	}
-
 	return repos
 }
 
+func create_repo(baseURL string, token string, name string, private bool) Repo {
+	body, _ := json.Marshal(CreateRepoRequest{Name: name, Private: private})
 
-func create_repo(base_url string, token string, name string, private bool) Repo {
-	body, json_err := json.Marshal(CreateRepoRequest{
-		Name:    name,
-		Private: private,
-	})
-	if json_err != nil {
-		log.Fatal(json_err)
-	}
-	req, req_err := http.NewRequest("POST", base_url+"/api/v1/user/repos", bytes.NewBuffer(body))
-	if req_err != nil {
-		log.Fatal(req_err)
-	}
+	req, _ := http.NewRequest("POST", baseURL+"/api/v1/user/repos", bytes.NewBuffer(body))
 	req.Header.Set("Authorization", "Bearer "+token)
 	req.Header.Set("Content-Type", "application/json")
 
-	client := &http.Client{}
-	resp, resp_err := client.Do(req)
-	if resp_err != nil {
-		log.Fatal(resp_err)
+	client := &http.Client{
+		Transport: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}},
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatal(err)
 	}
 	defer resp.Body.Close()
 
-	responseBody, readErr := io.ReadAll(resp.Body)
-	if readErr != nil {
-		log.Fatal(readErr)
-	}
-
+	responseBody, _ := io.ReadAll(resp.Body)
 	var repo Repo
-	unmarshalErr := json.Unmarshal(responseBody, &repo)
-	if unmarshalErr != nil {
-		log.Fatal(unmarshalErr)
+	if err := json.Unmarshal(responseBody, &repo); err != nil {
+		log.Fatal(err)
 	}
-
 	return repo
+}
+
+func runGit(args ...string) error {
+	cmd := exec.Command("git", args...)
+	cmd.Env = append(os.Environ(), "GIT_TERMINAL_PROMPT=0", "GIT_SSL_NO_VERIFY=1")
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("%w: %s", err, string(output))
+	}
+	return nil
 }
