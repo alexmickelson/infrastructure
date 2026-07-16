@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"slices"
 
 	"github.com/joho/godotenv"
 )
@@ -26,14 +27,14 @@ func main() {
 	gitea_repos := read_repos(gitea_base_url, gitea_token)
 	forgejo_repos := read_repos(forgejo_base_url, forgejo_token)
 
-	forgejo_repo_names:= []string
+	forgejo_repo_names := make([]string, 0)
 	for _, r := range forgejo_repos {
-		forgejo_repo_names += 
-
+		forgejo_repo_names = append(forgejo_repo_names, r.Name)
 	}
 	for _, r := range gitea_repos {
-		
-		fmt.Println(r.FullName, r.Language, r.CloneURL)
+		if !slices.Contains(forgejo_repo_names, r.Name) {
+			fmt.Println(r.Name, r.Language, r.CloneURL)
+		}
 	}
 }
 
@@ -62,7 +63,8 @@ func read_repos(base_url string, token string) []Repo {
 	return repos
 }
 
-func create_repo(base_url string, token string, name string, private bool) {
+
+func create_repo(base_url string, token string, name string, private bool) Repo {
 	body, json_err := json.Marshal(CreateRepoRequest{
 		Name:    name,
 		Private: private,
@@ -70,7 +72,7 @@ func create_repo(base_url string, token string, name string, private bool) {
 	if json_err != nil {
 		log.Fatal(json_err)
 	}
-	req, req_err := http.NewRequest("POST", base_url+"/api/vi/user/repos", bytes.NewBuffer(body))
+	req, req_err := http.NewRequest("POST", base_url+"/api/v1/user/repos", bytes.NewBuffer(body))
 	if req_err != nil {
 		log.Fatal(req_err)
 	}
@@ -84,6 +86,16 @@ func create_repo(base_url string, token string, name string, private bool) {
 	}
 	defer resp.Body.Close()
 
-	io.Copy(os.Stdout, resp.Body)
+	responseBody, readErr := io.ReadAll(resp.Body)
+	if readErr != nil {
+		log.Fatal(readErr)
+	}
 
+	var repo Repo
+	unmarshalErr := json.Unmarshal(responseBody, &repo)
+	if unmarshalErr != nil {
+		log.Fatal(unmarshalErr)
+	}
+
+	return repo
 }

@@ -31,7 +31,6 @@
     pciutils
     uv
     bluetui
-    jq
 
     vscode-fhs
     gnome-software
@@ -48,9 +47,9 @@
     bitwarden-desktop
     # jellyfin-tui
     bluetui
+    jq
 
     lazydocker
-    
     elixir
     elixir-ls
     inotify-tools
