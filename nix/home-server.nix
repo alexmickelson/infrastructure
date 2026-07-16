@@ -70,7 +70,6 @@
     description = "alex";
     extraGroups = [ "networkmanager" "wheel" "docker" "users" "libvirtd" "cdrom" ];
     shell = pkgs.fish;
-    pkgs sf
   };
   home-manager.users.alex = { ...}: {
     home.stateVersion = "24.05";
