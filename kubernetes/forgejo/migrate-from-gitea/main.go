@@ -44,25 +44,33 @@ func main() {
 
 		newRepo := create_repo("https://forgejo.alexmickelson.guru", os.Getenv("FORGEJO_TOKEN"), giteaRepo.Name, giteaRepo.Private)
 
-		clonePath := filepath.Join(tmpDir, giteaRepo.Name)
-		cloneURL := fmt.Sprintf("https://alex:%s@%s", os.Getenv("GITEA_TOKEN"), strings.TrimPrefix(giteaRepo.CloneURL, "https://"))
-		if err := runGit("clone", cloneURL, clonePath); err != nil {
-			fmt.Printf("%s: clone failed - %v\n", giteaRepo.FullName, err)
+		ctrl := clone_to_new_repo(tmpDir, giteaRepo, newRepo)
+		if ctrl != 0 {
 			continue
 		}
-
-		pushURL := fmt.Sprintf("https://alex:%s@%s", os.Getenv("FORGEJO_TOKEN"), strings.TrimPrefix(newRepo.CloneURL, "https://"))
-		if err := runGit("-C", clonePath, "remote", "add", "forgejo", pushURL); err != nil {
-			fmt.Printf("%s: remote add failed - %v\n", giteaRepo.FullName, err)
-			continue
-		}
-		if err := runGit("-C", clonePath, "push", "--mirror", "forgejo"); err != nil {
-			fmt.Printf("%s: push failed - %v\n", giteaRepo.FullName, err)
-			continue
-		}
-
-		fmt.Printf("%s: migrated\n", giteaRepo.FullName)
 	}
+}
+
+func clone_to_new_repo(tmpDir string, giteaRepo Repo, newRepo Repo) int {
+	clonePath := filepath.Join(tmpDir, giteaRepo.Name)
+	cloneURL := fmt.Sprintf("https://alex:%s@%s", os.Getenv("GITEA_TOKEN"), strings.TrimPrefix(giteaRepo.CloneURL, "https://"))
+	if err := runGit("clone", cloneURL, clonePath); err != nil {
+		fmt.Printf("%s: clone failed - %v\n", giteaRepo.FullName, err)
+		return 1
+	}
+
+	pushURL := fmt.Sprintf("https://alex:%s@%s", os.Getenv("FORGEJO_TOKEN"), strings.TrimPrefix(newRepo.CloneURL, "https://"))
+	if err := runGit("-C", clonePath, "remote", "add", "forgejo", pushURL); err != nil {
+		fmt.Printf("%s: remote add failed - %v\n", giteaRepo.FullName, err)
+		return 2
+	}
+	if err := runGit("-C", clonePath, "push", "--mirror", "forgejo"); err != nil {
+		fmt.Printf("%s: push failed - %v\n", giteaRepo.FullName, err)
+		return 3
+	}
+
+	fmt.Printf("%s: migrated\n", giteaRepo.FullName)
+	return 0
 }
 
 func read_repos(baseURL string, token string) []Repo {
