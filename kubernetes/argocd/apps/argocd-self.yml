@@ -6,11 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/argoproj/argo-cd
-    targetRevision: stable
-    path: manifests
-    directory:
-      include: install.yaml
+    repoURL: https://github.com/alexmickelson/infrastructure
+    targetRevision: HEAD
+    path: kubernetes/argocd
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
@@ -20,14 +18,6 @@ spec:
       selfHeal: true
     syncOptions:
       - ServerSideApply=true
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: argocd-cmd-params-cm
-  namespace: argocd
-data:
-  server.insecure: "true"
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
