@@ -31,6 +31,7 @@
     pciutils
     uv
     bluetui
+    jq
 
     vscode-fhs
     gnome-software
