@@ -63,6 +63,7 @@
 
     codex
     neovim
+    nixd
 
     git
     gcc
