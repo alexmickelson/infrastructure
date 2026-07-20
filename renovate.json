@@ -23,5 +23,13 @@
     "managerFilePatterns": [
       "/^kubernetes/argocd/apps/.+\\.ya?ml$/"
     ]
-  }
+  },
+  "packageRules": [
+    {
+      "description": "Require manual review for PostgreSQL major upgrades",
+      "matchPackageNames": ["postgres"],
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    }
+  ]
 }
