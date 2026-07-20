@@ -33,7 +33,7 @@
         gettext
       ];
       settings = {
-        container = { 
+        container = {
           enabled = false;
         };
         runner = {
@@ -67,41 +67,46 @@
       commands = [
         {
           command = "/run/current-system/sw/bin/nix-collect-garbage";
-          options = [ "NOPASSWD" "SETENV" ];
+          options = [
+            "NOPASSWD"
+            "SETENV"
+          ];
         }
       ];
     }
   ];
 
   system.activationScripts.zfs-delegate-forgejo-runner = {
-    text = 
+    text =
       let
-        poolNames = [ "data-ssd" "backup" ];
+        poolNames = [
+          "data-ssd"
+          "backup"
+        ];
         permissions = "compression,create,destroy,mount,mountpoint,receive,rollback,send,snapshot,hold";
       in
       ''
-        ${lib.concatMapStringsSep "\n" (pool: 
-          "${pkgs.zfs}/bin/zfs allow -u forgejo-runner ${permissions} ${pool} || true"
+        ${lib.concatMapStringsSep "\n" (
+          pool: "${pkgs.zfs}/bin/zfs allow -u forgejo-runner ${permissions} ${pool} || true"
         ) poolNames}
       '';
     deps = [ ];
   };
 
   systemd.services.forgejo-runner-infrastructure.serviceConfig = {
-        ExecStartPre = lib.mkForce [ ];
-    ExecStart = lib.mkForce
-      "${config.services.gitea-actions-runner.package}/bin/forgejo-runner daemon --config /data/runner/forgejo-runner.yml";
+    ExecStartPre = lib.mkForce [ ];
+    ExecStart = lib.mkForce "${config.services.gitea-actions-runner.package}/bin/forgejo-runner daemon --config /data/runner/forgejo-runner.yml";
 
     WorkingDirectory = lib.mkForce "/var/lib/forgejo-runner/infrastructure";
-    
+
     User = lib.mkForce "forgejo-runner";
     Group = lib.mkForce "forgejo-runner";
-    
+
     Environment = lib.mkForce [
       "PATH=/run/wrappers/bin:/etc/profiles/per-user/forgejo-runner/bin:/run/current-system/sw/bin"
       "NIX_PATH=nixpkgs=${pkgs.path}"
     ];
-    
+
     DynamicUser = lib.mkForce false;
     PrivateDevices = lib.mkForce false;
     PrivateMounts = lib.mkForce false;
@@ -126,10 +131,10 @@
     RestrictAddressFamilies = lib.mkForce [ ];
     ReadWritePaths = lib.mkForce [ ];
     BindReadOnlyPaths = lib.mkForce [ ];
-    
+
     DeviceAllow = lib.mkForce [ "/dev/zfs rw" ];
     DevicePolicy = lib.mkForce "auto";
-    
+
     Restart = lib.mkForce "always";
   };
 
