@@ -1,10 +1,15 @@
-{ pkgs, ... }: 
+{ pkgs, ... }:
 {
   imports = [ ./fish.home.nix ];
 
   customFish = {
     bluetuiAliases = true;
-    dotnetPackage = with pkgs.dotnetCorePackages; combinePackages [ sdk_8_0 sdk_9_0 ];
+    dotnetPackage =
+      with pkgs.dotnetCorePackages;
+      combinePackages [
+        sdk_8_0
+        sdk_9_0
+      ];
     bitwardenSshAgent = true;
     appendConfig = ''
       function k --wraps kubectl --description "Alias for kubectl"
@@ -82,7 +87,7 @@
     go
     python314Packages.pip
     fd
-    
+
     argocd
   ];
 
@@ -94,10 +99,16 @@
     enableFishIntegration = true;
     settings = {
       window-inherit-working-directory = "false";
+      window-decoration = false;
       theme = "Atom";
       font-size = 14;
       window-height = 30;
-      window-width = 100; 
+      window-width = 100;
+      background-opacity = 0.99;
+      background-blur = true;
+      window-padding-x = 10;
+      window-padding-y = 10;
+      shell-integration = "detect";
     };
   };
   home.sessionVariables = {
@@ -111,7 +122,7 @@
       color-scheme = "prefer-dark";
     };
     "org/gnome/desktop/wm/keybindings" = {
-      toggle-maximized=["<Super>m"];
+      toggle-maximized = [ "<Super>m" ];
     };
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
       binding = "<Super>t";
@@ -129,54 +140,54 @@
   };
   home.file = {
     ".config/lazydocker/config.yml".text = ''
-gui:
-  returnImmediately: true
-  screenMode: "half"
+      gui:
+        returnImmediately: true
+        screenMode: "half"
     '';
     ".config/k9s/config.yaml".text = ''
-k9s:
-  liveViewAutoRefresh: true
-  screenDumpDir: /home/alex/.local/state/k9s/screen-dumps
-  refreshRate: 2
-  maxConnRetry: 5
-  readOnly: false
-  noExitOnCtrlC: false
-  ui:
-    enableMouse: false
-    headless: false
-    logoless: false
-    crumbsless: false
-    reactive: false
-    noIcons: false
-    defaultsToFullScreen: false
-  skipLatestRevCheck: false
-  disablePodCounting: false
-  shellPod:
-    image: busybox:1.35.0
-    namespace: default
-    limits:
-      cpu: 100m
-      memory: 100Mi
-  imageScans:
-    enable: false
-    exclusions:
-      namespaces: []
-      labels: {}
-  logger:
-    tail: 1000
-    buffer: 5000
-    sinceSeconds: -1
-    textWrap: false
-    showTime: false
-  thresholds:
-    cpu:
-      critical: 90
-      warn: 70
-    memory:
-      critical: 90
-      warn: 70
-  namespace:
-    lockFavorites: false
+      k9s:
+        liveViewAutoRefresh: true
+        screenDumpDir: /home/alex/.local/state/k9s/screen-dumps
+        refreshRate: 2
+        maxConnRetry: 5
+        readOnly: false
+        noExitOnCtrlC: false
+        ui:
+          enableMouse: false
+          headless: false
+          logoless: false
+          crumbsless: false
+          reactive: false
+          noIcons: false
+          defaultsToFullScreen: false
+        skipLatestRevCheck: false
+        disablePodCounting: false
+        shellPod:
+          image: busybox:1.35.0
+          namespace: default
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        imageScans:
+          enable: false
+          exclusions:
+            namespaces: []
+            labels: {}
+        logger:
+          tail: 1000
+          buffer: 5000
+          sinceSeconds: -1
+          textWrap: false
+          showTime: false
+        thresholds:
+          cpu:
+            critical: 90
+            warn: 70
+          memory:
+            critical: 90
+            warn: 70
+        namespace:
+          lockFavorites: false
     '';
   };
 }
