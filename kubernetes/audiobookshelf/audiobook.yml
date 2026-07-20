@@ -59,6 +59,8 @@ kind: Service
 metadata:
   name: audiobookshelf
   namespace: audiobookshelf
+  annotations:
+    tailscale.com/expose: "true"
 spec:
   selector:
     app: audiobookshelf
@@ -73,8 +75,6 @@ kind: Ingress
 metadata:
   name: audiobookshelf-ingress
   namespace: audiobookshelf
-  annotations:
-    cert-manager.io/cluster-issuer: cloudflare-issuer
 spec:
   ingressClassName: nginx
   tls:
@@ -92,6 +92,24 @@ spec:
             name: audiobookshelf
             port:
               number: 13378
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: audiobookshelf-ts-ingress
+  annotations:
+    # This enables Tailscale Funnel for the Ingress
+    tailscale.com/funnel: "true"
+spec:
+  ingressClassName: tailscale
+  defaultBackend:
+    service:
+      name: audiobookshelf
+      port:
+        number: 13378
+  tls:
+    - hosts:
+        - audiobook
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
