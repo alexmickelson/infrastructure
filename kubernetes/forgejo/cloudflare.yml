@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflared-forgejo-token
+  namespace: forgejo
+type: Opaque
+stringData:
+  token: $CLOUDFLARED_FORGEJO_TOKEN
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflared-forgejo
+  namespace: forgejo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudflared-forgejo
+  template:
+    metadata:
+      labels:
+        app: cloudflared-forgejo
+    spec:
+      containers:
+        - name: cloudflared
+          image: cloudflare/cloudflared:latest
+          imagePullPolicy: Always
+          args:
+            - tunnel
+            - run
+          env:
+            - name: TUNNEL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflared-forgejo-token
+                  key: token
