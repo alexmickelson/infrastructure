@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: mariadb
-          image: mariadb:latest
+          image: mariadb:latest@sha256:628f228f0fd5913a220438693576b29b6fe4dc1fa0a1298c0e98579fae28635f
           args:
             [
               "--transaction-isolation=READ-COMMITTED",

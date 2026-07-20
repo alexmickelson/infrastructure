@@ -16,7 +16,7 @@ spec:
       hostNetwork: true
       containers:
       - name: music-assistant-server
-        image: ghcr.io/music-assistant/server:2
+        image: ghcr.io/music-assistant/server:2@sha256:50666a6f8d7f87d53d993dc41860ab06dda11047f6e433bb5bdbcb6e309ac74c
         imagePullPolicy: Always
         env:
         - name: LOG_LEVEL
