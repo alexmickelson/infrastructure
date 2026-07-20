@@ -6,13 +6,13 @@ jobs:
     runs-on: [home-server]
     steps:
       - name: checkout repo
-        working-directory: /home/gitea-runner
+        working-directory: /home/forgejo-runner
         run: |
           if [ -d "infrastructure" ]; then
             cd infrastructure
             echo "Infrastructure folder exists. Resetting to the most recent commit."
             git reset --hard HEAD
-            git pull https://x-access-token:${{ secrets.GITEA_TOKEN }}@git.alexmickelson.guru/${{ gitea.repository }} $(git rev-parse --abbrev-ref HEAD)
+            git pull https://x-access-token:${{ secrets.FORGEJO_TOKEN }}@git.alexmickelson.guru/${{ forgejo.repository }} $(git rev-parse --abbrev-ref HEAD)
           else
-            git clone https://x-access-token:${{ secrets.GITEA_TOKEN }}@git.alexmickelson.guru/${{ gitea.repository }}.git
+            git clone https://x-access-token:${{ secrets.FORGEJO_TOKEN }}@git.alexmickelson.guru/${{ forgejo.repository }}.git
           fi

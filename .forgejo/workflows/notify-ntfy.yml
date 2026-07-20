@@ -28,7 +28,7 @@ jobs:
       NTFY_CHANNEL: ${{ secrets.NTFY_CHANNEL }}
     steps:
       - name: Send ntfy notification
-        working-directory: /home/gitea-runner
+        working-directory: /home/forgejo-runner
         run: |
           set -e
           if [ -n "${{ inputs.action_url }}" ]; then

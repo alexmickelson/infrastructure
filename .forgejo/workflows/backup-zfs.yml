@@ -1,0 +1,41 @@
+name: ZFS Backup
+on:
+  schedule:
+    - cron: 0 1 * * *
+  workflow_dispatch:
+jobs:
+  update-infrastructure:
+    runs-on: [home-server]
+    steps:
+      - name: run syncoid
+        run: |
+          zpool status
+          echo ""
+          zfs list
+          echo ""
+          syncoid \
+            --recursive \
+            --no-privilege-elevation \
+              data-ssd/data \
+              backup/data
+
+          syncoid \
+            --recursive \
+            --no-privilege-elevation \
+              data-ssd/media \
+              backup/media
+
+  notify-on-failure:
+    runs-on: home-server
+    needs: update-infrastructure
+    if: failure()
+    uses: ./.forgejo/workflows/notify-ntfy.yml
+    secrets:
+      NTFY_CHANNEL: ${{ secrets.NTFY_CHANNEL }}
+    with:
+      title: "ZFS Backup Failed"
+      message: |
+        Failed to backup ZFS datasets
+      action_url: "https://git.alexmickelson.guru/${{ forgejo.repository }}/actions/runs/${{ forgejo.run_number }}"
+      priority: "high"
+      tags: "rotating_light,backup"
