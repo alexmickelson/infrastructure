@@ -8,7 +8,7 @@
     "argocd"
   ],
   "includePaths": [
-    "kubernetes/**"
+    "kubernetes/**/*"
   ],
   "packageRules": [
     {
