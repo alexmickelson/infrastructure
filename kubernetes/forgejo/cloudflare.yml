@@ -1,12 +1,3 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: cloudflared-forgejo-token
-  namespace: forgejo
-type: Opaque
-stringData:
-  token: $CLOUDFLARED_FORGEJO_TOKEN
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,14 +15,77 @@ spec:
     spec:
       containers:
         - name: cloudflared
-          image: cloudflare/cloudflared:latest
-          imagePullPolicy: Always
+          image: cloudflare/cloudflared:2026.6.1
           args:
             - tunnel
+            - --no-autoupdate
+            - --metrics
+            - 0.0.0.0:20241
+            - --config
+            - /etc/cloudflared/config/config.yaml
             - run
-          env:
-            - name: TUNNEL_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: cloudflared-forgejo-token
-                  key: token
+            - 8a5f0588-1fd0-4e38-abe2-571141738805
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 20241
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 1
+          volumeMounts:
+            - name: config
+              mountPath: /etc/cloudflared/config
+              readOnly: true
+            - name: credentials
+              mountPath: /etc/cloudflared/credentials.json
+              subPath: credentials.json
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: cloudflared-config
+        - name: credentials
+          secret:
+            secretName: cloudflared-forgejo-credentials
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: cloudflared-forgejo-external-secret # external secret name
+  namespace: forgejo
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: cloudflared-forgejo-credentials # secret that will be created
+    creationPolicy: Owner
+  data:
+    - secretKey: credentials.json
+      remoteRef:
+        key: forgejo
+        property: CLOUDFLARED_FORGEJO_CREDENTIALS
+        conversionStrategy: Default	
+        decodingStrategy: None
+        metadataPolicy: None
+        nullBytePolicy: Ignore
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudflared-config
+  namespace: forgejo
+data:
+  config.yaml: |
+    tunnel: 8a5f0588-1fd0-4e38-abe2-571141738805
+    credentials-file: /etc/cloudflared/credentials.json
+
+    protocol: http2
+
+    ingress:
+      - hostname: "git.alexmickelson.guru"
+        service: http://forgejo-web-svc.forgejo.svc.cluster.local:3000
+
+      - service: http_status:404
+
