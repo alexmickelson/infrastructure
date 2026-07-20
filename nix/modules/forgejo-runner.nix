@@ -1,6 +1,6 @@
 { pkgs, lib, ... }:
 {
-  services.forgejo-action-runner = {
+  services.gitea-action-runner = {
     package = pkgs.forgejo-runner;
     instances.infrastructure = {
       enable = true;
