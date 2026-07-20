@@ -5,6 +5,8 @@ metadata:
   name: forgejo-db
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: forgejo-db
@@ -15,7 +17,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:17
+          image: postgres:16
           ports:
             - containerPort: 5432
           env:
