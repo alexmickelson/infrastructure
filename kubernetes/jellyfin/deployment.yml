@@ -28,7 +28,7 @@ spec:
           - 26 # video group for GPU access
       containers:
         - name: jellyfin
-          image: jellyfin/jellyfin:2026052302
+          image: jellyfin/jellyfin:2026052922
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
