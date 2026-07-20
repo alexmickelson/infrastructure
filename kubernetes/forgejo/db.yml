@@ -4,7 +4,7 @@ metadata:
   namespace: forgejo
   name: forgejo-db
 spec:
-  replicas: 0
+  replicas: 1
   strategy:
     type: Recreate
   selector:
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:16
+          image: postgres:18
           ports:
             - containerPort: 5432
           env:
@@ -28,7 +28,7 @@ spec:
             - name: POSTGRES_DB
               value: "forgejo"
           volumeMounts:
-            - mountPath: /var/lib/postgresql/data
+            - mountPath: /var/lib/postgresql
               name: postgres-data
       volumes:
         - name: postgres-data
