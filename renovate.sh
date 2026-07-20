@@ -26,4 +26,4 @@ docker run --rm \
   -e RENOVATE_ENDPOINT=https://forgejo.alexmickelson.guru \
   -e RENOVATE_REPOSITORIES=alex/infrastructure \
   renovate/renovate:latest
-  # -e LOG_LEVEL=debug \
+# -e RENOVATE_DRY_RUN=full \
