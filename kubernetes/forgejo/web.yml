@@ -37,7 +37,7 @@ spec:
             - name: FORGEJO__server__PROTOCOL
               value: "http"
             - name: FORGEJO__server__DOMAIN
-              value: "forgejo.alexmickelson.guru"
+              value: "git.alexmickelson.guru"
             - name: FORGEJO__server__PUBLIC_URL_DETECTION
               value: "auto"
             - name: FORGEJO__server__LOCAL_ROOT_URL
