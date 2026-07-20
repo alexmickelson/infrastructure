@@ -95,7 +95,7 @@
 
   systemd.services.forgejo-runner-infrastructure.serviceConfig = {
     ExecStartPre = lib.mkForce [ ];
-    ExecStart = lib.mkForce "${config.services.gitea-actions-runner.package}/bin/forgejo-runner daemon --config /data/runner/forgejo-runner.yml";
+    ExecStart = lib.mkForce "${pkgs.forgejo-runner}/bin/forgejo-runner daemon --config /data/runner/forgejo-runner.yml";
 
     WorkingDirectory = lib.mkForce "/var/lib/forgejo-runner/infrastructure";
 
