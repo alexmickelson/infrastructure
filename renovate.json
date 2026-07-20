@@ -20,11 +20,5 @@
     "managerFilePatterns": [
       "/^kubernetes/argocd/apps/.+\\.ya?ml$/"
     ]
-  },
-  "packageRules": [
-    {
-      "matchManagers": ["kubernetes", "argocd"],
-      "groupName": "kubernetes updates"
-    }
-  ]
+  }
 }
