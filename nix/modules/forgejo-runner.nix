@@ -1,6 +1,6 @@
 { pkgs, lib, ... }:
 {
-  services.gitea-actions-runner = {
+  services.forgejo-action-runner = {
     package = pkgs.forgejo-runner;
     instances.infrastructure = {
       enable = true;
@@ -87,8 +87,8 @@
     deps = [ ];
   };
 
-  systemd.services.gitea-runner-infrastructure.serviceConfig = {
-    WorkingDirectory = lib.mkForce "/var/lib/gitea-runner/infrastructure";
+  systemd.services.forgejo-runner-infrastructure.serviceConfig = {
+    WorkingDirectory = lib.mkForce "/var/lib/forgejo-runner/infrastructure";
     
     User = lib.mkForce "forgejo-runner";
     Group = lib.mkForce "forgejo-runner";
@@ -129,5 +129,5 @@
     Restart = lib.mkForce "always";
   };
 
-  systemd.services.gitea-runner-infrastructure.path = [ pkgs.sudo ];
+  systemd.services.forgejo-runner-infrastructure.path = [ pkgs.sudo ];
 }
