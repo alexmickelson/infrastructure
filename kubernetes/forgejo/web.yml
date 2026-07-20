@@ -121,27 +121,3 @@ spec:
   selector:
     app: forgejo-web
 ---
-# apiVersion: networking.k8s.io/v1
-# kind: Ingress
-# metadata:
-#   name: forgejo
-#   namespace: forgejo
-#   annotations:
-#     cert-manager.io/cluster-issuer: cloudflare-issuer
-# spec:
-#   ingressClassName: nginx
-#   tls:
-#     - hosts:
-#         - forgejo.alexmickelson.guru
-#       secretName: forgejo-tls-cert
-#   rules:
-#     - host: forgejo.alexmickelson.guru
-#       http:
-#         paths:
-#           - path: /
-#             pathType: Prefix
-#             backend:
-#               service:
-#                 name: forgejo-web-svc
-#                 port:
-#                   number: 3000

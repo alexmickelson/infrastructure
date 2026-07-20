@@ -5,6 +5,7 @@ resources:
   - web.yml
   - db.yml
   - namespace.yml
+  - httproute.yml
 
 configMapGenerator:
   - name: forgejo-landing-page

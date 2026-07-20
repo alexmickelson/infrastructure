@@ -9,6 +9,7 @@ spec:
       namespace: envoy-gateway-ingress
   hostnames:
     - forgejo.alexmickelson.guru
+    - git.alexmickelson.guru
   rules:
     - backendRefs:
         - name: forgejo-web-svc
