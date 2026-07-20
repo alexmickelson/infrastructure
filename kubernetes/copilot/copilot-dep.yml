@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: copilot-api
-        image: node:latest
+        image: node:latest@sha256:0473e7dc433a1310f436edee02aa79737ec78a4b345433ab0963d4a256f9ad85
         imagePullPolicy: Always
         workingDir: /app
         command: ["sh", "-c"]

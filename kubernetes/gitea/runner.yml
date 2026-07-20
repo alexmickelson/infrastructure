@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: runner
-          image: gitea/act_runner:latest
+          image: gitea/act_runner:latest@sha256:b5c35d6bdbb9bb25e531230bfc7cc663cb751406cbec90a2a891b85fea54de86
           env:
             - name: GITEA_INSTANCE_URL
               value: "https://git.alexmickelson.guru"
