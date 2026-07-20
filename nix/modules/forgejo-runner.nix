@@ -1,48 +1,5 @@
 { pkgs, lib, ... }:
 {
-  services.gitea-actions-runner = {
-    package = pkgs.forgejo-runner;
-    instances.infrastructure = {
-      enable = true;
-      name = "infrastructure-runner";
-      url = "https://forgejo.alexmickelson.guru";
-      tokenFile = "/data/runner/forgejo-infrastructure-token.txt";
-      labels = [
-        "self-hosted"
-        "home-server"
-        "self-hosted:host"
-        "home-server:host"
-        "native:host"
-      ];
-      hostPackages = with pkgs; [
-        bashNonInteractive
-        bash
-        coreutils
-        docker
-        git
-        git-secret
-        zfs
-        sanoid
-        mbuffer
-        lzop
-        kubectl
-        kubernetes-helm
-        curl
-        nodejs_24
-        openssl
-        gettext
-      ];
-      settings = {
-        container = {
-          enabled = false;
-        };
-        runner = {
-          capacity = 5;
-        };
-      };
-    };
-  };
-
   users.users.forgejo-runner = {
     isNormalUser = true;
     description = "Forgejo Actions Runner";
@@ -58,7 +15,6 @@
     ];
     shell = pkgs.bash;
   };
-
   users.groups.forgejo-runner = { };
 
   security.sudo.extraRules = [
@@ -93,50 +49,58 @@
     deps = [ ];
   };
 
-  systemd.services.forgejo-runner-infrastructure.serviceConfig = {
-    ExecStartPre = lib.mkForce [ ];
-    ExecStart = lib.mkForce "${pkgs.forgejo-runner}/bin/forgejo-runner daemon --config /data/runner/forgejo-runner.yml";
-
-    WorkingDirectory = lib.mkForce "/var/lib/forgejo-runner/infrastructure";
-
-    User = lib.mkForce "forgejo-runner";
-    Group = lib.mkForce "forgejo-runner";
-
-    Environment = lib.mkForce [
-      "PATH=/run/wrappers/bin:/etc/profiles/per-user/forgejo-runner/bin:/run/current-system/sw/bin"
-      "NIX_PATH=nixpkgs=${pkgs.path}"
+  systemd.services.forgejo-runner-infrastructure = {
+    description = "Forgejo Actions Runner";
+    after = [
+      "network-online.target"
+      "docker.service"
     ];
+    wants = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+    path = [ pkgs.sudo ];
 
-    DynamicUser = lib.mkForce false;
-    PrivateDevices = lib.mkForce false;
-    PrivateMounts = lib.mkForce false;
-    PrivateTmp = lib.mkForce false;
-    PrivateUsers = lib.mkForce false;
-    ProtectClock = lib.mkForce false;
-    ProtectControlGroups = lib.mkForce false;
-    ProtectHome = lib.mkForce false;
-    ProtectHostname = lib.mkForce false;
-    ProtectKernelLogs = lib.mkForce false;
-    ProtectKernelModules = lib.mkForce false;
-    ProtectKernelTunables = lib.mkForce false;
-    ProtectProc = lib.mkForce "default";
-    ProtectSystem = lib.mkForce false;
-    NoNewPrivileges = lib.mkForce false;
-    RestrictNamespaces = lib.mkForce false;
-    RestrictRealtime = lib.mkForce false;
-    RestrictSUIDSGID = lib.mkForce false;
-    RemoveIPC = lib.mkForce false;
-    LockPersonality = lib.mkForce false;
-    SystemCallFilter = lib.mkForce [ ];
-    RestrictAddressFamilies = lib.mkForce [ ];
-    ReadWritePaths = lib.mkForce [ ];
-    BindReadOnlyPaths = lib.mkForce [ ];
+    environment = {
+      PATH = lib.mkForce "/run/wrappers/bin:/etc/profiles/per-user/forgejo-runner/bin:/run/current-system/sw/bin";
+      NIX_PATH = "nixpkgs=${pkgs.path}";
+    };
 
-    DeviceAllow = lib.mkForce [ "/dev/zfs rw" ];
-    DevicePolicy = lib.mkForce "auto";
+    serviceConfig = {
+      ExecStart = "${pkgs.forgejo-runner}/bin/forgejo-runner daemon --config /data/runner/forgejo-runner.yml";
+      WorkingDirectory = "/var/lib/forgejo-runner/infrastructure";
+      User = "forgejo-runner";
+      Group = "forgejo-runner";
+      Restart = "always";
+      RestartSec = 5;
 
-    Restart = lib.mkForce "always";
+      # matches the hardening posture you already forced off on the module version —
+      # host-native execution needs broad access (docker socket, zfs, sudo, etc.)
+      DynamicUser = false;
+      PrivateDevices = false;
+      PrivateMounts = false;
+      PrivateTmp = false;
+      PrivateUsers = false;
+      ProtectClock = false;
+      ProtectControlGroups = false;
+      ProtectHome = false;
+      ProtectHostname = false;
+      ProtectKernelLogs = false;
+      ProtectKernelModules = false;
+      ProtectKernelTunables = false;
+      ProtectProc = "default";
+      ProtectSystem = false;
+      NoNewPrivileges = false;
+      RestrictNamespaces = false;
+      RestrictRealtime = false;
+      RestrictSUIDSGID = false;
+      RemoveIPC = false;
+      LockPersonality = false;
+
+      DeviceAllow = [ "/dev/zfs rw" ];
+      DevicePolicy = "auto";
+    };
   };
 
-  systemd.services.forgejo-runner-infrastructure.path = [ pkgs.sudo ];
+  systemd.tmpfiles.rules = [
+    "d /var/lib/forgejo-runner/infrastructure 0750 forgejo-runner forgejo-runner -"
+  ];
 }
