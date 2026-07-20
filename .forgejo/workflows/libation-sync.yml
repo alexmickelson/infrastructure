@@ -6,13 +6,13 @@ on:
 
 jobs:
   update-repo:
-    uses: ./.gitea/workflows/update-repo.yml
+    uses: ./.forgejo/workflows/update-repo.yml
     runs-on: home-server
   sync-audiobooks:
     runs-on: [home-server]
     steps:
       - name: Run Libation sync
-        working-directory: /home/gitea-runner/infrastructure/home-server/libation
+        working-directory: /home/forgejo-runner/infrastructure/home-server/libation
         run: |
           echo "Starting Libation audiobook sync at $(date)"
           docker compose pull -q
@@ -23,13 +23,13 @@ jobs:
     runs-on: home-server
     needs: sync-audiobooks
     if: failure()
-    uses: ./.gitea/workflows/notify-ntfy.yml
+    uses: ./.forgejo/workflows/notify-ntfy.yml
     secrets:
       NTFY_CHANNEL: ${{ secrets.NTFY_CHANNEL }}
     with:
       title: "Libation Sync Failed"
       message: |
         Failed to sync audiobooks with Libation
-      action_url: "https://git.alexmickelson.guru/${{ gitea.repository }}/actions/runs/${{ gitea.run_number }}"
+      action_url: "https://git.alexmickelson.guru/${{ forgejo.repository }}/actions/runs/${{ forgejo.run_number }}"
       priority: "high"
       tags: "rotating_light,audiobooks"
