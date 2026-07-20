@@ -18,9 +18,7 @@
     "managerFilePatterns": [
       "/^kubernetes/.+\\.ya?ml$/"
     ],
-    "digest": {
-      "enable": true
-    }
+    "pinDigests": true
   },
   "argocd": {
     "managerFilePatterns": [
