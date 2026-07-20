@@ -7,7 +7,7 @@
       <home-manager/nixos>
       ./modules/k3s.nix
       ./modules/pci-passthrough.nix
-      ./modules/gitea-runner.nix
+      # ./modules/gitea-runner.nix
       ./modules/forgejo-runner.nix
     ];
   services.k3s.nodeIp = "100.110.207.108"; # when changed, need to regenerate kubeconfig
