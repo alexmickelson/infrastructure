@@ -37,6 +37,7 @@ fi
 docker run --rm \
   $DOCKER_DEBUG_FLAG \
   -e RENOVATE_TOKEN="$RENOVATE_FORGEJO_TOKEN" \
+  -e RENOVATE_GITHUB_COM_TOKEN="$RENOVATE_GITHUB_TOKEN" \
   -e RENOVATE_PLATFORM=forgejo \
   -e RENOVATE_ENDPOINT=https://forgejo.alexmickelson.guru \
   -e RENOVATE_REPOSITORIES=alex/infrastructure \
