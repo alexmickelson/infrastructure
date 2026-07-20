@@ -10,6 +10,16 @@
   "includePaths": [
     "kubernetes/**/*"
   ],
+  "kubernetes": {
+    "managerFilePatterns": [
+      "/^kubernetes/.+\\.ya?ml$/"
+    ]
+  },
+  "argocd": {
+    "managerFilePatterns": [
+      "/^kubernetes/argocd/apps/.+\\.ya?ml$/"
+    ]
+  },
   "packageRules": [
     {
       "matchManagers": ["kubernetes", "argocd"],
