@@ -64,6 +64,7 @@
     codex
     neovim
     nixd
+    nixfmt-rfc-style
 
     git
     gcc
