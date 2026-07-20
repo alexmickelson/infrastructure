@@ -96,6 +96,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  namespace: audiobookshelf
   name: audiobookshelf-ts-ingress
   annotations:
     # This enables Tailscale Funnel for the Ingress
