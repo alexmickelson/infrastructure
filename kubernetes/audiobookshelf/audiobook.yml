@@ -100,7 +100,7 @@ metadata:
   name: audiobookshelf-ts-ingress
   annotations:
     # This enables Tailscale Funnel for the Ingress
-    tailscale.com/funnel: "true"
+    tailscale.com/funnel: "false"
 spec:
   ingressClassName: tailscale
   defaultBackend:
