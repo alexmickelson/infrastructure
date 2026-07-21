@@ -130,4 +130,3 @@ spec:
         - path:
             type: PathPrefix
             value: /
----
