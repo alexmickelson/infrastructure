@@ -1,10 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# Keep the Argo CD install pinned. Update this revision intentionally when
-# upgrading Argo CD, rather than following the mutable `stable` branch.
 resources:
-  - https://raw.githubusercontent.com/argoproj/argo-cd/564b94973b284b8de98da7cee6eeade2cb941e46/manifests/install.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 patches:
   - target:
