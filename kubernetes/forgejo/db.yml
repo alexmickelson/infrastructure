@@ -24,7 +24,10 @@ spec:
             - name: POSTGRES_USER
               value: "forgejo"
             - name: POSTGRES_PASSWORD
-              value: CHANGE_ME_GENERATE_STRONG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: forgejo-db-secrets
+                  key: credentials.json
             - name: POSTGRES_DB
               value: "forgejo"
           volumeMounts:
@@ -51,3 +54,26 @@ spec:
   selector:
     app: forgejo-db
   type: ClusterIP
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: forgejo-db-external-secret # external secret name
+  namespace: forgejo
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: forgejo-db-secrets # secret that will be created
+    creationPolicy: Owner
+  data:
+    - secretKey: credentials.json
+      remoteRef:
+        key: forgejo
+        property: POSTGRESS_PASSWORD
+        conversionStrategy: Default	
+        decodingStrategy: None
+        metadataPolicy: None
+        nullBytePolicy: Ignore
