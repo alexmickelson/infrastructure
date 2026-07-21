@@ -17,22 +17,45 @@ spec:
     spec:
       containers:
         - name: mariadb
-          image: mariadb:latest@sha256:628f228f0fd5913a220438693576b29b6fe4dc1fa0a1298c0e98579fae28635f
+          image: mariadb:10.6
           args:
             [
               "--transaction-isolation=READ-COMMITTED",
               "--log-bin=binlog",
               "--binlog-format=ROW",
             ]
-          environment:
-            MYSQL_ROOT_PASSWORD: your_root_password
-            MYSQL_DATABASE: nextcloud
-            MYSQL_USER: nextcloud
-            MYSQL_PASSWORD: slkdnflksnelkfnsdweoinv
-          volumes:
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: klsdnofinsodkflksen34tesrg
+            - name: MYSQL_DATABASE
+              value: nextcloud
+            - name: MYSQL_USER
+              value: nextcloud
+            - name: MYSQL_PASSWORD
+              value: slkdnflksnelkfnsdweoinv
+          volumeMounts:
             - name: nextcloud-db-data
-              hostPath:
-                path: /data/nextcloud-db
-                type: DirectoryOrCreate
+              mountPath: /var/lib/mysql
           ports:
             - containerPort: 3306
+              name: mysql
+      volumes:
+        - name: nextcloud-db-data
+          hostPath:
+            path: /data/nextcloud-db
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextcloud-db
+  namespace: nextcloud
+  labels:
+    app: nextcloud-db
+spec:
+  selector:
+    app: nextcloud-db
+  ports:
+    - port: 3306
+      targetPort: 3306
+      protocol: TCP

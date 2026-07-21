@@ -15,6 +15,9 @@ spec:
       labels:
         app: nextcloud-cron
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
         - name: nextcloud
           image: nextcloud:latest@sha256:b52f7bc0e496f227b0e85e3b88571a42c68b6245ccde29d577e733227715dcf5
@@ -26,31 +29,50 @@ spec:
             - MYSQL_DATABASE=nextcloud
             - MYSQL_USER=nextcloud
             - MYSQL_HOST=nextcloud-db
-          volumes:
+          volumeMounts:
             - name: nextcloud-www
-              hostPath:
-                path: /data/nextcloud/html
-                type: DirectoryOrCreate
+              mountPath: /var/www/html
             - name: music
-              hostPath:
-                path: /data/media/music
-                type: DirectoryOrCreate
+              mountPath: /music
             - name: movies
-              hostPath:
-                path: /data/media/movies
-                type: DirectoryOrCreate
+              mountPath: /movies
             - name: tvshows
-              hostPath:
-                path: /data/media/tvshows
-                type: DirectoryOrCreate
+              mountPath: /tvshows
             - name: shared
-              hostPath:
-                path: /data/media/shared
-                type: DirectoryOrCreate
+              mountPath: /shared
             - name: audiobooks
-              hostPath:
-                path: /data/media/audiobooks
-                type: DirectoryOrCreate
+              mountPath: /audiobooks
+            - name: audiobooks-libation
+              mountPath: /audiobooks-libation
           ports:
             - containerPort: 80
               name: http
+      volumes:
+        - name: nextcloud-www
+          hostPath:
+            path: /data/nextcloud/html
+            type: DirectoryOrCreate
+        - name: music
+          hostPath:
+            path: /data/media/music
+            type: DirectoryOrCreate
+        - name: movies
+          hostPath:
+            path: /data/media/movies
+            type: DirectoryOrCreate
+        - name: tvshows
+          hostPath:
+            path: /data/media/tvshows
+            type: DirectoryOrCreate
+        - name: shared
+          hostPath:
+            path: /data/media/shared
+            type: DirectoryOrCreate
+        - name: audiobooks
+          hostPath:
+            path: /data/media/audiobooks
+            type: DirectoryOrCreate
+        - name: audiobooks-libation
+          hostPath:
+            path: /data/media/audiobooks-libation
+            type: DirectoryOrCreate
