@@ -109,7 +109,7 @@
       window-width = 100;
       background-opacity = 0.99;
       background-blur = true;
-      window-padding-x = 10;
+      # window-padding-x = 10;
       window-padding-y = 10;
       shell-integration = "detect";
     };

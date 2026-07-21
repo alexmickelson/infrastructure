@@ -18,7 +18,7 @@ jobs:
       - name: renovate
         working-directory: /home/forgejo-runner/infrastructure/
         run: |
-          ./renovate.yml
+          ./renovate.sh
 
   notify-on-failure:
     runs-on: home-server
