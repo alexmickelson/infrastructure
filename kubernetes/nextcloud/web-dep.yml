@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nextcloud
+  name: nextcloud-web
   namespace: nextcloud
   labels:
-    app: nextcloud
+    app: nextcloud-web
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nextcloud
+      app: nextcloud-web
   template:
     metadata:
       labels:
-        app: nextcloud
+        app: nextcloud-web
     spec:
       securityContext:
         runAsUser: 1000
