@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://git.alexmickelson.guru/alex/infrastructure
+    repoURL: https://git.alexmickelson.guru/alex/infrastructure.git
     targetRevision: main
     path: kubernetes/audiobookshelf
   destination:
