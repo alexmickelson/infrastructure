@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: forgejo
-          image: codeberg.org/forgejo/forgejo:16@sha256:9b8f02e896b1151ea60da05cf3e11fc7bd1c432dc6becee75ceb420f3d162b97
+          image: codeberg.org/forgejo/forgejo:16@sha256:3eb3107bc9de4e9d6d9e539044e6c802dc0b7be351919a145540d4cb5422bf07
           ports:
             - containerPort: 3000
             - containerPort: 22
