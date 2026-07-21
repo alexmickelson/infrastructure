@@ -16,6 +16,9 @@
         kubectl $argv
       end
       complete -c k -w kubectl
+      function ks --wraps k9s --description "Alias for k9s"
+        k9s $argv
+      end
     '';
   };
   home.packages = with pkgs; [
