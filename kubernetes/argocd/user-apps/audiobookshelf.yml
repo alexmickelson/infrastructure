@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://git.alexmickelson.guru/alex/infrastructure.git
-    targetRevision: main
+    targetRevision: HEAD
     path: kubernetes/audiobookshelf
   destination:
     server: https://kubernetes.default.svc
