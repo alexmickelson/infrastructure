@@ -11,12 +11,12 @@ jobs:
 
   run-renovate:
     runs-on: [home-server]
-    working-directory: /home/forgejo-runner/infrastructure/
     env:
       RENOVATE_FORGEJO_TOKEN: ${{ secrets.RENOVATE_FORGEJO_TOKEN }}
       RENOVATE_GITHUB_TOKEN: ${{ secrets.RENOVATE_GITHUB_TOKEN }}
     steps:
       - name: renovate
+        working-directory: /home/forgejo-runner/infrastructure/
         run: |
           ./renovate.yml
 
