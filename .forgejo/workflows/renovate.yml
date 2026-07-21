@@ -22,7 +22,7 @@ jobs:
 
   notify-on-failure:
     runs-on: home-server
-    needs: update-infrastructure
+    needs: run-renovate
     if: failure()
     uses: ./.forgejo/workflows/notify-ntfy.yml
     secrets:
