@@ -6,9 +6,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://git.alexmickelson.guru/alex/infrastructure
-    # repoURL: https://github.com/alexmickelson/infrastructure
-    targetRevision: main
+    repoURL: https://git.alexmickelson.guru/alex/infrastructure.git
+    targetRevision: HEAD
     path: kubernetes/argocd
   destination:
     server: https://kubernetes.default.svc
