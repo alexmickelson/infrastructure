@@ -12,7 +12,7 @@ for arg in "$@"; do
   esac
 done
 
-docker pull renovate/renovate:latest
+docker pull -q renovate/renovate:latest
 
 #docker run -it --rm \
 #  -e RENOVATE_TOKEN="$RENOVATE_GITHUB_TOKEN" \
