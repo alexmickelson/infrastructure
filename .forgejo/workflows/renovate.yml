@@ -3,10 +3,12 @@ on:
   schedule:
     - cron: 0 15 * * *
   workflow_dispatch:
+
 jobs:
   update-repo:
     uses: ./.forgejo/workflows/update-repo.yml
     runs-on: home-server
+
   run-renovate:
     runs-on: [home-server]
     working-directory: /home/forgejo-runner/infrastructure/
