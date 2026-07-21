@@ -37,7 +37,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: forgejo-db-secrets
-                  key: credentials.jsonGENERATE_STRONG_PASSWORD
+                  key: credentials.json
             - name: FORGEJO__server__PROTOCOL
               value: "http"
             - name: FORGEJO__server__DOMAIN
