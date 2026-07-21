@@ -1,0 +1,34 @@
+name: Renovate Updates
+on:
+  schedule:
+    - cron: 0 15 * * *
+  workflow_dispatch:
+jobs:
+  update-repo:
+    uses: ./.forgejo/workflows/update-repo.yml
+    runs-on: home-server
+  run-renovate:
+    runs-on: [home-server]
+    working-directory: /home/forgejo-runner/infrastructure/
+    env:
+      RENOVATE_FORGEJO_TOKEN: ${{ secrets.RENOVATE_FORGEJO_TOKEN }}
+      RENOVATE_GITHUB_TOKEN: ${{ secrets.RENOVATE_GITHUB_TOKEN }}
+    steps:
+      - name: renovate
+        run: |
+          ./renovate.yml
+
+  notify-on-failure:
+    runs-on: home-server
+    needs: update-infrastructure
+    if: failure()
+    uses: ./.forgejo/workflows/notify-ntfy.yml
+    secrets:
+      NTFY_CHANNEL: ${{ secrets.NTFY_CHANNEL }}
+    with:
+      title: "Renovate failed"
+      message: |
+        Renovate script failed
+      action_url: "https://git.alexmickelson.guru/${{ forgejo.repository }}/actions/runs/${{ forgejo.run_number }}"
+      priority: "high"
+      tags: "renovate"
