@@ -4,6 +4,7 @@ metadata:
   name: cloudflared-forgejo
   namespace: forgejo
 spec:
+  revisionHistoryLimit: 3
   replicas: 1
   selector:
     matchLabels:

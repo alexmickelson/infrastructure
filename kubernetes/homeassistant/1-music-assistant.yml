@@ -4,6 +4,7 @@ metadata:
   name: music-assistant-server
   namespace: homeassistant
 spec:
+  revisionHistoryLimit: 3
   replicas: 1
   selector:
     matchLabels:

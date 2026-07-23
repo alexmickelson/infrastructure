@@ -9,6 +9,7 @@ metadata:
   name: homeassistant
   namespace: homeassistant
 spec:
+  revisionHistoryLimit: 3
   replicas: 1
   selector:
     matchLabels:

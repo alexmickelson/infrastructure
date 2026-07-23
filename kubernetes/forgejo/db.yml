@@ -4,6 +4,7 @@ metadata:
   namespace: forgejo
   name: forgejo-db
 spec:
+  revisionHistoryLimit: 3
   replicas: 1
   strategy:
     type: Recreate
