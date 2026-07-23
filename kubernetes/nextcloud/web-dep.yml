@@ -20,7 +20,7 @@ spec:
         runAsGroup: 1000
       containers:
         - name: nextcloud
-          image: nextcloud:33
+          image: nextcloud:34
           environment:
             - TZ=America/Denver
             - OVERWRITEPROTOCOL=https
