@@ -6,7 +6,7 @@ metadata:
   labels:
     app: nextcloud-cron
 spec:
-  replicas: 0
+  replicas: 1
   revisionHistoryLimit: 3
   selector:
     matchLabels:
@@ -21,7 +21,7 @@ spec:
         runAsGroup: 1000
       containers:
         - name: nextcloud
-          image: nextcloud:32@sha256:c7debbbf65f84e9691e209ec834b67dd438e80d04be98c2c63b94ecf483d3d05
+          image: nextcloud:34
           command: [ "/cron.sh" ]
           environment:
             - TZ=America/Denver
