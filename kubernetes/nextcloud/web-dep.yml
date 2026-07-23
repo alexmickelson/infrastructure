@@ -73,13 +73,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nextcloud
+  name: nextcloud-svc
   namespace: nextcloud
   labels:
-    app: nextcloud
+    app: nextcloud-web
 spec:
   selector:
-    app: nextcloud
+    app: nextcloud-web
   ports:
     - port: 80
       targetPort: 80
@@ -98,7 +98,7 @@ spec:
     - next.alexmickelson.guru
   rules:
     - backendRefs:
-        - name: nextcloud
+        - name: nextcloud-svc
           port: 80
       matches:
         - path:

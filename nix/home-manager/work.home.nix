@@ -4,37 +4,41 @@ let
   opencodeFlake = builtins.getFlake (toString ../flakes/opencode);
   monitorTuiFlake = builtins.getFlake (toString ../../monitors/monitor-tui-rs);
   zenBrowserFlake = builtins.getFlake "github:youwen5/zen-browser-flake";
-  nixgl = import
-    (fetchTarball "https://github.com/nix-community/nixGL/archive/main.tar.gz")
-    { };
-in {
+  nixgl = import (fetchTarball "https://github.com/nix-community/nixGL/archive/main.tar.gz") { };
+in
+{
   imports = [ ./fish.home.nix ];
 
   customFish = {
     bluetuiAliases = true;
-    dotnetPackage = with pkgs.dotnetCorePackages; combinePackages [ sdk_8_0 sdk_9_0 ];
+    dotnetPackage =
+      with pkgs.dotnetCorePackages;
+      combinePackages [
+        sdk_8_0
+        sdk_9_0
+      ];
     bitwardenSshAgent = true;
-      # function codex
-      #   docker run --rm -it \
-      #     -u node \
-      #     -e HOME=/home/node \
-      #     -v "$PWD:/workspace" \
-      #     -v "$HOME/.codex:/home/node/.codex" \
-      #     -w /workspace \
-      #     node:22-bookworm \
-      #     bash -lc '
-      #       npm install -g --prefix "$HOME/.local" @openai/codex &&
-      #       export PATH="$HOME/.local/bin:$PATH" &&
-      #       exec codex
-      #     '
-      # end
+    # function codex
+    #   docker run --rm -it \
+    #     -u node \
+    #     -e HOME=/home/node \
+    #     -v "$PWD:/workspace" \
+    #     -v "$HOME/.codex:/home/node/.codex" \
+    #     -w /workspace \
+    #     node:22-bookworm \
+    #     bash -lc '
+    #       npm install -g --prefix "$HOME/.local" @openai/codex &&
+    #       export PATH="$HOME/.local/bin:$PATH" &&
+    #       exec codex
+    #     '
+    # end
     appendConfig = ''
 
       function k --wraps kubectl --description "Alias for kubectl"
         kubectl $argv
       end
       complete -c k -w kubectl
-      
+
     '';
   };
 
@@ -61,7 +65,13 @@ in {
     # }))
     lazydocker
     traceroute
-    (with dotnetCorePackages; combinePackages [ sdk_8_0 sdk_9_0 ])
+    (
+      with dotnetCorePackages;
+      combinePackages [
+        sdk_8_0
+        sdk_9_0
+      ]
+    )
     nodejs_22
     parallel
     #k0sctl
@@ -72,7 +82,7 @@ in {
     # rustup
     # lldb
     nmap
-    iperf 
+    iperf
     #makemkv
     # gnome-themes-extra
     uv
@@ -109,10 +119,12 @@ in {
     beamMinimal28Packages.expert
     inotify-tools
     watchman
-    
+
     # pi-coding-agent
     ripgrep
     neovim
+    nixd
+    nixfmt-rfc-style
   ];
   fonts.fontconfig.enable = true;
   programs.firefox = {
@@ -121,16 +133,24 @@ in {
     configPath = "${config.xdg.configHome}/mozilla/firefox";
   };
 
-  programs.direnv = { enable = true; };
+  programs.direnv = {
+    enable = true;
+  };
   programs.ghostty = {
     enable = true;
     enableFishIntegration = true;
     settings = {
       window-inherit-working-directory = "false";
+      window-decoration = false;
       theme = "Atom";
-      font-size = "18";
-      window-height = "30";
-      window-width = "120"; 
+      font-size = 14;
+      window-height = 30;
+      window-width = 100;
+      background-opacity = 0.99;
+      background-blur = true;
+      # window-padding-x = 10;
+      window-padding-y = 10;
+      shell-integration = "detect";
     };
   };
 
@@ -225,7 +245,9 @@ in {
       Name=Zen Browser
       Comment=A calmer Firefox-based browser
       Exec=nixGLIntel zen
-      Icon=${zenBrowserFlake.packages.${pkgs.stdenv.hostPlatform.system}.default}/share/icons/hicolor/128x128/apps/zen.png
+      Icon=${
+        zenBrowserFlake.packages.${pkgs.stdenv.hostPlatform.system}.default
+      }/share/icons/hicolor/128x128/apps/zen.png
       Terminal=false
       Categories=Network;WebBrowser;
       MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;
@@ -261,31 +283,33 @@ in {
     };
   };
 
-  home.sessionVariables = { EDITOR = "vim"; };
+  home.sessionVariables = {
+    EDITOR = "vim";
+  };
   dconf.enable = true;
   dconf.settings = {
     "org/gnome/desktop/wm/keybindings" = {
       toggle-maximized = [ "<Super>m" ];
     };
-    "org/gnome/desktop/interface" = { color-scheme = "prefer-dark"; };
+    "org/gnome/desktop/interface" = {
+      color-scheme = "prefer-dark";
+    };
     "org/gnome/settings-daemon/plugins/media-keys" = {
       custom-keybindings = [
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
       ];
     };
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" =
-      {
-        name = "Launch Ghostty";
-        command = "nixGL ghostty";
-        binding = "<Super>t";
-      };
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" =
-      {
-        name = "Record and transcribe";
-        command = "${config.home.homeDirectory}/.scripts/record-transcribe-wrapper.sh";
-        binding = "<Super>space";
-      };
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
+      name = "Launch Ghostty";
+      command = "nixGL ghostty";
+      binding = "<Super>t";
+    };
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
+      name = "Record and transcribe";
+      command = "${config.home.homeDirectory}/.scripts/record-transcribe-wrapper.sh";
+      binding = "<Super>space";
+    };
   };
 
   gtk = {
