@@ -28,13 +28,23 @@ spec:
             ]
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: klsdnofinsodkflksen34tesrg
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-db-secrets
+                  key: MYSQL_ROOT_PASSWORD
+            # - name: MYSQL_ROOT_PASSWORD
+            #   value: klsdnofinsodkflksen34tesrg
             - name: MYSQL_DATABASE
               value: nextcloud
             - name: MYSQL_USER
               value: nextcloud
+            # - name: MYSQL_PASSWORD
+            #   value: slkdnflksnelkfnsdweoinv
             - name: MYSQL_PASSWORD
-              value: slkdnflksnelkfnsdweoinv
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-db-secrets
+                  key: MYSQL_PASSWORD
           volumeMounts:
             - name: nextcloud-db-data
               mountPath: /var/lib/mysql
@@ -61,3 +71,34 @@ spec:
     - port: 3306
       targetPort: 3306
       protocol: TCP
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: nextcloud-db-external-secret # external secret name
+  namespace: nextcloud
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: nextcloud-db-secrets # secret that will be created
+    creationPolicy: Owner
+  data:
+    - secretKey: MYSQL_ROOT_PASSWORD
+      remoteRef:
+        key: nextcloud
+        property: MYSQL_ROOT_PASSWORD
+        conversionStrategy: Default	
+        decodingStrategy: None
+        metadataPolicy: None
+        nullBytePolicy: Ignore
+    - secretKey: MYSQL_PASSWORD
+      remoteRef:
+        key: nextcloud
+        property: MYSQL_PASSWORD
+        conversionStrategy: Default	
+        decodingStrategy: None
+        metadataPolicy: None
+        nullBytePolicy: Ignore
