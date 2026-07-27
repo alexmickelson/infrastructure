@@ -22,13 +22,22 @@ spec:
       containers:
         - name: nextcloud
           image: nextcloud:34@sha256:e93ccfc952c95f18175f3d297fb2f60c35070c05ca976050c250a9ddab793e75
-          # environment:
-          #   - TZ=America/Denver
-          #   - OVERWRITEPROTOCOL=https
-          #   - MYSQL_PASSWORD=slkdnflksnelkfnsdweoinv
-          #   - MYSQL_DATABASE=nextcloud
-          #   - MYSQL_USER=nextcloud
-          #   - MYSQL_HOST=nextcloud-db
+          env:
+            - name: TZ
+              value: America/Denver
+            - name: OVERWRITEPROTOCOL
+              value: https
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-db-secrets
+                  key: MYSQL_PASSWORD
+            - name: MYSQL_DATABASE
+              value: nextcloud
+            - name: MYSQL_USER
+              value: nextcloud
+            - name: MYSQL_HOST
+              value: nextcloud-db
           volumeMounts:
             - name: nextcloud-www
               mountPath: /var/www/html
