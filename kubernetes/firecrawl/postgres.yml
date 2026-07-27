@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:16-alpine
+          image: ghcr.io/firecrawl/nuq-postgres
           ports:
             - containerPort: 5432
           env:
