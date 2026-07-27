@@ -22,13 +22,14 @@ spec:
         - name: nextcloud
           image: nextcloud:32
           command: [ "/cron.sh" ]
-          environment:
-            - TZ=America/Denver
-            - OVERWRITEPROTOCOL=https
-            - MYSQL_PASSWORD=slkdnflksnelkfnsdweoinv
-            - MYSQL_DATABASE=nextcloud
-            - MYSQL_USER=nextcloud
-            - MYSQL_HOST=nextcloud-db
+          # environment:
+          #   - name: TZ
+          #     value: America/Denver
+          #   - name: OVERWRITEPROTOCOL=https
+          #   - MYSQL_PASSWORD=slkdnflksnelkfnsdweoinv
+          #   - MYSQL_DATABASE=nextcloud
+          #   - MYSQL_USER=nextcloud
+          #   - MYSQL_HOST=nextcloud-db
           volumeMounts:
             - name: nextcloud-www
               mountPath: /var/www/html

@@ -21,13 +21,6 @@ spec:
       containers:
         - name: nextcloud
           image: nextcloud:32
-          environment:
-            - TZ=America/Denver
-            - OVERWRITEPROTOCOL=https
-            - MYSQL_PASSWORD=slkdnflksnelkfnsdweoinv
-            - MYSQL_DATABASE=nextcloud
-            - MYSQL_USER=nextcloud
-            - MYSQL_HOST=nextcloud-db
           volumeMounts:
             - name: nextcloud-www
               mountPath: /var/www/html
