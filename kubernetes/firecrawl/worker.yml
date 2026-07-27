@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firecrawl-worker
+  namespace: firecrawl
+  labels:
+    app: firecrawl-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: firecrawl-worker
+  template:
+    metadata:
+      labels:
+        app: firecrawl-worker
+    spec:
+      containers:
+        - name: firecrawl-worker
+          image: ghcr.io/firecrawl/firecrawl:latest
+          command: ["node", "dist/src/services/queue-worker.js"]
+          envFrom:
+            - configMapRef:
+                name: firecrawl-config
+            - secretRef:
+                name: firecrawl-secrets
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"

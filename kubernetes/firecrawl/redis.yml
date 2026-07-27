@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firecrawl-redis
+  namespace: firecrawl
+  labels:
+    app: firecrawl-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: firecrawl-redis
+  template:
+    metadata:
+      labels:
+        app: firecrawl-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:alpine
+          ports:
+            - containerPort: 6379
+          args: ["redis-server", "--bind", "0.0.0.0"]
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: firecrawl-redis
+  namespace: firecrawl
+spec:
+  selector:
+    app: firecrawl-redis
+  ports:
+    - port: 6379
+      targetPort: 6379

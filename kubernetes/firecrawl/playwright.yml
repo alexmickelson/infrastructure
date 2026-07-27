@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firecrawl-playwright
+  namespace: firecrawl
+  labels:
+    app: firecrawl-playwright
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: firecrawl-playwright
+  template:
+    metadata:
+      labels:
+        app: firecrawl-playwright
+    spec:
+      containers:
+        - name: playwright-service
+          image: ghcr.io/firecrawl/playwright-service:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1.5Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: firecrawl-playwright
+  namespace: firecrawl
+spec:
+  selector:
+    app: firecrawl-playwright
+  ports:
+    - port: 3000
+      targetPort: 3000

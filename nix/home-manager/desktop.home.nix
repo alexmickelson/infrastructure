@@ -44,6 +44,7 @@
     dig
     pciutils
     uv
+    openssl
     bluetui
 
     vscode-fhs
@@ -64,7 +65,7 @@
     jq
 
     lazydocker
-    elixir
+    pkgs.beamPackages.elixir
     elixir-ls
     inotify-tools
     watchman
@@ -72,7 +73,7 @@
     codex
     neovim
     nixd
-    nixfmt-rfc-style
+    nixfmt
 
     git
     gcc

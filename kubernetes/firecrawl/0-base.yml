@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: firecrawl
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: firecrawl-config
+  namespace: firecrawl
+data:
+  PORT: "3002"
+  HOST: "0.0.0.0"
+  USE_DB_AUTHENTICATION: "false"
+  REDIS_URL: "redis://firecrawl-redis:6379"
+  REDIS_RATE_LIMIT_URL: "redis://firecrawl-redis:6379"
+  PLAYWRIGHT_MICROSERVICE_URL: "http://firecrawl-playwright:3000/scrape"
+  POSTGRES_USER: "firecrawl"
+  POSTGRES_DB: "firecrawl"
+  NUQ_DATABASE_URL: "postgres://firecrawl:firecrawl_password@firecrawl-postgres:5432/firecrawl"
+  ALLOW_LOCAL_WEBHOOKS: "true"
+  # Everything below is optional local-inference wiring — point at your
+  # existing LLM inference server instead of OpenAI if/when you want
+  # AI-extract features. Leave commented to run without AI features.
+  # OPENAI_BASE_URL: "http://your-llm-host:port/v1"
+  # MODEL_NAME: "your-local-model"
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: firecrawl-external-secret
+  namespace: firecrawl
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: firecrawl-secrets
+    creationPolicy: Owner
+  data:
+    - secretKey: BULL_AUTH_KEY
+      remoteRef:
+        key: firecrawl
+        property: BULL_AUTH_KEY
+        conversionStrategy: Default
+        decodingStrategy: None
+        metadataPolicy: None
+        nullBytePolicy: Ignore
+    - secretKey: POSTGRES_PASSWORD
+      remoteRef:
+        key: firecrawl
+        property: POSTGRES_PASSWORD
+        conversionStrategy: Default
+        decodingStrategy: None
+        metadataPolicy: None
+        nullBytePolicy: Ignore

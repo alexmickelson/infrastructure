@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firecrawl-postgres
+  namespace: firecrawl
+  labels:
+    app: firecrawl-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: firecrawl-postgres
+  template:
+    metadata:
+      labels:
+        app: firecrawl-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: firecrawl-config
+                  key: POSTGRES_USER
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: firecrawl-config
+                  key: POSTGRES_DB
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: firecrawl-secrets
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: pgdata
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+      volumes:
+        - name: pgdata
+          emptyDir: {}
+          # Swap for a PersistentVolumeClaim if you want data to survive
+          # pod restarts — emptyDir is fine for a first pass.
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: firecrawl-postgres
+  namespace: firecrawl
+spec:
+  selector:
+    app: firecrawl-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
