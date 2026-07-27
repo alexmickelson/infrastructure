@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # apiVersion: apps/v1
 # kind: Deployment
 # metadata:
@@ -17,7 +18,7 @@
 #     spec:
 #       containers:
 #         - name: mariadb
-#           image: mariadb:10.6
+#           image: mariadb:10.11@sha256:be981e4113326ada8d6004174dd09eeaefc03094037f811182a52d4f2e737350
 #           args:
 #             [
 #               "--transaction-isolation=READ-COMMITTED",
@@ -59,3 +60,67 @@
 #     - port: 3306
 #       targetPort: 3306
 #       protocol: TCP
+=======
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-db
+  namespace: nextcloud
+  labels:
+    app: nextcloud-db
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: nextcloud-db
+  template:
+    metadata:
+      labels:
+        app: nextcloud-db
+    spec:
+      containers:
+        - name: mariadb
+          image: mariadb:10.11@sha256:be981e4113326ada8d6004174dd09eeaefc03094037f811182a52d4f2e737350
+          args:
+            [
+              "--transaction-isolation=READ-COMMITTED",
+              "--log-bin=binlog",
+              "--binlog-format=ROW",
+            ]
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: klsdnofinsodkflksen34tesrg
+            - name: MYSQL_DATABASE
+              value: nextcloud
+            - name: MYSQL_USER
+              value: nextcloud
+            - name: MYSQL_PASSWORD
+              value: slkdnflksnelkfnsdweoinv
+          volumeMounts:
+            - name: nextcloud-db-data
+              mountPath: /var/lib/mysql
+          ports:
+            - containerPort: 3306
+              name: mysql
+      volumes:
+        - name: nextcloud-db-data
+          hostPath:
+            path: /data/nextcloud-db
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextcloud-db
+  namespace: nextcloud
+  labels:
+    app: nextcloud-db
+spec:
+  selector:
+    app: nextcloud-db
+  ports:
+    - port: 3306
+      targetPort: 3306
+      protocol: TCP
+>>>>>>> b10264b1b1c7d670d89cfa92bc7fd0e3c1d4b0da

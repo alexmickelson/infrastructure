@@ -9,6 +9,7 @@ metadata:
   name: minecraft
   namespace: minecraft
 spec:
+  revisionHistoryLimit: 3
   replicas: 1
   strategy:
     type: Recreate
@@ -60,7 +61,7 @@ spec:
       #     limits:
       #       memory: "6Gi"
       - name: minecraft-create
-        image: itzg/minecraft-server:java21@sha256:f71555873bdaa6f4b663563de58678cca334bc51bdfbe548f7958ee9f516cf4a
+        image: itzg/minecraft-server:java21@sha256:b8e2c76dc48c635966e99bd184c1eb4942cce482b6aa48af5630543c5bc32870
         stdin: true
         tty: true
         env:

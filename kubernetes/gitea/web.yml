@@ -4,6 +4,7 @@ metadata:
   name: gitea-web
   namespace: gitea
 spec:
+  revisionHistoryLimit: 3
   replicas: 1
   selector:
     matchLabels:

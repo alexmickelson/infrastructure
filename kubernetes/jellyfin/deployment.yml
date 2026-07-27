@@ -9,6 +9,7 @@ metadata:
   name: jellyfin
   namespace: jellyfin
 spec:
+  revisionHistoryLimit: 3
   replicas: 1
   strategy:
     type: Recreate

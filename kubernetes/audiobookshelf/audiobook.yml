@@ -9,6 +9,7 @@ metadata:
   name: audiobookshelf
   namespace: audiobookshelf
 spec:
+  revisionHistoryLimit: 3
   replicas: 1
   strategy:
     type: Recreate

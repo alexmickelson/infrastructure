@@ -29,7 +29,7 @@ spec:
               name: http
           env:
             - name: HOMEPAGE_ALLOWED_HOSTS
-              value: "server.alexmickelson.guru:3001,home.alexmickelson.guru"
+              value: "server.alexmickelson.guru:3001,home.alexmickelson.guru,gateway.alexmickelson.guru"
           volumeMounts:
             - name: host-configs
               mountPath: /app/config/
@@ -54,27 +54,22 @@ spec:
     targetPort: 3000
   type: ClusterIP
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
 metadata:
-  name: homepage
+  name: homepage-http-route
   namespace: homepage
-  annotations:
-    cert-manager.io/cluster-issuer: cloudflare-issuer
 spec:
-  ingressClassName: nginx
-  tls:
-  - hosts:
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway-ingress
+  hostnames:
     - home.alexmickelson.guru
-    secretName: homepage-tls
   rules:
-  - host: home.alexmickelson.guru
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: homepage
-            port:
-              number: 3000
+    - backendRefs:
+        - name: homepage
+          port: 3000
+      matches:
+        - path:
+            type: PathPrefix
+            value: /

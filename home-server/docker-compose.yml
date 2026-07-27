@@ -19,71 +19,71 @@ services:
   #   environment:
   #     - JELLYFIN_PublishedServerUrl=https://jellyfin.alexmickelson.guru
 
-  nextcloud:
-    build:
-      context: nextcloud
-    container_name: nextcloud
-    environment:
-      - TZ=America/Denver
-      - OVERWRITEPROTOCOL=https
-      - MYSQL_PASSWORD=slkdnflksnelkfnsdweoinv
-      - MYSQL_DATABASE=nextcloud
-      - MYSQL_USER=nextcloud
-      - MYSQL_HOST=nextcloud-db
-    volumes:
-      - /data/nextcloud/html:/var/www/html
-      - /data/media/music:/music
-      - /data/media/movies:/movies
-      - /data/media/tvshows:/tvshows
-      - /data/media/shared:/shared
-      - /data/media/audiobooks:/audiobooks
-    restart: unless-stopped
-    ports:
-      - 9001:80
-    networks:
-      - proxy
-    
-  nextcloud-cron:
-    build:
-      context: nextcloud
-    container_name: nextcloud-cron
-    environment:
-      - TZ=America/Denver
-      - OVERWRITEPROTOCOL=https
-      - MYSQL_PASSWORD=slkdnflksnelkfnsdweoinv
-      - MYSQL_DATABASE=nextcloud
-      - MYSQL_USER=nextcloud
-      - MYSQL_HOST=nextcloud-db
-    volumes:
-      - /data/nextcloud/html:/var/www/html
-      - /data/media/music:/music
-      - /data/media/movies:/movies
-      - /data/media/tvshows:/tvshows
-      - /data/media/shared:/shared
-      - /data/media/audiobooks:/audiobooks
-      - /data/media/audiobooks-libation:/audiobooks-libation
-    restart: unless-stopped
-    entrypoint: /cron.sh
-    depends_on:
-      - nextcloud
-    networks:
-      - proxy
-
-  nextcloud-db:
-    image: mariadb:10.6
-    container_name: nextcloud_db
-    # mysql -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE
-    restart: always
-    command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
-    volumes:
-      - /data/nextcloud-db/:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=klsdnofinsodkflksen34tesrg
-      - MYSQL_PASSWORD=slkdnflksnelkfnsdweoinv
-      - MYSQL_DATABASE=nextcloud
-      - MYSQL_USER=nextcloud
-    networks:
-      - proxy
+  # nextcloud:
+  #   build:
+  #     context: nextcloud
+  #   container_name: nextcloud
+  #   environment:
+  #     - TZ=America/Denver
+  #     - OVERWRITEPROTOCOL=https
+  #     - MYSQL_PASSWORD=slkdnflksnelkfnsdweoinv
+  #     - MYSQL_DATABASE=nextcloud
+  #     - MYSQL_USER=nextcloud
+  #     - MYSQL_HOST=nextcloud-db
+  #   volumes:
+  #     - /data/nextcloud/html:/var/www/html
+  #     - /data/media/music:/music
+  #     - /data/media/movies:/movies
+  #     - /data/media/tvshows:/tvshows
+  #     - /data/media/shared:/shared
+  #     - /data/media/audiobooks:/audiobooks
+  #   restart: unless-stopped
+  #   ports:
+  #     - 9001:80
+  #   networks:
+  #     - proxy
+  #
+  # nextcloud-cron:
+  #   build:
+  #     context: nextcloud
+  #   container_name: nextcloud-cron
+  #   environment:
+  #     - TZ=America/Denver
+  #     - OVERWRITEPROTOCOL=https
+  #     - MYSQL_PASSWORD=slkdnflksnelkfnsdweoinv
+  #     - MYSQL_DATABASE=nextcloud
+  #     - MYSQL_USER=nextcloud
+  #     - MYSQL_HOST=nextcloud-db
+  #   volumes:
+  #     - /data/nextcloud/html:/var/www/html
+  #     - /data/media/music:/music
+  #     - /data/media/movies:/movies
+  #     - /data/media/tvshows:/tvshows
+  #     - /data/media/shared:/shared
+  #     - /data/media/audiobooks:/audiobooks
+  #     - /data/media/audiobooks-libation:/audiobooks-libation
+  #   restart: unless-stopped
+  #   entrypoint: /cron.sh
+  #   depends_on:
+  #     - nextcloud
+  #   networks:
+  #     - proxy
+  #
+  # nextcloud-db:
+  #   image: mariadb:10.6
+  #   container_name: nextcloud_db
+  #   # mysql -u$MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE
+  #   restart: always
+  #   command: --transaction-isolation=READ-COMMITTED --log-bin=binlog --binlog-format=ROW
+  #   volumes:
+  #     - /data/nextcloud-db/:/var/lib/mysql
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=klsdnofinsodkflksen34tesrg
+  #     - MYSQL_PASSWORD=slkdnflksnelkfnsdweoinv
+  #     - MYSQL_DATABASE=nextcloud
+  #     - MYSQL_USER=nextcloud
+  #   networks:
+  #     - proxy
 
   homeassistant:
     container_name: homeassistant

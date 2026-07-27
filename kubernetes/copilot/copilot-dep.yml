@@ -9,6 +9,7 @@ metadata:
   name: copilot-api
   namespace: copilot
 spec:
+  revisionHistoryLimit: 3
   replicas: 1
   strategy:
     type: Recreate

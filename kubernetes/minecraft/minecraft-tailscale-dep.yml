@@ -25,6 +25,7 @@ metadata:
   name: minecraft-tailscale
   namespace: minecraft
 spec:
+  revisionHistoryLimit: 3
   replicas: 1
   strategy:
     type: Recreate
