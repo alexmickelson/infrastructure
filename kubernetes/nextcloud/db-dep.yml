@@ -32,14 +32,10 @@ spec:
                 secretKeyRef:
                   name: nextcloud-db-secrets
                   key: MYSQL_ROOT_PASSWORD
-            # - name: MYSQL_ROOT_PASSWORD
-            #   value: klsdnofinsodkflksen34tesrg
             - name: MYSQL_DATABASE
               value: nextcloud
             - name: MYSQL_USER
               value: nextcloud
-            # - name: MYSQL_PASSWORD
-            #   value: slkdnflksnelkfnsdweoinv
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
