@@ -17,7 +17,6 @@ data:
   PLAYWRIGHT_MICROSERVICE_URL: "http://firecrawl-playwright:3000/scrape"
   POSTGRES_USER: "firecrawl"
   POSTGRES_DB: "firecrawl"
-  NUQ_DATABASE_URL: "postgres://firecrawl:firecrawl_password@firecrawl-postgres:5432/firecrawl"
   ALLOW_LOCAL_WEBHOOKS: "true"
   # Everything below is optional local-inference wiring — point at your
   # existing LLM inference server instead of OpenAI if/when you want
@@ -51,6 +50,14 @@ spec:
       remoteRef:
         key: firecrawl
         property: POSTGRES_PASSWORD
+        conversionStrategy: Default
+        decodingStrategy: None
+        metadataPolicy: None
+        nullBytePolicy: Ignore
+    - secretKey: NUQ_DATABASE_URL
+      remoteRef:
+        key: firecrawl
+        property: NUQ_DATABASE_URL
         conversionStrategy: Default
         decodingStrategy: None
         metadataPolicy: None

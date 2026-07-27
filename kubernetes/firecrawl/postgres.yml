@@ -48,9 +48,9 @@ spec:
               memory: "1Gi"
       volumes:
         - name: pgdata
-          emptyDir: {}
-          # Swap for a PersistentVolumeClaim if you want data to survive
-          # pod restarts — emptyDir is fine for a first pass.
+          hostPath:
+            path: /data/firecrawl/postgres
+            type: DirectoryOrCreate
 ---
 apiVersion: v1
 kind: Service
