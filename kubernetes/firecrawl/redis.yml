@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: redis
-          image: redis:alpine
+          image: redis:alpine@sha256:8096655e437712b07503796fb64d81359256cfcff0ab29d95a7da72863786efb
           ports:
             - containerPort: 6379
           args: ["redis-server", "--bind", "0.0.0.0"]
