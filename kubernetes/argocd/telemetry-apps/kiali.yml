@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kiali
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://kiali.org/helm-charts
+    chart: kiali-server
+    targetRevision: 2.29.0
+    helm:
+      releaseName: kiali
+      values: |
+        auth:
+          # Kiali is internal-only initially.  Add an authenticated HTTPRoute
+          # or an identity-aware proxy before exposing it outside the cluster.
+          strategy: anonymous
+        deployment:
+          accessible_namespaces:
+            - "**"
+        external_services:
+          prometheus:
+            url: http://prometheus-server.monitoring.svc.cluster.local
+        istio_namespace: istio-system
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    automated:
+      prune: true
+      selfHeal: true
