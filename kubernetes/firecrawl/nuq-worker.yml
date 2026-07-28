@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firecrawl-nuq-worker
+  namespace: firecrawl
+  labels:
+    app: firecrawl-nuq-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: firecrawl-nuq-worker
+  template:
+    metadata:
+      labels:
+        app: firecrawl-nuq-worker
+    spec:
+      containers:
+        - name: firecrawl-nuq-worker
+          image: ghcr.io/firecrawl/firecrawl:latest
+          command: ["node", "dist/src/services/worker/nuq-worker.js"]
+          ports:
+            - containerPort: 3006
+              name: health
+          env:
+            - name: FLY_PROCESS_GROUP
+              value: "nuq-worker"
+            - name: NUQ_WORKER_PORT
+              value: "3006"
+          envFrom:
+            - configMapRef:
+                name: firecrawl-config
+            - secretRef:
+                name: firecrawl-secrets
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: health
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: health
+            initialDelaySeconds: 15
+            periodSeconds: 10

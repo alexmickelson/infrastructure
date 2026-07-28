@@ -11,12 +11,17 @@ metadata:
 data:
   PORT: "3002"
   HOST: "0.0.0.0"
+  # Tailscale terminates TLS before forwarding to the API. Trust that one
+  # proxy hop so Firecrawl uses X-Forwarded-Proto when building status URLs.
+  EXPRESS_TRUST_PROXY: "1"
   USE_DB_AUTHENTICATION: "false"
   REDIS_URL: "redis://firecrawl-redis:6379"
   REDIS_RATE_LIMIT_URL: "redis://firecrawl-redis:6379"
   PLAYWRIGHT_MICROSERVICE_URL: "http://firecrawl-playwright:3000/scrape"
   POSTGRES_USER: "firecrawl"
-  POSTGRES_DB: "firecrawl"
+  # nuq-postgres initializes pg_cron in PostgreSQL's default `postgres`
+  # database, so NuQ and this setting must use that database.
+  POSTGRES_DB: "postgres"
   ALLOW_LOCAL_WEBHOOKS: "true"
   # Everything below is optional local-inference wiring — point at your
   # existing LLM inference server instead of OpenAI if/when you want
