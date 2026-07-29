@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: firecrawl-nuq-worker
-          image: ghcr.io/firecrawl/firecrawl:latest
+          image: ghcr.io/firecrawl/firecrawl:latest@sha256:9ee566e4978a2b140a6b0c39dc07d6382b6c207404493a8439d8b7d64e25752f
           command: ["node", "dist/src/services/worker/nuq-worker.js"]
           ports:
             - containerPort: 3006
