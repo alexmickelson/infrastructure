@@ -25,22 +25,15 @@ spec:
               type: DirectoryOrCreate
         extraVolumeMounts:
           - name: grafana-data
-            mountPath: /var/lib/grafana
+            mountPath: /data/grafana-kube
+        grafana.ini:
+          paths:
+            # This value is rendered by the chart as GF_PATHS_DATA. The
+            # chart's default emptyDir remains mounted but is not used for
+            # Grafana state.
+            data: /data/grafana-kube
         # hostPath is created as root on the node.  Initialise it with the UID
         # used by the official Grafana image before Grafana starts.
-        extraInitContainers:
-          - name: initialise-grafana-data
-            image: busybox:1.37.0
-            command:
-              - sh
-              - -ec
-              - chown -R 472:472 /var/lib/grafana
-            securityContext:
-              runAsUser: 0
-              runAsGroup: 0
-            volumeMounts:
-              - name: grafana-data
-                mountPath: /var/lib/grafana
         datasources:
           datasources.yaml:
             apiVersion: 1
