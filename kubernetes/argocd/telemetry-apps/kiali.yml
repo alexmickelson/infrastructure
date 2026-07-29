@@ -13,8 +13,6 @@ spec:
       releaseName: kiali
       values: |
         auth:
-          # Kiali is internal-only initially.  Add an authenticated HTTPRoute
-          # or an identity-aware proxy before exposing it outside the cluster.
           strategy: anonymous
         deployment:
           accessible_namespaces:
@@ -33,3 +31,23 @@ spec:
     automated:
       prune: true
       selfHeal: true
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: kiali
+  namespace: monitoring
+spec:
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway-ingress
+  hostnames:
+    - kiali.alexmickelson.guru
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: kiali
+          port: 20001
