@@ -49,8 +49,8 @@ metadata:
   namespace: monitoring
 spec:
   parentRefs:
-    - name: envoy-gateway
-      namespace: envoy-gateway-ingress
+    - name: main-gateway
+      namespace: istio-ingress
   hostnames:
     - prometheus.alexmickelson.guru
   rules:
