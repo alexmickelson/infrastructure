@@ -1,7 +1,9 @@
 { pkgs, ... }:
 let
-  neovimFlake = builtins.getFlake "github:alexmickelson/neovim/b18ead965326403a6bf0a2c8a77eac0263f4601d";
-  neovimPackage = neovimFlake.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  myNeovimFlake = builtins.getFlake "github:alexmickelson/neovim/e9ba3685edb183177dc5b067caac3a4372c6ac2d";
+  neovimPackages = myNeovimFlake.packages.${pkgs.stdenv.hostPlatform.system};
+  neovimPackage = neovimPackages.default;
+  neovimTools = neovimPackages.tools;
 in
 {
   imports = [ ./fish.home.nix ];
@@ -66,7 +68,6 @@ in
     bitwarden-desktop
     # jellyfin-tui
     bluetui
-    jq
 
     lazydocker
     pkgs.beamPackages.elixir
@@ -76,8 +77,7 @@ in
 
     codex
     neovimPackage
-    nixd
-    nixfmt
+    neovimTools
 
     git
     gcc
@@ -92,7 +92,6 @@ in
     rustc
     cargo
     gzip
-    go
     python314Packages.pip
     fd
 

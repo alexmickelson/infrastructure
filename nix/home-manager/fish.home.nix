@@ -1,8 +1,14 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 
 let
   cfg = config.customFish;
-in {
+in
+{
   options.customFish = {
     # Opt-in: only enable if the relevant tools are installed on this machine
 
@@ -26,57 +32,64 @@ in {
   config = {
     programs.fish = {
       enable = true;
-      shellInit = lib.concatStringsSep "\n" (lib.filter (s: s != "") [
+      shellInit = lib.concatStringsSep "\n" (
+        lib.filter (s: s != "") [
 
-        # https://gist.github.com/thomd/7667642
-        ''
-          export LS_COLORS=':di=95'
+          # https://gist.github.com/thomd/7667642
+          ''
+            export LS_COLORS=':di=95'
 
-          function commit
-            git add --all
-            git commit -m "$argv"
-            for remote in (git remote)
-              git pull $remote
-              git push $remote
+            function commit
+              git add --all
+              git commit -m "$argv"
+              for remote in (git remote)
+                git pull $remote
+                git push $remote
+              end
             end
-          end
 
-          # have ctrl+backspace delete previous word
-          bind \e\[3\;5~ kill-word
-          # have ctrl+delete delete following word
-          bind \b  backward-kill-word
-          set -U fish_user_paths ~/.local/bin ~/bin ~/.dotnet ~/.dotnet/tools $fish_user_paths
-          set fish_pager_color_selected_background --background='00399c'
+            # have ctrl+backspace delete previous word
+            bind \e\[3\;5~ kill-word
+            # have ctrl+delete delete following word
+            bind \b  backward-kill-word
 
-          export VISUAL=vim
-          export EDITOR="$VISUAL"
+            # search history with Ctrl-J (newer) and Ctrl-K (older)
+            bind \ck history-search-forward
+            bind \cj history-search-backward
 
-          set -x LIBVIRT_DEFAULT_URI qemu:///system
-          set -x TERM xterm-256color
+            set -U fish_user_paths ~/.local/bin ~/bin ~/.dotnet ~/.dotnet/tools $fish_user_paths
+            set fish_pager_color_selected_background --background='00399c'
 
-          if test -f "$HOME/.cargo/env.fish"
-            source "$HOME/.cargo/env.fish"
-          end
-        ''
+            export VISUAL=vim
+            export EDITOR="$VISUAL"
 
-        (lib.optionalString cfg.bluetuiAliases ''
-          alias blue="bluetui"
-          alias jelly="jellyfin-tui"
-        '')
+            set -x LIBVIRT_DEFAULT_URI qemu:///system
+            set -x TERM xterm-256color
 
-        (lib.optionalString (cfg.dotnetPackage != null) ''
-          export DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1
-          export DOTNET_CLI_TELEMETRY_OPTOUT=1
-          export DOTNET_ROOT=${cfg.dotnetPackage}
-        '')
+            if test -f "$HOME/.cargo/env.fish"
+              source "$HOME/.cargo/env.fish"
+            end
+          ''
 
-        (lib.optionalString cfg.bitwardenSshAgent ''
-          export SSH_AUTH_SOCK=$HOME/.bitwarden-ssh-agent.sock
-        '')
+          (lib.optionalString cfg.bluetuiAliases ''
+            alias blue="bluetui"
+            alias jelly="jellyfin-tui"
+          '')
 
-        (lib.optionalString (cfg.appendConfig != null) cfg.appendConfig)
+          (lib.optionalString (cfg.dotnetPackage != null) ''
+            export DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1
+            export DOTNET_CLI_TELEMETRY_OPTOUT=1
+            export DOTNET_ROOT=${cfg.dotnetPackage}
+          '')
 
-      ]);
+          (lib.optionalString cfg.bitwardenSshAgent ''
+            export SSH_AUTH_SOCK=$HOME/.bitwarden-ssh-agent.sock
+          '')
+
+          (lib.optionalString (cfg.appendConfig != null) cfg.appendConfig)
+
+        ]
+      );
     };
   };
 }
