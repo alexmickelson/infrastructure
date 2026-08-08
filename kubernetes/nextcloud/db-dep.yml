@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: mariadb
-          image: mariadb:10.11@sha256:be981e4113326ada8d6004174dd09eeaefc03094037f811182a52d4f2e737350
+          image: mariadb:12.3@sha256:759869cb6f003234a95c6384cdee245b4bce7de26913fe607a8110362c0c007d
           args:
             [
               "--transaction-isolation=READ-COMMITTED",
