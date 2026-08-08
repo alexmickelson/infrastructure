@@ -1,4 +1,8 @@
 { pkgs, ... }:
+let
+  neovimFlake = builtins.getFlake "github:alexmickelson/neovim/b18ead965326403a6bf0a2c8a77eac0263f4601d";
+  neovimPackage = neovimFlake.packages.${pkgs.stdenv.hostPlatform.system}.default;
+in
 {
   imports = [ ./fish.home.nix ];
 
@@ -71,7 +75,7 @@
     watchman
 
     codex
-    neovim
+    neovimPackage
     nixd
     nixfmt
 
