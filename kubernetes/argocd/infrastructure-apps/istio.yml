@@ -145,6 +145,9 @@ kind: Gateway
 metadata:
   name: main-gateway
   namespace: istio-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: cloudflare-issuer
+    external-dns.alpha.kubernetes.io/target: "100.67.217.88"
 spec:
   infrastructure:
     parametersRef:
@@ -160,3 +163,15 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.alexmickelson.guru"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: alexmickelson-tls-cert
