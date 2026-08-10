@@ -1,12 +1,12 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 let
-  myNeovimFlake = builtins.getFlake "github:alexmickelson/neovim/e9ba3685edb183177dc5b067caac3a4372c6ac2d";
+  myNeovimFlake = inputs.neovim;
   neovimPackages = myNeovimFlake.packages.${pkgs.stdenv.hostPlatform.system};
   neovimPackage = neovimPackages.default;
   neovimTools = neovimPackages.tools;
 in
 {
-  imports = [ ./fish.home.nix ];
+  imports = [ ../home-manager/fish.home.nix ];
 
   customFish = {
     bluetuiAliases = true;
