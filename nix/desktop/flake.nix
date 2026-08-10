@@ -1,4 +1,4 @@
-## Rebuild with: sudo nixos-rebuild switch --flake ~/projects/infrastructure/nix/desktop#alex-desktop --impure
+## Rebuild with: sudo nixos-rebuild switch --flake ~/projects/infrastructure/nix/desktop#alex-desktop
 {
   description = "Alex's NixOS and Home Manager configurations";
 
@@ -38,7 +38,7 @@
         inherit system;
         specialArgs = { inherit inputs; };
         modules = [
-          /etc/nixos/hardware-configuration.nix
+          ./hardware-configuration.nix
           home-manager.nixosModules.home-manager
           ./desktop-system.nix
         ];
