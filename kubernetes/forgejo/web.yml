@@ -14,6 +14,7 @@ spec:
       labels:
         app: forgejo-web
     spec:
+      serviceAccountName: forgejo-web
       containers:
         - name: forgejo
           image: codeberg.org/forgejo/forgejo:16@sha256:3eb3107bc9de4e9d6d9e539044e6c802dc0b7be351919a145540d4cb5422bf07

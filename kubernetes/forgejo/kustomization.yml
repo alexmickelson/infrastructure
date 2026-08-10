@@ -7,6 +7,7 @@ resources:
   - namespace.yml
   - httproute.yml
   - cloudflare.yml
+  - istio-policy.yml
 
 configMapGenerator:
   - name: forgejo-landing-page

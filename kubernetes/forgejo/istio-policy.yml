@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: forgejo-web
+  namespace: forgejo
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: forgejo-db
+  namespace: forgejo
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: forgejo-db-strict-mtls
+  namespace: forgejo
+spec:
+  selector:
+    matchLabels:
+      app: forgejo-db
+  mtls:
+    mode: STRICT
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: forgejo-db-allow-web
+  namespace: forgejo
+spec:
+  selector:
+    matchLabels:
+      app: forgejo-db
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/forgejo/sa/forgejo-web
+      to:
+        - operation:
+            ports:
+              - "5432"

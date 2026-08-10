@@ -5,8 +5,8 @@ metadata:
   namespace: forgejo
 spec:
   parentRefs:
-    - name: envoy-gateway
-      namespace: envoy-gateway-ingress
+    - name: main-gateway
+      namespace: istio-ingress
   hostnames:
     - forgejo.alexmickelson.guru
     - git.alexmickelson.guru
