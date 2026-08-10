@@ -16,6 +16,7 @@ spec:
       labels:
         app: nextcloud-web
     spec:
+      serviceAccountName: nextcloud-web
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000

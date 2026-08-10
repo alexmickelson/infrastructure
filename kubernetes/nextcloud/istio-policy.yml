@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nextcloud-web
+  namespace: nextcloud
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nextcloud-cron
+  namespace: nextcloud
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nextcloud-db
+  namespace: nextcloud
+---
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: nextcloud-db-strict-mtls
+  namespace: nextcloud
+spec:
+  selector:
+    matchLabels:
+      app: nextcloud-db
+  mtls:
+    mode: STRICT
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: nextcloud-db-allow-web-and-cron
+  namespace: nextcloud
+spec:
+  selector:
+    matchLabels:
+      app: nextcloud-db
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/nextcloud/sa/nextcloud-web
+              - cluster.local/ns/nextcloud/sa/nextcloud-cron
+      to:
+        - operation:
+            ports:
+              - "3306"

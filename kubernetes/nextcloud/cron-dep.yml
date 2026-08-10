@@ -16,6 +16,7 @@ spec:
       labels:
         app: nextcloud-cron
     spec:
+      serviceAccountName: nextcloud-cron
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
