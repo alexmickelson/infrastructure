@@ -21,7 +21,6 @@ spec:
       labels:
         app: jellyfin
     spec:
-      hostNetwork: true
       securityContext:
         fsGroup: 1000
         supplementalGroups:
