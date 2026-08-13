@@ -1,0 +1,63 @@
+api:
+  insecure: true
+  dashboard: true
+
+providers:
+  http:
+    endpoint: "http://pangolin:3001/api/v1/traefik-config"
+    pollInterval: "5s"
+  file:
+    filename: "/etc/traefik/dynamic_config.yml"
+
+experimental:
+  plugins:
+    badger:
+      moduleName: "github.com/fosrl/badger"
+      version: "v1.4.0"
+
+log:
+  level: "INFO"
+  format: "json"
+  filePath: "/var/log/traefik/traefik.log"
+  maxSize: 100
+  maxBackups: 3
+  maxAge: 7
+  compress: true
+
+accessLog:
+  filePath: "/var/log/traefik/access.log"
+  format: "json"
+  fields:
+    defaultMode: keep
+    headers:
+      defaultMode: keep
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      httpChallenge:
+        entryPoint: web
+      email: "admin@alexmickelson.guru"
+      storage: "/letsencrypt/acme.json"
+      caServer: "https://acme-v02.api.letsencrypt.org/directory"
+
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+    transport:
+      respondingTimeouts:
+        readTimeout: "30m"
+    http:
+      tls:
+        certResolver: "letsencrypt"
+      encodedCharacters:
+        allowEncodedSlash: true
+        allowEncodedQuestionMark: true
+
+serversTransport:
+  insecureSkipVerify: true
+
+ping:
+  entryPoint: "web"

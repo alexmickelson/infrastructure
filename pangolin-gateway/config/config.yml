@@ -1,0 +1,31 @@
+# Pangolin server configuration. SERVER_SECRET is supplied by the container
+# environment rather than this tracked file.
+gerbil:
+  start_port: 51820
+  base_endpoint: "pangolin.alexmickelson.guru"
+
+app:
+  dashboard_url: "https://pangolin.alexmickelson.guru"
+  log_level: "info"
+  log_failed_attempts: true
+  telemetry:
+    anonymous_usage: false
+
+domains:
+  alexmickelson-guru:
+    base_domain: "alexmickelson.guru"
+    cert_resolver: "letsencrypt"
+
+server:
+  cors:
+    origins:
+      - "https://pangolin.alexmickelson.guru"
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
+    allowed_headers: ["X-CSRF-Token", "Content-Type"]
+    credentials: false
+
+flags:
+  require_email_verification: false
+  disable_signup_without_invite: true
+  disable_user_create_org: true
+  allow_raw_resources: false

@@ -1,0 +1,6 @@
+# Runtime state and credentials
+.env
+config/key
+config/db/
+config/letsencrypt/acme.json
+config/traefik/logs/

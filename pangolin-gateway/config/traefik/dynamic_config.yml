@@ -1,0 +1,57 @@
+http:
+  middlewares:
+    badger:
+      plugin:
+        badger:
+          # Pangolin applies resource authentication through its dynamic config.
+          disableForwardAuth: true
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+
+  routers:
+    main-app-router-redirect:
+      rule: "Host(`pangolin.alexmickelson.guru`)"
+      service: next-service
+      entryPoints: [web]
+      middlewares: [redirect-to-https, badger]
+    next-router:
+      rule: "Host(`pangolin.alexmickelson.guru`) && !PathPrefix(`/api/v1`)"
+      service: next-service
+      entryPoints: [websecure]
+      middlewares: [badger]
+      tls:
+        certResolver: letsencrypt
+    api-router:
+      rule: "Host(`pangolin.alexmickelson.guru`) && PathPrefix(`/api/v1`)"
+      service: api-service
+      entryPoints: [websecure]
+      middlewares: [badger]
+      tls:
+        certResolver: letsencrypt
+    ws-router:
+      rule: "Host(`pangolin.alexmickelson.guru`)"
+      service: api-service
+      entryPoints: [websecure]
+      middlewares: [badger]
+      tls:
+        certResolver: letsencrypt
+
+  services:
+    next-service:
+      loadBalancer:
+        servers:
+          - url: "http://pangolin:3002"
+    api-service:
+      loadBalancer:
+        servers:
+          - url: "http://pangolin:3000"
+
+tcp:
+  serversTransports:
+    pp-transport-v1:
+      proxyProtocol:
+        version: 1
+    pp-transport-v2:
+      proxyProtocol:
+        version: 2
