@@ -82,6 +82,16 @@ spec:
         pilot:
           cni:
             enabled: true
+        meshConfig:
+          extensionProviders:
+            - name: crowdsec
+              envoyExtAuthzGrpc:
+                service: crowdsec-envoy-bouncer.crowdsec.svc.cluster.local
+                port: 8080
+                # Initial rollout: preserve gateway availability if the bouncer
+                # or either CrowdSec API is unavailable.
+                failOpen: true
+                timeout: 200ms
   destination:
     server: https://kubernetes.default.svc
     namespace: istio-system
@@ -175,3 +185,39 @@ spec:
         certificateRefs:
           - kind: Secret
             name: alexmickelson-tls-cert
+---
+# Emit access logs only from the protected edge workload; the CrowdSec agent
+# acquires these logs to detect repeat behavior and create IP decisions.
+apiVersion: telemetry.istio.io/v1
+kind: Telemetry
+metadata:
+  name: main-gateway-access-logs
+  namespace: istio-ingress
+spec:
+  selector:
+    matchLabels:
+      gateway.networking.k8s.io/gateway-name: main-gateway
+  accessLogging:
+    - providers:
+        - name: envoy
+---
+# CUSTOM makes Envoy synchronously consult the configured CrowdSec ext_authz
+# provider for every HTTP(S) request arriving at main-gateway.
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: main-gateway-crowdsec
+  namespace: istio-ingress
+spec:
+  selector:
+    matchLabels:
+      gateway.networking.k8s.io/gateway-name: main-gateway
+  action: CUSTOM
+  provider:
+    name: crowdsec
+  rules:
+    - to:
+        - operation:
+            ports:
+              - "80"
+              - "443"
