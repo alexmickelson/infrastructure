@@ -1,7 +1,3 @@
-api:
-  insecure: true
-  dashboard: true
-
 providers:
   http:
     endpoint: "http://pangolin:3001/api/v1/traefik-config"
@@ -15,22 +11,7 @@ experimental:
       moduleName: "github.com/fosrl/badger"
       version: "v1.4.0"
 
-log:
-  level: "INFO"
-  format: "json"
-  filePath: "/var/log/traefik/traefik.log"
-  maxSize: 100
-  maxBackups: 3
-  maxAge: 7
-  compress: true
-
-accessLog:
-  filePath: "/var/log/traefik/access.log"
-  format: "json"
-  fields:
-    defaultMode: keep
-    headers:
-      defaultMode: keep
+accessLog: {}
 
 certificatesResolvers:
   letsencrypt:
