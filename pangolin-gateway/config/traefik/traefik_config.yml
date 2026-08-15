@@ -23,6 +23,9 @@ certificatesResolvers:
       # as CF_DNS_API_TOKEN through the Traefik Compose env_file.
       dnsChallenge:
         provider: cloudflare
+        resolvers:
+          - "1.1.1.1:53"
+          - "8.8.8.8:53"
       email: "admin@alexmickelson.guru"
       storage: "/letsencrypt/acme.json"
       caServer: "https://acme-v02.api.letsencrypt.org/directory"
