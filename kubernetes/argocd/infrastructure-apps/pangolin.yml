@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pangolin
+  namespace: argocd
+  annotations:
+    # Vault and External Secrets are installed at waves 10 and 11.
+    argocd.argoproj.io/sync-wave: "12"
+spec:
+  project: default
+  source:
+    repoURL: https://git.alexmickelson.guru/alex/infrastructure.git
+    targetRevision: HEAD
+    path: kubernetes/pangolin
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: pangolin
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

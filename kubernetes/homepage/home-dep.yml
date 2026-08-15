@@ -65,6 +65,8 @@ spec:
   parentRefs:
     - name: envoy-gateway
       namespace: envoy-gateway-ingress
+    - name: pangolin-gateway
+      namespace: istio-ingress
   hostnames:
     - home.alexmickelson.guru
   rules:

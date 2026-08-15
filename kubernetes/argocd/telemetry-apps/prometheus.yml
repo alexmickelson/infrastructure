@@ -51,6 +51,8 @@ spec:
   parentRefs:
     - name: main-gateway
       namespace: istio-ingress
+    - name: pangolin-gateway
+      namespace: istio-ingress
   hostnames:
     - prometheus.alexmickelson.guru
   rules:

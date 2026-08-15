@@ -7,6 +7,8 @@ spec:
   parentRefs:
     - name: main-gateway
       namespace: istio-ingress
+    - name: pangolin-gateway
+      namespace: istio-ingress
   hostnames:
     - forgejo.alexmickelson.guru
     - git.alexmickelson.guru

@@ -186,6 +186,40 @@ spec:
           - kind: Secret
             name: alexmickelson-tls-cert
 ---
+# Pangolin terminates public TLS on the VPS and forwards HTTP through Newt to
+# the generated ClusterIP Service for this Gateway. Existing HTTPRoutes must
+# explicitly add this Gateway to parentRefs before they are reachable here.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pangolin-gateway-infrastructure
+  namespace: istio-ingress
+data:
+  service: |
+    spec:
+      type: ClusterIP
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: pangolin-gateway
+  namespace: istio-ingress
+spec:
+  infrastructure:
+    parametersRef:
+      group: ""
+      kind: ConfigMap
+      name: pangolin-gateway-infrastructure
+  gatewayClassName: istio
+  listeners:
+    - name: pangolin-http
+      protocol: HTTP
+      port: 80
+      hostname: "*.alexmickelson.guru"
+      allowedRoutes:
+        namespaces:
+          from: All
+---
 # Emit access logs only from the protected edge workload; the CrowdSec agent
 # acquires these logs to detect repeat behavior and create IP decisions.
 apiVersion: telemetry.istio.io/v1

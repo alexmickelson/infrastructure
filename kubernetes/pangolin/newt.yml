@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pangolin
+---
+# Vault KV v2 mount "secret" is configured by vault-backend. Therefore this
+# resolves Vault's secret/data/newt path; do not include "secret/" here.
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: newt-auth
+  namespace: pangolin
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: newt-auth
+    creationPolicy: Owner
+  data:
+    - secretKey: PANGOLIN_ENDPOINT
+      remoteRef:
+        key: newt
+        property: PANGOLIN_ENDPOINT
+    - secretKey: NEWT_ID
+      remoteRef:
+        key: newt
+        property: NEWT_ID
+    - secretKey: NEWT_SECRET
+      remoteRef:
+        key: newt
+        property: NEWT_SECRET
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: newt
+  namespace: pangolin
+  labels:
+    app.kubernetes.io/name: newt
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: newt
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: newt
+    spec:
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+      containers:
+        - name: newt
+          image: docker.io/fosrl/newt:1.15.0
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: newt-auth
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
