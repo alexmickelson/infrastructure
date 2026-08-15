@@ -22,6 +22,10 @@ http:
       middlewares: [badger]
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: "alexmickelson.guru"
+            sans:
+              - "*.alexmickelson.guru"
     api-router:
       rule: "Host(`pangolin.alexmickelson.guru`) && PathPrefix(`/api/v1`)"
       service: api-service

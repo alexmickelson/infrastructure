@@ -38,10 +38,6 @@ entryPoints:
     http:
       tls:
         certResolver: "letsencrypt"
-        domains:
-          - main: "alexmickelson.guru"
-            sans:
-              - "*.alexmickelson.guru"
       encodedCharacters:
         allowEncodedSlash: true
         allowEncodedQuestionMark: true
