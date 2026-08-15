@@ -8,7 +8,7 @@ services:
     env_file:
       - ${PANGOLIN_ENV_FILE:-.env}
     volumes:
-      - pangolin-state:/app/config
+      - /data/pangolin:/app/config
       - ./config/config.yml:/app/config/config.yml:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/api/v1/"]
@@ -28,7 +28,7 @@ services:
       - --generateAndSaveKeyTo=/var/config/key
       - --remoteConfig=http://pangolin:3001/api/v1/
     volumes:
-      - pangolin-state:/var/config
+      - /data/pangolin:/var/config
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
@@ -59,15 +59,9 @@ services:
     volumes:
       - ./config/traefik/traefik_config.yml:/etc/traefik/traefik_config.yml:ro
       - ./config/traefik/dynamic_config.yml:/etc/traefik/dynamic_config.yml:ro
-      - traefik-acme:/letsencrypt
+      - /data/pangolin/letsencrypt:/letsencrypt
 
 networks:
   default:
     driver: bridge
     name: pangolin
-
-volumes:
-  pangolin-state:
-    name: pangolin-state
-  traefik-acme:
-    name: pangolin-traefik-acme
