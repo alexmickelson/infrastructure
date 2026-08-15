@@ -9,11 +9,22 @@ connector separately, which creates an outbound encrypted tunnel to this VPS.
 1. Copy `.env.example` to `.env`, then set `SERVER_SECRET` to a unique random
    secret (at least 32 characters). Do not change it after startup without
    Pangolin's secret-rotation procedure.
-2. Create public DNS records for `pangolin.alexmickelson.guru` and the resource
+2. Seed the host-backed state directory before the first start. The Compose
+   stack mounts `/data/pangolin-gateway/config` for all Pangolin, Gerbil, and
+   Traefik state (including ACME certificates and logs):
+
+   ```sh
+   sudo install -d -m 0750 /data/pangolin-gateway/config
+   sudo cp -a config/. /data/pangolin-gateway/config/
+   ```
+
+   For an existing deployment, stop the stack first and use `rsync -a` instead
+   so existing `key`, `letsencrypt`, and Traefik state are retained.
+3. Create public DNS records for `pangolin.alexmickelson.guru` and the resource
    hostnames you plan to expose, all pointing to this VPS.
-3. Open TCP 80/443 and UDP 51820/21820 in the VPS firewall and provider
+4. Open TCP 80/443 and UDP 51820/21820 in the VPS firewall and provider
    firewall.
-4. Confirm no other VPS service listens on ports 80 or 443.
+5. Confirm no other VPS service listens on ports 80 or 443.
 
 Start and inspect the stack:
 
@@ -41,3 +52,6 @@ tailnet access.
 
 Do not expose Traefik's insecure API/dashboard separately; it is reachable only
 inside the Gerbil network namespace.
+
+The stack is pinned to Pangolin 1.21.0, Gerbil 1.4.3, and Traefik 3.7.9. Back
+up `/data/pangolin-gateway/config` before upgrading an existing Pangolin server.

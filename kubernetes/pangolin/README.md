@@ -18,6 +18,14 @@ vault kv put secret/newt \
 
 `newt.yml` reads that path with `remoteRef.key: newt` and creates the
 `pangolin/newt-auth` Kubernetes Secret. Never commit any of these values.
+After changing the Vault credentials, force an ExternalSecret refresh and
+restart Newt so its environment is rebuilt from the updated Secret:
+
+```sh
+kubectl annotate externalsecret/newt-auth -n pangolin \
+  force-sync="$(date +%s)" --overwrite
+kubectl rollout restart deployment/newt -n pangolin
+```
 
 ## Pangolin public resource
 
@@ -35,6 +43,10 @@ The `pangolin-gateway` Gateway is intentionally HTTP-only and ClusterIP-only:
 Pangolin terminates public TLS on the VPS and forwards the original `Host`
 header across the Newt tunnel. Existing HTTPRoutes are attached to it in
 addition to their Tailscale Gateway parents.
+
+Newt persists its resolved configuration at `/data/pangolin/newt` on the
+Kubernetes node hosting its Pod. The initial permission-fixing init container
+sets that directory to Newt's unprivileged UID before the connector starts.
 
 Pangolin Community Edition requires one public resource per hostname. A single
 `*.alexmickelson.guru` resource requires Pangolin Cloud or Enterprise plus a

@@ -56,6 +56,24 @@ spec:
         runAsGroup: 65534
         runAsNonRoot: true
         runAsUser: 65534
+      initContainers:
+        - name: state-permissions
+          image: docker.io/library/busybox:1.37.0
+          command: ["sh", "-c", "chown -R 65534:65534 /var/lib/newt"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              add: ["CHOWN"]
+              drop: ["ALL"]
+            readOnlyRootFilesystem: true
+            runAsGroup: 0
+            runAsNonRoot: false
+            runAsUser: 0
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - name: newt-state
+              mountPath: /var/lib/newt
       containers:
         - name: newt
           image: docker.io/fosrl/newt:1.15.0
@@ -63,6 +81,13 @@ spec:
           envFrom:
             - secretRef:
                 name: newt-auth
+          env:
+            # Newt persists its resolved environment configuration in the
+            # host-backed state directory below.
+            - name: HOME
+              value: /var/lib/newt
+            - name: CONFIG_FILE
+              value: /var/lib/newt/config.json
           resources:
             requests:
               cpu: 50m
@@ -79,8 +104,10 @@ spec:
             seccompProfile:
               type: RuntimeDefault
           volumeMounts:
-            - name: tmp
-              mountPath: /tmp
+            - name: newt-state
+              mountPath: /var/lib/newt
       volumes:
-        - name: tmp
-          emptyDir: {}
+        - name: newt-state
+          hostPath:
+            path: /data/pangolin/newt
+            type: DirectoryOrCreate
