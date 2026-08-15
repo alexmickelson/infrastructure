@@ -42,6 +42,11 @@ services:
     image: docker.io/library/traefik:v3.7.9
     container_name: pangolin-traefik
     restart: unless-stopped
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: "3"
     network_mode: service:gerbil
     depends_on:
       pangolin:

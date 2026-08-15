@@ -11,6 +11,9 @@ experimental:
       moduleName: "github.com/fosrl/badger"
       version: "v1.4.0"
 
+log:
+  level: INFO
+
 accessLog: {}
 
 certificatesResolvers:
