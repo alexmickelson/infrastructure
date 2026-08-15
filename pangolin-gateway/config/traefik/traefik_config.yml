@@ -35,8 +35,10 @@ accessLog:
 certificatesResolvers:
   letsencrypt:
     acme:
-      httpChallenge:
-        entryPoint: web
+      # Wildcard certificates require DNS-01. The Cloudflare token is supplied
+      # as CF_DNS_API_TOKEN through the Traefik Compose env_file.
+      dnsChallenge:
+        provider: cloudflare
       email: "admin@alexmickelson.guru"
       storage: "/letsencrypt/acme.json"
       caServer: "https://acme-v02.api.letsencrypt.org/directory"
@@ -52,6 +54,10 @@ entryPoints:
     http:
       tls:
         certResolver: "letsencrypt"
+        domains:
+          - main: "alexmickelson.guru"
+            sans:
+              - "*.alexmickelson.guru"
       encodedCharacters:
         allowEncodedSlash: true
         allowEncodedQuestionMark: true

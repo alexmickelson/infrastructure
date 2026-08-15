@@ -45,6 +45,9 @@ services:
     depends_on:
       pangolin:
         condition: service_healthy
+    # Supplies CF_DNS_API_TOKEN for Traefik's Cloudflare DNS-01 challenge.
+    env_file:
+      - ${PANGOLIN_ENV_FILE:-.env}
     command:
       - --configFile=/etc/traefik/traefik_config.yml
     volumes:

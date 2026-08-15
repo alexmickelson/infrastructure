@@ -15,6 +15,7 @@ domains:
   alexmickelson-guru:
     base_domain: "alexmickelson.guru"
     cert_resolver: "letsencrypt"
+    prefer_wildcard_cert: true
 
 server:
   cors:
