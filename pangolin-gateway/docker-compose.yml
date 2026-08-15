@@ -8,7 +8,7 @@ services:
     env_file:
       - ${PANGOLIN_ENV_FILE:-.env}
     volumes:
-      - /data/pangolin-gateway/config:/app/config
+      - ./config:/app/config
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/api/v1/"]
       interval: 10s
@@ -27,7 +27,7 @@ services:
       - --generateAndSaveKeyTo=/var/config/key
       - --remoteConfig=http://pangolin:3001/api/v1/
     volumes:
-      - /data/pangolin-gateway/config:/var/config
+      - ./config:/var/config
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
@@ -48,9 +48,9 @@ services:
     command:
       - --configFile=/etc/traefik/traefik_config.yml
     volumes:
-      - /data/pangolin-gateway/config/traefik:/etc/traefik:ro
-      - /data/pangolin-gateway/config/letsencrypt:/letsencrypt
-      - /data/pangolin-gateway/config/traefik/logs:/var/log/traefik
+      - ./config/traefik:/etc/traefik:ro
+      - ./config/letsencrypt:/letsencrypt
+      - ./config/traefik/logs:/var/log/traefik
 
 networks:
   default:
