@@ -11,7 +11,7 @@ spec:
     path: kubernetes/autokuma
   destination:
     server: https://kubernetes.default.svc
-    namespace: monitoring
+    namespace: uptimekuma
   syncPolicy:
     syncOptions:
       - CreateNamespace=true

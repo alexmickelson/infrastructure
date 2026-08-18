@@ -28,7 +28,7 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: AUTOKUMA__KUMA__URL
-              value: http://uptime-kuma.monitoring.svc.cluster.local
+              value: http://uptime-kuma.uptimekuma.svc.cluster.local
             - name: AUTOKUMA__KUMA__USERNAME
               value: "@/run/secrets/kuma/username"
             - name: AUTOKUMA__KUMA__PASSWORD

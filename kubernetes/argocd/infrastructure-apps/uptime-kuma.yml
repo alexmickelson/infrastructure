@@ -81,7 +81,7 @@ spec:
               volumeName: uptime-kuma-data
   destination:
     server: https://kubernetes.default.svc
-    namespace: monitoring
+    namespace: uptimekuma
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
