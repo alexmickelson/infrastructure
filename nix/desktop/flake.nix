@@ -11,7 +11,7 @@
     };
 
     neovim = {
-      url = "github:alexmickelson/neovim/e9ba3685edb183177dc5b067caac3a4372c6ac2d";
+      url = "github:alexmickelson/neovim/";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
