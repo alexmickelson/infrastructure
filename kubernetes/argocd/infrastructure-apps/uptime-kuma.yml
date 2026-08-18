@@ -1,6 +1,3 @@
-# Uptime Kuma stores monitor state in its database rather than in Helm values.
-# The separate AutoKuma application reconciles Git-managed monitor definitions
-# into this instance.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -17,9 +14,6 @@ spec:
       values: |
         fullnameOverride: uptime-kuma
 
-        # Kuma is stateful and must remain a single replica. Its data directory
-        # is backed by the explicit hostPath PV below, rather than a dynamically
-        # provisioned volume.
         persistence:
           enabled: true
           existingClaim: uptime-kuma-data
@@ -36,21 +30,17 @@ spec:
           enabled: true
           httpRoutes:
             - name: uptime-kuma
-              spec:
-                parentRefs:
-                  - name: main-gateway
-                    namespace: istio-ingress
-                hostnames:
-                  - uptime.alexmickelson.guru
-                rules:
-                  - matches:
-                      - path:
-                          type: PathPrefix
-                          value: /
+              parentRefs:
+                - name: main-gateway
+                  namespace: istio-ingress
+              hostnames:
+                - uptime.alexmickelson.guru
+              rules:
+                - matches:
+                    - path:
+                        type: PathPrefix
+                        value: /
 
-        # The chart renders the host-mounted data volume in this application.
-        # AutoKuma's deployment and monitor definitions are managed separately
-        # by the directory-backed `autokuma` Argo CD application.
         extraManifests:
           - apiVersion: v1
             kind: PersistentVolume
