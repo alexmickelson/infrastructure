@@ -68,6 +68,8 @@ spec:
               readOnly: true
             - name: tmp
               mountPath: /tmp
+            - name: data
+              mountPath: /data
       volumes:
         - name: monitors
           configMap:
@@ -76,4 +78,6 @@ spec:
           secret:
             secretName: uptime-kuma-auth
         - name: tmp
+          emptyDir: {}
+        - name: data
           emptyDir: {}
