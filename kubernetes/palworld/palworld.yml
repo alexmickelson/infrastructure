@@ -1,0 +1,185 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: palworld
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: palworld-tailscale-external-secret
+  namespace: palworld
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: palworld-tailscale-secrets
+    creationPolicy: Owner
+  data:
+  - secretKey: tailscale-authkey
+    remoteRef:
+      key: palworld
+      property: tailscale
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: palworld-external-secret
+  namespace: palworld
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: palworld-secrets
+    creationPolicy: Owner
+  data:
+  - secretKey: server-password
+    remoteRef:
+      key: palworld
+      property: server-password
+  - secretKey: admin-password
+    remoteRef:
+      key: palworld
+      property: admin-password
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: palworld
+  namespace: palworld
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: palworld
+  template:
+    metadata:
+      labels:
+        app: palworld
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: palworld
+        image: thijsvanloef/palworld-server-docker:v2.7.2
+        ports:
+        - name: game
+          containerPort: 8211
+          protocol: UDP
+        - name: query
+          containerPort: 27015
+          protocol: UDP
+        - name: rest-api
+          containerPort: 8212
+          protocol: TCP
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: America/Denver
+        - name: PORT
+          value: "8211"
+        - name: QUERY_PORT
+          value: "27015"
+        - name: PLAYERS
+          value: "16"
+        - name: SERVER_NAME
+          value: Palworld
+        - name: COMMUNITY
+          value: "false"
+        - name: REST_API_ENABLED
+          value: "true"
+        - name: REST_API_PORT
+          value: "8212"
+        - name: RCON_ENABLED
+          value: "false"
+        - name: BACKUP_ENABLED
+          value: "true"
+        - name: ENABLE_PERF_THREADING_ARGS
+          value: "true"
+        - name: SERVER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: palworld-secrets
+              key: server-password
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: palworld-secrets
+              key: admin-password
+        volumeMounts:
+        - name: data
+          mountPath: /palworld
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sh", "-c", "sleep 30"]
+        resources:
+          requests:
+            cpu: "4"
+            memory: 16Gi
+          limits:
+            cpu: "6"
+            memory: 32Gi
+      - name: tailscale
+        image: tailscale/tailscale:latest@sha256:f15d5d3f4a68773a853180b72496f70ba614b64de0878c43fe3da39fe0afba47
+        env:
+        - name: TS_AUTHKEY
+          valueFrom:
+            secretKeyRef:
+              name: palworld-tailscale-secrets
+              key: tailscale-authkey
+        - name: TS_HOSTNAME
+          value: palworld
+        - name: TS_STATE_DIR
+          value: /var/lib/tailscale
+        - name: TS_KUBE_SECRET
+          value: ""
+        - name: TS_USERSPACE
+          value: "false"
+        volumeMounts:
+        - name: tailscale-state
+          mountPath: /var/lib/tailscale
+        - name: dev-tun
+          mountPath: /dev/net/tun
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+            - SYS_MODULE
+      volumes:
+      - name: data
+        hostPath:
+          path: /data/palworld
+          type: DirectoryOrCreate
+      - name: tailscale-state
+        hostPath:
+          path: /data/palworld-tailscale
+          type: DirectoryOrCreate
+      - name: dev-tun
+        hostPath:
+          path: /dev/net/tun
+          type: CharDevice
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: palworld-rest
+  namespace: palworld
+  annotations:
+    tailscale.com/expose: "true"
+spec:
+  selector:
+    app: palworld
+  ports:
+  - name: rest-api
+    protocol: TCP
+    port: 8212
+    targetPort: rest-api
