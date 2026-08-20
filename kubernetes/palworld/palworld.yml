@@ -66,7 +66,7 @@ spec:
       terminationGracePeriodSeconds: 60
       containers:
       - name: palworld
-        image: thijsvanloef/palworld-server-docker:v2.7.2
+        image: thijsvanloef/palworld-server-docker:v2.7.2@sha256:39059e157ea5148f7c4f66c2913c9e844fd62b9fd9de1e7200de8bb4d9bd7a8f
         ports:
         - name: game
           containerPort: 8211
