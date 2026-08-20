@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ttyd
+  labels:
+    istio.io/dataplane-mode: ambient
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ttyd
+  namespace: ttyd
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ttyd
+  template:
+    metadata:
+      labels:
+        app: ttyd
+    spec:
+      containers:
+        - name: ttyd
+          image: alexmickelson/ttyd:latest
+          ports:
+            - name: http
+              containerPort: 7681
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: home
+              mountPath: /home/alex
+            - name: nix
+              mountPath: /nix
+            - name: fuse
+              mountPath: /dev/fuse
+      volumes:
+        - name: home
+          hostPath:
+            path: /data/ttyd/home
+            type: DirectoryOrCreate
+        - name: nix
+          hostPath:
+            path: /vm-data3/ttyd/nix
+            type: DirectoryOrCreate
+        - name: fuse
+          hostPath:
+            path: /dev/fuse
+            type: CharDevice
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ttyd
+  namespace: ttyd
+spec:
+  selector:
+    app: ttyd
+  ports:
+    - name: http
+      port: 7681
+      targetPort: http
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: ttyd
+  namespace: ttyd
+spec:
+  parentRefs:
+    - name: main-gateway
+      namespace: istio-ingress
+  hostnames:
+    - shell.alexmickelson.guru
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: ttyd
+          port: 7681

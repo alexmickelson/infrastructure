@@ -1,0 +1,31 @@
+name: Publish ttyd image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ttyd/**
+  workflow_dispatch:
+
+jobs:
+  update-repo:
+    uses: ./.forgejo/workflows/update-repo.yml
+
+  publish:
+    runs-on: [home-server]
+    needs: update-repo
+    defaults:
+      run:
+        working-directory: /home/forgejo-runner/infrastructure
+    env:
+      IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/ttyd:latest
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    steps:
+      - name: Build and push image
+        run: |
+          docker build --pull --tag "$IMAGE" ttyd
+          printf '%s' "$DOCKERHUB_TOKEN" | docker login \
+            --username "$DOCKERHUB_USERNAME" \
+            --password-stdin
+          docker push "$IMAGE"
