@@ -52,3 +52,101 @@ data:
         conditions:
           - "[STATUS] >= 200"
           - "[STATUS] < 400"
+      - name: Audiobookshelf
+        group: Public services
+        url: https://audiobook.alexmickelson.guru
+        interval: 60s
+        conditions:
+          - "[STATUS] >= 200"
+          - "[STATUS] < 400"
+      - name: Argo CD
+        group: Public services
+        url: https://argocd.alexmickelson.guru
+        interval: 60s
+        conditions:
+          - "[STATUS] >= 200"
+          - "[STATUS] < 400"
+      - name: Copilot API
+        group: Public services
+        url: https://copilot.alexmickelson.guru
+        interval: 60s
+        conditions:
+          - "[STATUS] >= 200"
+          - "[STATUS] < 400"
+      - name: Forgejo (canonical)
+        group: Public services
+        url: https://forgejo.alexmickelson.guru
+        interval: 60s
+        conditions:
+          - "[STATUS] >= 200"
+          - "[STATUS] < 400"
+      - name: Grafana
+        group: Public services
+        url: https://grafana.alexmickelson.guru
+        interval: 60s
+        conditions:
+          - "[STATUS] >= 200"
+          - "[STATUS] < 400"
+      - name: Home Assistant
+        group: Public services
+        url: https://ha.alexmickelson.guru
+        interval: 60s
+        conditions:
+          - "[STATUS] >= 200"
+          - "[STATUS] < 400"
+      - name: Jellyfin (direct)
+        group: Public services
+        url: https://jellyfin.alexmickelson.guru
+        interval: 60s
+        conditions:
+          - "[STATUS] >= 200"
+          - "[STATUS] < 400"
+      - name: Kiali
+        group: Public services
+        url: https://kiali.alexmickelson.guru
+        interval: 60s
+        conditions:
+          - "[STATUS] >= 200"
+          - "[STATUS] < 400"
+      - name: Immich
+        group: Public services
+        url: https://photos.alexmickelson.guru
+        interval: 60s
+        conditions:
+          - "[STATUS] >= 200"
+          - "[STATUS] < 400"
+      - name: SearXNG
+        group: Public services
+        url: https://search.alexmickelson.guru
+        interval: 60s
+        conditions:
+          - "[STATUS] >= 200"
+          - "[STATUS] < 400"
+      - name: Music Assistant
+        group: Public services
+        url: https://sound.alexmickelson.guru
+        interval: 60s
+        conditions:
+          - "[STATUS] >= 200"
+          - "[STATUS] < 400"
+      - name: Audiobookshelf (Tailnet)
+        group: Private services
+        url: https://audiobook.beefalo-newton.ts.net
+        interval: 60s
+        conditions:
+          - "[STATUS] >= 200"
+          - "[STATUS] < 400"
+      - name: Firecrawl (Tailnet)
+        group: Private services
+        url: https://firecrawl.beefalo-newton.ts.net
+        interval: 60s
+        conditions:
+          - "[STATUS] >= 200"
+          - "[STATUS] < 400"
+      - name: Vault (Tailnet)
+        group: Private services
+        url: https://vault.beefalo-newton.ts.net
+        interval: 60s
+        conditions:
+          - "[STATUS] >= 200"
+          - "[STATUS] < 400"
