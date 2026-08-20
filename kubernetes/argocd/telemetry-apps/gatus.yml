@@ -36,52 +36,8 @@ spec:
             hosts:
               - uptime.alexmickelson.guru
 
-        config:
-          storage:
-            type: sqlite
-            path: /data/data.db
-          endpoints:
-            - name: Istio main gateway readiness
-              group: Infrastructure
-              url: http://main-gateway-istio.istio-ingress.svc.cluster.local:15021/healthz/ready
-              interval: 30s
-              conditions:
-                - "[STATUS] == 200"
-            - name: Homepage
-              group: Public services
-              url: https://home.alexmickelson.guru
-              interval: 60s
-              conditions:
-                - "[STATUS] >= 200"
-                - "[STATUS] < 400"
-            - name: Forgejo
-              group: Public services
-              url: https://git.alexmickelson.guru
-              interval: 60s
-              conditions:
-                - "[STATUS] >= 200"
-                - "[STATUS] < 400"
-            - name: Nextcloud
-              group: Public services
-              url: https://next.alexmickelson.guru
-              interval: 60s
-              conditions:
-                - "[STATUS] >= 200"
-                - "[STATUS] < 400"
-            - name: Prometheus
-              group: Public services
-              url: https://prometheus.alexmickelson.guru
-              interval: 60s
-              conditions:
-                - "[STATUS] >= 200"
-                - "[STATUS] < 400"
-            - name: Jellyfin
-              group: Public services
-              url: https://jelly-pub.alexmickelson.guru
-              interval: 60s
-              conditions:
-                - "[STATUS] >= 200"
-                - "[STATUS] < 400"
+        # The chart uses this ConfigMap both for the config file and envFrom.
+        externalConfigMap: gatus
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
