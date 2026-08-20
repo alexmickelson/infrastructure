@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: ttyd
-          image: alexmickelson/ttyd:latest
+          image: alexmickelson/ttyd:latest@sha256:4f05d5c2883c412c0831ecaaced71bf3a9a625f7c548ec7646a0fc38b45c7295
           ports:
             - name: http
               containerPort: 7681
