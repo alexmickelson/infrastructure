@@ -10,7 +10,7 @@ metadata:
   namespace: minecraft
 spec:
   revisionHistoryLimit: 3
-  replicas: 1
+  replicas: 0
   strategy:
     type: Recreate
   selector:
