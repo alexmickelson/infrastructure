@@ -34,5 +34,7 @@ WORKDIR /home/alex/workspace
 EXPOSE 7681
 
 COPY supervisord.conf /etc/supervisor/supervisord.conf
+COPY theme.json /etc/ttyd/theme.json
+COPY --chmod=0755 start-ttyd /usr/local/bin/start-ttyd
 
 ENTRYPOINT ["/usr/bin/supervisord", "--nodaemon", "--configuration", "/etc/supervisor/supervisord.conf"]

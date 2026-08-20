@@ -28,6 +28,8 @@ spec:
               "--binlog-format=ROW",
             ]
           env:
+            - name: MARIADB_AUTO_UPGRADE
+              value: "1"
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
