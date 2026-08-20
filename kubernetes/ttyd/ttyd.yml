@@ -71,6 +71,8 @@ spec:
   parentRefs:
     - name: pangolin-gateway
       namespace: istio-ingress
+    - name: main-gateway
+      namespace: istio-ingress
   hostnames:
     - shell.alexmickelson.guru
   rules:
