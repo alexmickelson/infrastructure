@@ -16,7 +16,7 @@ jobs:
         JELLYFIN_PASSWORD: ${{ secrets.JELLYFIN_PASSWORD }}
       working-directory: /home/forgejo-runner/infrastructure
       run: |
-        docker build -t jellyfin_management -f jellyfin/Dockerfile .
+        docker build -q -t jellyfin_management -f jellyfin/Dockerfile .
         docker run --rm \
         -e JELLYFIN_USER=$JELLYFIN_USER \
         -e JELLYFIN_PASSWORD=$JELLYFIN_PASSWORD \

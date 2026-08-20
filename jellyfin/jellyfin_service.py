@@ -40,6 +40,10 @@ class Playlist(BaseModel):
     Songs: List[PlaylistSong]
 
 
+class PlaylistNotFoundError(Exception):
+    """Raised when Jellyfin returns a playlist in a library query but cannot load it."""
+
+
 @lru_cache(maxsize=10)
 def get_token():
     auth_endpoint = f"{server_address}/Users/AuthenticateByName"
@@ -124,6 +128,8 @@ def get_songs_in_playlist(playlist_id: str):
     if not response.ok:
         print(response.status_code)
         print(response.text)
+        if response.status_code == 404:
+            raise PlaylistNotFoundError(playlist_id)
         raise Exception(f"Error getting songs in playlist: {playlist_id}")
     data = response.json()
 
@@ -148,7 +154,13 @@ def get_all_playlists():
     print("got all playlists", len(data["Items"]))
     playlists: List[Playlist] = []
     for playlist in data["Items"]:
-        songs = get_songs_in_playlist(playlist["Id"])
+        try:
+            songs = get_songs_in_playlist(playlist["Id"])
+        except PlaylistNotFoundError:
+            print(
+                f"skipping deleted playlist {playlist['Name']}: {playlist['Id']}"
+            )
+            continue
         playlist_object = Playlist(
             Id=playlist["Id"], Name=playlist["Name"], Songs=songs
         )
