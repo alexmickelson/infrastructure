@@ -1,0 +1,30 @@
+name: Apply Argo CD Applications
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - kubernetes/argocd/user-apps/**
+      - kubernetes/argocd/infrastructure-apps/**
+      - kubernetes/argocd/telemetry-apps/**
+  workflow_dispatch:
+
+jobs:
+  update-repo:
+    uses: ./.forgejo/workflows/update-repo.yml
+
+  apply-applications:
+    runs-on: [home-server]
+    needs: update-repo
+    env:
+      KUBECONFIG: /home/forgejo-runner/.kube/config
+    defaults:
+      run:
+        working-directory: /home/forgejo-runner/infrastructure
+    steps:
+      - name: Apply Argo CD Application definitions
+        run: |
+          kubectl apply \
+            -f kubernetes/argocd/user-apps \
+            -f kubernetes/argocd/infrastructure-apps \
+            -f kubernetes/argocd/telemetry-apps
