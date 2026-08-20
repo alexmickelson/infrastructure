@@ -66,20 +66,6 @@ data:
         conditions:
           - "[STATUS] >= 200"
           - "[STATUS] < 400"
-      - name: Copilot API
-        group: Public services
-        url: https://copilot.alexmickelson.guru
-        interval: 60s
-        conditions:
-          - "[STATUS] >= 200"
-          - "[STATUS] < 400"
-      - name: Forgejo (canonical)
-        group: Public services
-        url: https://forgejo.alexmickelson.guru
-        interval: 60s
-        conditions:
-          - "[STATUS] >= 200"
-          - "[STATUS] < 400"
       - name: Grafana
         group: Public services
         url: https://grafana.alexmickelson.guru
