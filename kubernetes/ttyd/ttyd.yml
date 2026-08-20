@@ -28,10 +28,6 @@ spec:
           ports:
             - name: http
               containerPort: 7681
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: ["ALL"]
           volumeMounts:
             - name: home
               mountPath: /home/alex
@@ -73,7 +69,7 @@ metadata:
   namespace: ttyd
 spec:
   parentRefs:
-    - name: main-gateway
+    - name: pangolin-gateway
       namespace: istio-ingress
   hostnames:
     - shell.alexmickelson.guru
