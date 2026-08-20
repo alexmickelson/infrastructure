@@ -1,0 +1,91 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gatus
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://twin.github.io/helm-charts
+    chart: gatus
+    targetRevision: 1.5.0
+    helm:
+      releaseName: gatus
+      values: |
+        persistence:
+          enabled: true
+          size: 2Gi
+
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+
+        gateway:
+          route:
+            enabled: true
+            parentRefs:
+              - name: main-gateway
+                namespace: istio-ingress
+            hosts:
+              - uptime.alexmickelson.guru
+
+        config:
+          storage:
+            type: sqlite
+            path: /data/data.db
+          endpoints:
+            - name: Istio main gateway readiness
+              group: Infrastructure
+              url: http://main-gateway-istio.istio-ingress.svc.cluster.local:15021/healthz/ready
+              interval: 30s
+              conditions:
+                - "[STATUS] == 200"
+            - name: Homepage
+              group: Public services
+              url: https://home.alexmickelson.guru
+              interval: 60s
+              conditions:
+                - "[STATUS] >= 200"
+                - "[STATUS] < 400"
+            - name: Forgejo
+              group: Public services
+              url: https://forgejo.alexmickelson.guru
+              interval: 60s
+              conditions:
+                - "[STATUS] >= 200"
+                - "[STATUS] < 400"
+            - name: Nextcloud
+              group: Public services
+              url: https://next.alexmickelson.guru
+              interval: 60s
+              conditions:
+                - "[STATUS] >= 200"
+                - "[STATUS] < 400"
+            - name: Prometheus
+              group: Public services
+              url: https://prometheus.alexmickelson.guru
+              interval: 60s
+              conditions:
+                - "[STATUS] >= 200"
+                - "[STATUS] < 400"
+            - name: Jellyfin
+              group: Public services
+              url: https://jelly-pub.alexmickelson.guru
+              interval: 60s
+              conditions:
+                - "[STATUS] >= 200"
+                - "[STATUS] < 400"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    automated:
+      prune: true
+      selfHeal: true

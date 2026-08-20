@@ -46,6 +46,26 @@
     layout = "us";
     variant = "";
   };
+  services.logiops = {
+    enable = true;
+    config = {
+      devices = [
+        {
+          # The MX Master 3 thumb-rest / gesture button.
+          name = "Logitech Wireless Mouse MX Master 3";
+          buttons = [
+            {
+              cid = 195; # 0xc3
+              action = {
+                type = "Keypress";
+                keys = [ "KEY_LEFTMETA" ];
+              };
+            }
+          ];
+        }
+      ];
+    };
+  };
   services.printing.enable = true;
   services.pulseaudio.enable = false;
   services.pipewire = {
