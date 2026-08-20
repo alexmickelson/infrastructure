@@ -72,8 +72,6 @@
       Restart = "always";
       RestartSec = 5;
 
-      # matches the hardening posture you already forced off on the module version —
-      # host-native execution needs broad access (docker socket, zfs, sudo, etc.)
       DynamicUser = false;
       PrivateDevices = false;
       PrivateMounts = false;
