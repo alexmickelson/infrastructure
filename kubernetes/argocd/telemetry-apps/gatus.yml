@@ -13,8 +13,11 @@ spec:
       releaseName: gatus
       values: |
         persistence:
-          enabled: true
-          size: 2Gi
+          enabled: false
+        extraVolumeMounts:
+          - name: gatus-data
+            mountPath: /data
+            hostPath: /data/gatus
 
         resources:
           requests:
