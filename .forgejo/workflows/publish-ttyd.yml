@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: Build and push image
         run: |
-          docker build --pull --tag "$IMAGE" ttyd
+          docker build -q --pull --tag "$IMAGE" ttyd
           printf '%s' "$DOCKERHUB_TOKEN" | docker login \
             --username "$DOCKERHUB_USERNAME" \
             --password-stdin
