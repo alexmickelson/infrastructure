@@ -1,4 +1,4 @@
 #!/bin/sh
 
 theme=$(tr -d '\n' < /etc/ttyd/theme.json)
-exec /usr/bin/ttyd -W -t "theme=$theme" fish
+exec /usr/bin/ttyd -W -t "theme=$theme" -t "fontFamily=FiraCode Nerd Font Mono" fish

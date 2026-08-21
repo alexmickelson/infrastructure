@@ -3,8 +3,6 @@ kind: Namespace
 metadata:
   name: pangolin
 ---
-# Vault KV v2 mount "secret" is configured by vault-backend. Therefore this
-# resolves Vault's secret/data/newt path; do not include "secret/" here.
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
@@ -82,8 +80,6 @@ spec:
             - secretRef:
                 name: newt-auth
           env:
-            # Newt persists its resolved environment configuration in the
-            # host-backed state directory below.
             - name: HOME
               value: /var/lib/newt
             - name: CONFIG_FILE
