@@ -1,12 +1,11 @@
-{ config, pkgs, ... }:
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}:
 
 {
-  imports =
-    [
-      <home-manager/nixos>
-      /etc/nixos/cachix.nix
-    ];
-
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/vda";
   boot.loader.grub.useOSProber = true;
@@ -57,11 +56,17 @@
     pulse.enable = true;
   };
 
-
   users.users.alex = {
     isNormalUser = true;
     description = "alex";
-    extraGroups = [ "networkmanager" "wheel" "docker" "video" "render" "input" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "docker"
+      "video"
+      "render"
+      "input"
+    ];
     shell = pkgs.fish;
 
     packages = with pkgs; [
@@ -75,11 +80,14 @@
       zip
     ];
   };
-  home-manager.users.alex = { pgks, ...}: {
-    home.stateVersion = "24.11";
-    imports = [
-      ./home-manager/ai-vm.home.nix
-    ];
+  home-manager = {
+    extraSpecialArgs = { inherit inputs; };
+    useGlobalPkgs = true;
+    backupFileExtension = "backup";
+    users.alex = { ... }: {
+      home.stateVersion = "24.11";
+      imports = [ ./ai-vm.home.nix ];
+    };
   };
 
   programs.firefox.enable = true;
@@ -90,11 +98,16 @@
   environment.systemPackages = with pkgs; [
     vim
     nvidia-container-toolkit
-    libva-utils 
-    vulkan-tools 
+    libva-utils
+    vulkan-tools
     ffmpeg
   ];
   programs.nix-ld.enable = true;
+
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   programs.fish.enable = true;
   services.tailscale.enable = true;
@@ -102,8 +115,6 @@
   services.qemuGuest.enable = true;
   virtualisation.docker.enable = true;
   hardware.steam-hardware.enable = true;
-
-
 
   systemd.targets.sleep.enable = false;
   systemd.targets.suspend.enable = false;

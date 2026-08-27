@@ -1,4 +1,4 @@
-let 
+let
   # gpuIDs = [
   #   "10de:2704" # Graphics
   #   "10de:22bb" # Audio
@@ -8,8 +8,17 @@ let
     "10de:22bb" # Audio
     "10de:2bb1" # Graphics
     "10de:22e8" # Audio
+    "10de:2204" # graphics 3090
+    "10de:1aef" # audo
   ];
-in { pkgs, lib, config, ... }: {
+in
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+{
   boot = {
     initrd.kernelModules = [
       "vfio_pci"
@@ -26,6 +35,6 @@ in { pkgs, lib, config, ... }: {
       "intel_iommu=on"
       ("vfio-pci.ids=" + lib.concatStringsSep "," gpuIDs)
     ];
-     
+
   };
 }
