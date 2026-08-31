@@ -48,7 +48,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: migrate
-          image: alpine/kubectl:1.35.0
+          image: alpine/kubectl:1.35.0@sha256:862d86046bbcad03c252bbc10ab8bf893e7aa50aa7a20de8bfc46727dd645883
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
