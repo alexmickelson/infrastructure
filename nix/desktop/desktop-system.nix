@@ -52,7 +52,7 @@
       devices = [
         {
           # The MX Master 3 thumb-rest / gesture button.
-          name = "Logitech Wireless Mouse MX Master 3";
+          name = "Wireless Mouse MX Master 3";
           buttons = [
             {
               cid = 195; # 0xc3

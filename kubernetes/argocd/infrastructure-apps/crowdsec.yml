@@ -61,6 +61,31 @@ spec:
       releaseName: crowdsec
       values: |
         container_runtime: containerd
+        config:
+          config.yaml.local: |
+            api:
+              client:
+                unregister_on_exit: true
+              server:
+                auto_registration:
+                  enabled: true
+                  token: "${REGISTRATION_TOKEN}"
+                  allowed_ranges:
+                    - "127.0.0.1/32"
+                    - "10.0.0.0/8"
+                    - "172.16.0.0/12"
+                    - "192.168.0.0/16"
+            db_config:
+              use_wal: true
+              flush:
+                max_items: 5000
+                max_age: 168h
+                metrics_max_age: 168h
+                bouncers_autodelete:
+                  api_key: 1h
+                agents_autodelete:
+                  login_password: 10m
+                  cert: 10m
         agent:
           acquisition:
             - namespace: istio-ingress
@@ -98,6 +123,23 @@ spec:
               cpu: 500m
               memory: 512Mi
         lapi:
+          nodeSelector:
+            kubernetes.io/hostname: home-server
+          storeCAPICredentialsInSecret: true
+          storeLAPICscliCredentialsInSecret: true
+          persistentVolume:
+            data:
+              enabled: false
+            config:
+              enabled: false
+          extraVolumes:
+            - name: crowdsec-host-data
+              hostPath:
+                path: /data/crowdsec/lapi-data
+                type: DirectoryOrCreate
+          extraVolumeMounts:
+            - name: crowdsec-host-data
+              mountPath: /var/lib/crowdsec/data
           env:
             - name: ENROLL_KEY
               valueFrom:
@@ -120,11 +162,6 @@ spec:
             limits:
               cpu: 500m
               memory: 512Mi
-          persistentVolume:
-            data:
-              size: 1Gi
-            config:
-              size: 100Mi
   destination:
     server: https://kubernetes.default.svc
     namespace: crowdsec
