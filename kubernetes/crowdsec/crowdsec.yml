@@ -1,0 +1,339 @@
+# CrowdSec protects the HTTP(S) entrypoint through Istio's ext_authz filter.
+# The bouncer key is deliberately sourced from Vault; it must never be committed.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crowdsec
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: crowdsec-bouncer-key
+  namespace: crowdsec
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: crowdsec-bouncer-key
+    creationPolicy: Owner
+  data:
+    - secretKey: api-key
+      remoteRef:
+        key: crowdsec/bouncer-key
+        property: bouncer-key
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: crowdsec-console-enrollment
+  namespace: crowdsec
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: crowdsec-console-enrollment
+    creationPolicy: Owner
+  data:
+    - secretKey: enrollment-key
+      remoteRef:
+        key: crowdsec/enrollment-key
+        property: enrollment-key
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: crowdsec
+  namespace: argocd
+  annotations:
+    # External Secrets and Vault are installed at waves 11 and 10 respectively.
+    argocd.argoproj.io/sync-wave: "12"
+spec:
+  project: default
+  source:
+    repoURL: https://crowdsecurity.github.io/helm-charts
+    chart: crowdsec
+    targetRevision: "0.24.0"
+    helm:
+      releaseName: crowdsec
+      values: |
+        container_runtime: containerd
+        config:
+          config.yaml.local: |
+            api:
+              client:
+                unregister_on_exit: true
+              server:
+                auto_registration:
+                  enabled: true
+                  token: "${REGISTRATION_TOKEN}"
+                  allowed_ranges:
+                    - "127.0.0.1/32"
+                    - "10.0.0.0/8"
+                    - "172.16.0.0/12"
+                    - "192.168.0.0/16"
+            db_config:
+              use_wal: true
+              flush:
+                max_items: 5000
+                max_age: 168h
+                metrics_max_age: 168h
+                bouncers_autodelete:
+                  api_key: 1h
+                agents_autodelete:
+                  login_password: 10m
+                  cert: 10m
+        agent:
+          acquisition:
+            - namespace: istio-ingress
+              podName: main-gateway-istio-*
+              poll_without_inotify: true
+              program: envoy
+            - namespace: istio-ingress
+              podName: pangolin-gateway-istio-*
+              poll_without_inotify: true
+              program: envoy
+          env:
+            - name: COLLECTIONS
+              value: yanis-kouidri/envoy
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+        appsec:
+          enabled: true
+          acquisitions:
+            - source: appsec
+              listen_addr: 0.0.0.0:7422
+              path: /
+              appsec_configs:
+                - crowdsecurity/appsec-default
+              labels:
+                type: appsec
+          env:
+            - name: COLLECTIONS
+              value: crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+        lapi:
+          nodeSelector:
+            kubernetes.io/hostname: home-server
+          storeCAPICredentialsInSecret: true
+          storeLAPICscliCredentialsInSecret: true
+          persistentVolume:
+            data:
+              enabled: false
+            config:
+              enabled: false
+          extraVolumes:
+            - name: crowdsec-host-data
+              hostPath:
+                path: /data/crowdsec/lapi-data
+                type: DirectoryOrCreate
+          extraVolumeMounts:
+            - name: crowdsec-host-data
+              mountPath: /var/lib/crowdsec/data
+          env:
+            - name: ENROLL_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: crowdsec-console-enrollment
+                  key: enrollment-key
+            - name: ENROLL_INSTANCE_NAME
+              value: home-k3s
+            - name: ENROLL_TAGS
+              value: k3s istio tailscale
+            - name: BOUNCER_KEY_envoy
+              valueFrom:
+                secretKeyRef:
+                  name: crowdsec-bouncer-key
+                  key: api-key
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: crowdsec
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    automated:
+      prune: true
+      selfHeal: true
+---
+# The CrowdSec bouncer is an Envoy ext_authz gRPC service. Its image is pinned
+# because this is a community component that is still under active development.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crowdsec-envoy-bouncer
+  namespace: crowdsec
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: crowdsec-envoy-bouncer
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: crowdsec-envoy-bouncer
+    spec:
+      containers:
+        - name: crowdsec-envoy-bouncer
+          image: ghcr.io/kdwils/envoy-proxy-bouncer:v0.6.0@sha256:4d7778a4bccb13ecd6d6b732e8d41b82cd3abf729fd552457e02bddf100d23e0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: grpc
+              containerPort: 8080
+              protocol: TCP
+            - name: http
+              containerPort: 8081
+              protocol: TCP
+          env:
+            - name: ENVOY_BOUNCER_BOUNCER_ENABLED
+              value: "true"
+            - name: ENVOY_BOUNCER_BOUNCER_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: crowdsec-bouncer-key
+                  key: api-key
+            - name: ENVOY_BOUNCER_BOUNCER_LAPIURL
+              value: http://crowdsec-service.crowdsec.svc.cluster.local:8080
+            - name: ENVOY_BOUNCER_WAF_ENABLED
+              value: "true"
+            - name: ENVOY_BOUNCER_WAF_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: crowdsec-bouncer-key
+                  key: api-key
+            - name: ENVOY_BOUNCER_WAF_APPSECURL
+              value: http://crowdsec-appsec-service.crowdsec.svc.cluster.local:7422
+            - name: ENVOY_BOUNCER_TRUSTEDIPHEADER
+              value: X-Envoy-External-Address
+            - name: ENVOY_BOUNCER_SERVER_GRPCPORT
+              value: "8080"
+            - name: ENVOY_BOUNCER_SERVER_HTTPPORT
+              value: "8081"
+            - name: ENVOY_BOUNCER_SERVER_LOGLEVEL
+              value: info
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 65532
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crowdsec-envoy-bouncer
+  namespace: crowdsec
+spec:
+  selector:
+    app.kubernetes.io/name: crowdsec-envoy-bouncer
+  ports:
+    - name: grpc
+      port: 8080
+      targetPort: grpc
+      protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: crowdsec-envoy-bouncer-ingress
+  namespace: crowdsec
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: crowdsec-envoy-bouncer
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: istio-ingress
+          podSelector:
+            matchExpressions:
+              - key: gateway.networking.k8s.io/gateway-name
+                operator: In
+                values:
+                  - main-gateway
+                  - pangolin-gateway
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+# Permit the bouncer and CrowdSec's agent/AppSec components to reach LAPI.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: crowdsec-lapi-ingress
+  namespace: crowdsec
+spec:
+  podSelector:
+    matchLabels:
+      k8s-app: crowdsec
+      type: lapi
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: crowdsec-envoy-bouncer
+        - podSelector:
+            matchLabels:
+              k8s-app: crowdsec
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: crowdsec-appsec-ingress
+  namespace: crowdsec
+spec:
+  podSelector:
+    matchLabels:
+      k8s-app: crowdsec
+      type: appsec
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: crowdsec-envoy-bouncer
+      ports:
+        - protocol: TCP
+          port: 7422

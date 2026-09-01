@@ -1,0 +1,11 @@
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: homepage
+  namespace: external-dns
+spec:
+  endpoints:
+    - dnsName: home.alexmickelson.guru
+      recordType: A
+      targets:
+        - 100.94.176.125

@@ -5,52 +5,55 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
+  sources:
     # The Grafana-maintained chart is published as an OCI artifact. Argo CD
     # detects the registry from the URL, as it does for Envoy Gateway here.
-    repoURL: ghcr.io/grafana-community/helm-charts
-    chart: grafana
-    targetRevision: 12.8.0
-    helm:
-      releaseName: grafana
-      values: |
-        # Grafana creates a random admin password in the grafana secret unless
-        # an existing secret is configured later.
-        persistence:
-          enabled: false
-        extraVolumes:
-          - name: grafana-data
-            hostPath:
-              path: /data/grafana-kube
-              type: DirectoryOrCreate
-        extraVolumeMounts:
-          - name: grafana-data
-            mountPath: /data/grafana-kube
-        grafana.ini:
-          paths:
-            # This value is rendered by the chart as GF_PATHS_DATA. The
-            # chart's default emptyDir remains mounted but is not used for
-            # Grafana state.
-            data: /data/grafana-kube
-        # hostPath is created as root on the node.  Initialise it with the UID
-        # used by the official Grafana image before Grafana starts.
-        datasources:
-          datasources.yaml:
-            apiVersion: 1
-            datasources:
-              - name: Prometheus
-                uid: prometheus
-                type: prometheus
-                access: proxy
-                url: http://prometheus-server.monitoring.svc.cluster.local
-                isDefault: true
-                editable: false
-        resources:
-          requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            memory: 512Mi
+    - repoURL: ghcr.io/grafana-community/helm-charts
+      chart: grafana
+      targetRevision: 12.8.0
+      helm:
+        releaseName: grafana
+        values: |
+          # Grafana creates a random admin password in the grafana secret unless
+          # an existing secret is configured later.
+          persistence:
+            enabled: false
+          extraVolumes:
+            - name: grafana-data
+              hostPath:
+                path: /data/grafana-kube
+                type: DirectoryOrCreate
+          extraVolumeMounts:
+            - name: grafana-data
+              mountPath: /data/grafana-kube
+          grafana.ini:
+            paths:
+              # This value is rendered by the chart as GF_PATHS_DATA. The
+              # chart's default emptyDir remains mounted but is not used for
+              # Grafana state.
+              data: /data/grafana-kube
+          # hostPath is created as root on the node.  Initialise it with the UID
+          # used by the official Grafana image before Grafana starts.
+          datasources:
+            datasources.yaml:
+              apiVersion: 1
+              datasources:
+                - name: Prometheus
+                  uid: prometheus
+                  type: prometheus
+                  access: proxy
+                  url: http://prometheus-server.monitoring.svc.cluster.local
+                  isDefault: true
+                  editable: false
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 512Mi
+    - repoURL: https://git.alexmickelson.guru/alex/infrastructure.git
+      targetRevision: HEAD
+      path: kubernetes/grafana
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

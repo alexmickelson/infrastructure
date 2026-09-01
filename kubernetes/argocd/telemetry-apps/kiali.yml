@@ -5,22 +5,25 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: https://kiali.org/helm-charts
-    chart: kiali-server
-    targetRevision: 2.29.0
-    helm:
-      releaseName: kiali
-      values: |
-        auth:
-          strategy: anonymous
-        deployment:
-          accessible_namespaces:
-            - "**"
-        external_services:
-          prometheus:
-            url: http://prometheus-server.monitoring.svc.cluster.local
-        istio_namespace: istio-system
+  sources:
+    - repoURL: https://kiali.org/helm-charts
+      chart: kiali-server
+      targetRevision: 2.29.0
+      helm:
+        releaseName: kiali
+        values: |
+          auth:
+            strategy: anonymous
+          deployment:
+            accessible_namespaces:
+              - "**"
+          external_services:
+            prometheus:
+              url: http://prometheus-server.monitoring.svc.cluster.local
+          istio_namespace: istio-system
+    - repoURL: https://git.alexmickelson.guru/alex/infrastructure.git
+      targetRevision: HEAD
+      path: kubernetes/kiali
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

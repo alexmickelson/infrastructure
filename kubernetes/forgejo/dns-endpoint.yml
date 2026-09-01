@@ -1,0 +1,23 @@
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: forgejo
+  namespace: external-dns
+spec:
+  endpoints:
+    - dnsName: forgejo.alexmickelson.guru
+      recordType: A
+      targets:
+        - 100.67.217.88
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: git
+  namespace: external-dns
+spec:
+  endpoints:
+    - dnsName: git.alexmickelson.guru
+      recordType: CNAME
+      targets:
+        - pangolin.alexmickelson.guru
