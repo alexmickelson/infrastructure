@@ -192,7 +192,7 @@ spec:
     spec:
       containers:
         - name: crowdsec-envoy-bouncer
-          image: ghcr.io/kdwils/envoy-proxy-bouncer:v0.6.0
+          image: ghcr.io/kdwils/envoy-proxy-bouncer:v0.6.0@sha256:4d7778a4bccb13ecd6d6b732e8d41b82cd3abf729fd552457e02bddf100d23e0
           imagePullPolicy: IfNotPresent
           ports:
             - name: grpc
