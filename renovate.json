@@ -9,10 +9,12 @@
   ],
   "enabledManagers": [
     "kubernetes",
-    "argocd"
+    "argocd",
+    "docker-compose"
   ],
   "includePaths": [
-    "kubernetes/**/*"
+    "kubernetes/**/*",
+    "pangolin-gateway/**/*"
   ],
   "kubernetes": {
     "managerFilePatterns": [
