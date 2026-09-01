@@ -62,6 +62,6 @@ spec:
         - 100.94.176.125
     - dnsName: shell.alexmickelson.guru
       recordTTL: 300
-      recordType: A
+      recordType: CNAME
       targets:
-        - 100.67.217.88
+        - pangolin.alexmickelson.guru
