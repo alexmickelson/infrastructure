@@ -92,6 +92,10 @@ spec:
               podName: main-gateway-istio-*
               poll_without_inotify: true
               program: envoy
+            - namespace: istio-ingress
+              podName: pangolin-gateway-istio-*
+              poll_without_inotify: true
+              program: envoy
           env:
             - name: COLLECTIONS
               value: yanis-kouidri/envoy
@@ -220,6 +224,8 @@ spec:
                   key: api-key
             - name: ENVOY_BOUNCER_WAF_APPSECURL
               value: http://crowdsec-appsec-service.crowdsec.svc.cluster.local:7422
+            - name: ENVOY_BOUNCER_TRUSTEDIPHEADER
+              value: X-Envoy-External-Address
             - name: ENVOY_BOUNCER_SERVER_GRPCPORT
               value: "8080"
             - name: ENVOY_BOUNCER_SERVER_HTTPPORT
@@ -259,7 +265,6 @@ spec:
       targetPort: grpc
       protocol: TCP
 ---
-# Limit the bouncer's ingress to the one Istio gateway workload.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -277,8 +282,12 @@ spec:
             matchLabels:
               kubernetes.io/metadata.name: istio-ingress
           podSelector:
-            matchLabels:
-              gateway.networking.k8s.io/gateway-name: main-gateway
+            matchExpressions:
+              - key: gateway.networking.k8s.io/gateway-name
+                operator: In
+                values:
+                  - main-gateway
+                  - pangolin-gateway
       ports:
         - protocol: TCP
           port: 8080

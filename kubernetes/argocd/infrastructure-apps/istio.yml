@@ -195,6 +195,12 @@ metadata:
   name: pangolin-gateway-infrastructure
   namespace: istio-ingress
 data:
+  deployment: |
+    spec:
+      template:
+        metadata:
+          annotations:
+            proxy.istio.io/config: '{"gatewayTopology":{"numTrustedProxies":1}}'
   service: |
     spec:
       type: ClusterIP
@@ -220,8 +226,6 @@ spec:
         namespaces:
           from: All
 ---
-# Emit access logs only from the protected edge workload; the CrowdSec agent
-# acquires these logs to detect repeat behavior and create IP decisions.
 apiVersion: telemetry.istio.io/v1
 kind: Telemetry
 metadata:
@@ -231,6 +235,19 @@ spec:
   selector:
     matchLabels:
       gateway.networking.k8s.io/gateway-name: main-gateway
+  accessLogging:
+    - providers:
+        - name: envoy
+---
+apiVersion: telemetry.istio.io/v1
+kind: Telemetry
+metadata:
+  name: pangolin-gateway-access-logs
+  namespace: istio-ingress
+spec:
+  selector:
+    matchLabels:
+      gateway.networking.k8s.io/gateway-name: pangolin-gateway
   accessLogging:
     - providers:
         - name: envoy
@@ -255,3 +272,21 @@ spec:
             ports:
               - "80"
               - "443"
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: pangolin-gateway-crowdsec
+  namespace: istio-ingress
+spec:
+  selector:
+    matchLabels:
+      gateway.networking.k8s.io/gateway-name: pangolin-gateway
+  action: CUSTOM
+  provider:
+    name: crowdsec
+  rules:
+    - to:
+        - operation:
+            ports:
+              - "80"
