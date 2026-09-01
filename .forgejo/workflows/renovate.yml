@@ -1,7 +1,7 @@
 name: Renovate Updates
 on:
   schedule:
-    - cron: 0 15 * * *
+    - cron: 20 */8 * * *
   workflow_dispatch:
 
 jobs:
