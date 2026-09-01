@@ -1,0 +1,67 @@
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: http-routes
+  namespace: external-dns
+spec:
+  endpoints:
+    - dnsName: argocd.alexmickelson.guru
+      recordTTL: 300
+      recordType: A
+      targets:
+        - 100.94.176.125
+    - dnsName: audiobook.alexmickelson.guru
+      recordTTL: 300
+      recordType: A
+      targets:
+        - 100.94.176.125
+    - dnsName: forgejo.alexmickelson.guru
+      recordTTL: 300
+      recordType: A
+      targets:
+        - 100.67.217.88
+    - dnsName: git.alexmickelson.guru
+      recordTTL: 300
+      recordType: CNAME
+      targets:
+        - pangolin.alexmickelson.guru
+    - dnsName: home.alexmickelson.guru
+      recordTTL: 300
+      recordType: A
+      targets:
+        - 100.94.176.125
+    - dnsName: jelly-pub.alexmickelson.guru
+      recordTTL: 300
+      recordType: CNAME
+      targets:
+        - pangolin.alexmickelson.guru
+    - dnsName: uptime.alexmickelson.guru
+      recordTTL: 300
+      recordType: A
+      targets:
+        - 100.67.217.88
+    - dnsName: grafana.alexmickelson.guru
+      recordTTL: 300
+      recordType: A
+      targets:
+        - 100.94.176.125
+    - dnsName: kiali.alexmickelson.guru
+      recordTTL: 300
+      recordType: A
+      targets:
+        - 100.94.176.125
+    - dnsName: prometheus.alexmickelson.guru
+      recordTTL: 300
+      recordType: A
+      targets:
+        - 100.67.217.88
+    - dnsName: next.alexmickelson.guru
+      recordTTL: 300
+      recordType: A
+      targets:
+        - 100.94.176.125
+    - dnsName: shell.alexmickelson.guru
+      recordTTL: 300
+      recordType: A
+      targets:
+        - 100.67.217.88
