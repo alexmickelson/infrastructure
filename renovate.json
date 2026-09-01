@@ -29,6 +29,12 @@
   },
   "packageRules": [
     {
+      "description": "Do not delay Docker digest pinning and refreshes",
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["digest", "pinDigest"],
+      "minimumReleaseAge": null
+    },
+    {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["alexmickelson/ttyd"],
       "minimumReleaseAge": null
