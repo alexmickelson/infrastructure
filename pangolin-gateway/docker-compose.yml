@@ -2,7 +2,7 @@ name: pangolin
 
 services:
   pangolin:
-    image: docker.io/fosrl/pangolin:1.21.0
+    image: docker.io/fosrl/pangolin:1.22.0
     container_name: pangolin
     restart: unless-stopped
     env_file:
