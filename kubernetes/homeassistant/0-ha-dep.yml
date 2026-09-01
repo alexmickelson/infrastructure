@@ -22,7 +22,7 @@ spec:
       hostNetwork: true
       containers:
       - name: homeassistant
-        image: homeassistant/home-assistant:stable@sha256:5a531753cea96444200158fc2b0ac7ccd739291ec50414877b396de6e0bb29b3
+        image: homeassistant/home-assistant:stable@sha256:14931c6b13756317849f46da1d01b45937a1150db66c081cfe529d48215943fe
         imagePullPolicy: Always
         env:
         - name: TZ
