@@ -84,6 +84,8 @@ spec:
               value: /var/lib/newt
             - name: CONFIG_FILE
               value: /var/lib/newt/config.json
+            - name: BLUEPRINT_FILE
+              value: /etc/newt/blueprint.yml
           resources:
             requests:
               cpu: 50m
@@ -102,8 +104,14 @@ spec:
           volumeMounts:
             - name: newt-state
               mountPath: /var/lib/newt
+            - name: newt-blueprint
+              mountPath: /etc/newt
+              readOnly: true
       volumes:
         - name: newt-state
           hostPath:
             path: /data/pangolin/newt
             type: DirectoryOrCreate
+        - name: newt-blueprint
+          configMap:
+            name: newt-blueprint

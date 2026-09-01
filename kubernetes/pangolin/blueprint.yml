@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: newt-blueprint
+  namespace: pangolin
+data:
+  blueprint.yml: |
+    public-resources:
+      forgejo:
+        name: Forgejo
+        mode: http
+        full-domain: git.alexmickelson.guru
+        enabled: true
+        auth:
+          sso-enabled: false
+        host-header: git.alexmickelson.guru
+        targets:
+          - hostname: pangolin-gateway-istio.istio-ingress.svc.cluster.local
+            port: 80
+            method: http
+            enabled: true
+            healthcheck:
+              enabled: true
+              hostname: pangolin-gateway-istio.istio-ingress.svc.cluster.local
+              port: 80
+              scheme: http
+              path: /api/healthz
+              method: GET
+              status: 200
+              follow-redirects: false
+              headers:
+                - name: Host
+                  value: git.alexmickelson.guru
