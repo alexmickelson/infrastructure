@@ -49,6 +49,14 @@
             binary from this flake's nixpkgs input is used.
           '';
         };
+
+        executableName = {
+          type = "string";
+          default = "pi-sandboxed";
+          description = ''
+            Name of the executable produced by this package.
+          '';
+        };
       };
 
       mkPiSandboxed =
@@ -62,6 +70,7 @@
             additionalReadWritePaths ? [ ],
             additionalPkgs ? [ ],
             piAgentBinary ? null,
+            executableName ? "pi-sandboxed",
           }:
           let
             escapedReadOnlyPaths = pkgs.lib.escapeShellArgs (map toString additionalReadOnlyPaths);
@@ -69,6 +78,7 @@
             resolvedPiAgentBinary =
               if piAgentBinary == null then pkgs.lib.getExe pkgs.pi-coding-agent else toString piAgentBinary;
             escapedPiAgentBinary = pkgs.lib.escapeShellArg resolvedPiAgentBinary;
+            escapedExecutableName = pkgs.lib.escapeShellArg executableName;
 
             commonRuntimeInputs =
               (with pkgs; [
@@ -92,7 +102,7 @@
               ++ additionalPkgs;
 
             linuxLauncher = pkgs.writeShellApplication {
-              name = "pi-sandboxed";
+              name = executableName;
               passthru = { inherit shellOptions; };
 
               runtimeInputs =
@@ -188,7 +198,7 @@
             };
 
             darwinLauncher = pkgs.writeShellApplication {
-              name = "pi-sandboxed";
+              name = executableName;
               passthru = { inherit shellOptions; };
 
               runtimeInputs = commonRuntimeInputs ++ [ pkgs.tmux ];
@@ -328,6 +338,12 @@
                   validate_additional_path "read-write" "$additional_path"
                 done
 
+                printf '%s: filesystem access\n' ${escapedExecutableName} >&2
+                printf '  read-write:\n' >&2
+                printf '    %s\n' "''${read_write_paths[@]}" >&2
+                printf '  read-only:\n' >&2
+                printf '    %s\n' "''${read_only_paths[@]}" >&2
+
                 for path in "''${read_write_paths[@]}"; do
                   compose_sandbox_config "read-write" "$path"
                 done
@@ -335,9 +351,6 @@
                 for path in "''${read_only_paths[@]}"; do
                   compose_sandbox_config "read-only" "$path"
                 done
-
-                echo "pi-sandboxed: Darwin sandbox profile:" >&2
-                cat "$profile" >&2
 
                 exec /usr/bin/sandbox-exec -f "$profile" \
                   -D "home_dir=$home_dir" \
@@ -359,7 +372,7 @@
       apps = forAllSystems (system: {
         default = {
           type = "app";
-          program = "${self.packages.${system}.default}/bin/pi-sandboxed";
+          program = nixpkgs.lib.getExe self.packages.${system}.default;
         };
       });
     };
