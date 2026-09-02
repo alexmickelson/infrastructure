@@ -1,21 +1,5 @@
 {
   "nodes": {
-    "agent-sandbox": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "path": "../agent-sandbox",
-        "type": "path"
-      },
-      "original": {
-        "path": "../agent-sandbox",
-        "type": "path"
-      },
-      "parent": []
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1788179007,
@@ -34,7 +18,6 @@
     },
     "root": {
       "inputs": {
-        "agent-sandbox": "agent-sandbox",
         "nixpkgs": "nixpkgs"
       }
     }
