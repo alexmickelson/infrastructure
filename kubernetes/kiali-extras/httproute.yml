@@ -1,0 +1,21 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: kiali
+  namespace: monitoring
+spec:
+  parentRefs:
+    - name: envoy-gateway
+      namespace: envoy-gateway-ingress
+    - name: pangolin-gateway
+      namespace: istio-ingress
+  hostnames:
+    - kiali.alexmickelson.guru
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: kiali
+          port: 20001

@@ -65,24 +65,23 @@ spec:
       prune: true
       selfHeal: true
 ---
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
+apiVersion: argoproj.io/v1alpha1
+kind: Application
 metadata:
-  name: grafana
-  namespace: monitoring
+  name: grafana-extras
+  namespace: argocd
 spec:
-  parentRefs:
-    - name: envoy-gateway
-      namespace: envoy-gateway-ingress
-    - name: pangolin-gateway
-      namespace: istio-ingress
-  hostnames:
-    - grafana.alexmickelson.guru
-  rules:
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /
-      backendRefs:
-        - name: grafana
-          port: 80
+  project: default
+  source:
+    repoURL: https://git.alexmickelson.guru/alex/infrastructure.git
+    targetRevision: HEAD
+    path: kubernetes/grafana-extras
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true

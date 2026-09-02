@@ -129,164 +129,32 @@ spec:
       prune: true
       selfHeal: true
 ---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-extras
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  source:
+    repoURL: https://git.alexmickelson.guru/alex/infrastructure.git
+    targetRevision: HEAD
+    path: kubernetes/istio-extras
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-ingress
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+---
 apiVersion: v1
 kind: Namespace
 metadata:
   name: istio-ingress
   labels:
     istio.io/dataplane-mode: ambient
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: main-gateway-infrastructure
-  namespace: istio-ingress
-data:
-  service: |
-    metadata:
-      annotations:
-        tailscale.com/hostname: istio-gateway
-    spec:
-      type: LoadBalancer
-      loadBalancerClass: tailscale
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: Gateway
-metadata:
-  name: main-gateway
-  namespace: istio-ingress
-  annotations:
-    cert-manager.io/cluster-issuer: cloudflare-issuer
-    external-dns.alpha.kubernetes.io/target: "100.67.217.88"
-spec:
-  infrastructure:
-    parametersRef:
-      group: ""
-      kind: ConfigMap
-      name: main-gateway-infrastructure
-  gatewayClassName: istio
-  listeners:
-    - name: http
-      protocol: HTTP
-      port: 80
-      hostname: "*.alexmickelson.guru"
-      allowedRoutes:
-        namespaces:
-          from: All
-    - name: https
-      protocol: HTTPS
-      port: 443
-      hostname: "*.alexmickelson.guru"
-      allowedRoutes:
-        namespaces:
-          from: All
-      tls:
-        mode: Terminate
-        certificateRefs:
-          - kind: Secret
-            name: alexmickelson-tls-cert
----
-# Pangolin terminates public TLS on the VPS and forwards HTTP through Newt to
-# the generated ClusterIP Service for this Gateway. Existing HTTPRoutes must
-# explicitly add this Gateway to parentRefs before they are reachable here.
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: pangolin-gateway-infrastructure
-  namespace: istio-ingress
-data:
-  deployment: |
-    spec:
-      template:
-        metadata:
-          annotations:
-            proxy.istio.io/config: '{"gatewayTopology":{"numTrustedProxies":1}}'
-  service: |
-    spec:
-      type: ClusterIP
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: Gateway
-metadata:
-  name: pangolin-gateway
-  namespace: istio-ingress
-spec:
-  infrastructure:
-    parametersRef:
-      group: ""
-      kind: ConfigMap
-      name: pangolin-gateway-infrastructure
-  gatewayClassName: istio
-  listeners:
-    - name: pangolin-http
-      protocol: HTTP
-      port: 80
-      hostname: "*.alexmickelson.guru"
-      allowedRoutes:
-        namespaces:
-          from: All
----
-apiVersion: telemetry.istio.io/v1
-kind: Telemetry
-metadata:
-  name: main-gateway-access-logs
-  namespace: istio-ingress
-spec:
-  selector:
-    matchLabels:
-      gateway.networking.k8s.io/gateway-name: main-gateway
-  accessLogging:
-    - providers:
-        - name: envoy
----
-apiVersion: telemetry.istio.io/v1
-kind: Telemetry
-metadata:
-  name: pangolin-gateway-access-logs
-  namespace: istio-ingress
-spec:
-  selector:
-    matchLabels:
-      gateway.networking.k8s.io/gateway-name: pangolin-gateway
-  accessLogging:
-    - providers:
-        - name: envoy
----
-# CUSTOM makes Envoy synchronously consult the configured CrowdSec ext_authz
-# provider for every HTTP(S) request arriving at main-gateway.
-apiVersion: security.istio.io/v1
-kind: AuthorizationPolicy
-metadata:
-  name: main-gateway-crowdsec
-  namespace: istio-ingress
-spec:
-  selector:
-    matchLabels:
-      gateway.networking.k8s.io/gateway-name: main-gateway
-  action: CUSTOM
-  provider:
-    name: crowdsec
-  rules:
-    - to:
-        - operation:
-            ports:
-              - "80"
-              - "443"
----
-apiVersion: security.istio.io/v1
-kind: AuthorizationPolicy
-metadata:
-  name: pangolin-gateway-crowdsec
-  namespace: istio-ingress
-spec:
-  selector:
-    matchLabels:
-      gateway.networking.k8s.io/gateway-name: pangolin-gateway
-  action: CUSTOM
-  provider:
-    name: crowdsec
-  rules:
-    - to:
-        - operation:
-            ports:
-              - "80"

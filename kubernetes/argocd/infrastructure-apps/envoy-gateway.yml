@@ -29,58 +29,30 @@ spec:
       prune: true
       selfHeal: true
 ---
-apiVersion: gateway.envoyproxy.io/v1alpha1
-kind: EnvoyProxy
+apiVersion: argoproj.io/v1alpha1
+kind: Application
 metadata:
-  name: tailscale-proxy
-  namespace: envoy-gateway-system
+  name: envoy-gateway-extras
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
-  provider:
-    type: Kubernetes
-    kubernetes:
-      envoyService:
-        type: LoadBalancer
-        loadBalancerClass: tailscale
-        annotations:
-          tailscale.com/hostname: envoy-gateway
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: GatewayClass
-metadata:
-  name: envoy
-spec:
-  controllerName: gateway.envoyproxy.io/gatewayclass-controller
-  parametersRef:
-    group: gateway.envoyproxy.io
-    kind: EnvoyProxy
-    name: tailscale-proxy
-    namespace: envoy-gateway-system
+  project: default
+  source:
+    repoURL: https://git.alexmickelson.guru/alex/infrastructure.git
+    targetRevision: HEAD
+    path: kubernetes/envoy-gateway-extras
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: envoy-gateway-ingress
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   name: envoy-gateway-ingress
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: Gateway
-metadata:
-  name: envoy-gateway
-  namespace: envoy-gateway-ingress
-  annotations:
-    cert-manager.io/cluster-issuer: cloudflare-issuer
-    external-dns.alpha.kubernetes.io/target: "100.94.176.125" 
-spec:
-  gatewayClassName: envoy
-  listeners:
-    - name: alexmickelson-https
-      protocol: HTTPS
-      port: 443
-      hostname: "*.alexmickelson.guru"
-      allowedRoutes:
-        namespaces:
-          from: All
-      tls:
-        mode: Terminate
-        certificateRefs:
-          - kind: Secret
-            name: alexmickelson-tls-cert

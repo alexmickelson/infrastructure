@@ -1,5 +1,20 @@
-apiVersion: tailscale.com/v1alpha1
-kind: ProxyClass
+apiVersion: argoproj.io/v1alpha1
+kind: Application
 metadata:
-  name: no-istio-k8s-api
-spec: {}
+  name: tailscale-extras
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://git.alexmickelson.guru/alex/infrastructure.git
+    targetRevision: HEAD
+    path: kubernetes/tailscale-extras
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true

@@ -1,0 +1,5 @@
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyClass
+metadata:
+  name: no-istio-k8s-api
+spec: {}
