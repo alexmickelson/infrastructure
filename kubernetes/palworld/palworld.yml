@@ -90,6 +90,8 @@ spec:
           value: "27015"
         - name: PLAYERS
           value: "16"
+        - name: BASE_CAMP_WORKER_MAX_NUM
+          value: "50"
         - name: SERVER_NAME
           value: Palworld
         - name: COMMUNITY
