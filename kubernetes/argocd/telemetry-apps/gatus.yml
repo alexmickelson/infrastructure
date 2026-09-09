@@ -31,7 +31,9 @@ spec:
           route:
             enabled: true
             parentRefs:
-              - name: main-gateway
+              - group: gateway.networking.k8s.io
+                kind: Gateway
+                name: main-gateway
                 namespace: istio-ingress
             hosts:
               - uptime.alexmickelson.guru

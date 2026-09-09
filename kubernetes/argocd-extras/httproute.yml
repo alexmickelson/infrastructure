@@ -5,16 +5,23 @@ metadata:
   namespace: argocd
 spec:
   parentRefs:
-    - name: envoy-gateway
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: envoy-gateway
       namespace: envoy-gateway-ingress
-    - name: pangolin-gateway
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: pangolin-gateway
       namespace: istio-ingress
   hostnames:
     - argocd.alexmickelson.guru
   rules:
     - backendRefs:
-        - name: argocd-server
+        - group: ""
+          kind: Service
+          name: argocd-server
           port: 80
+          weight: 1
       matches:
         - path:
             type: PathPrefix

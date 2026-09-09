@@ -71,6 +71,12 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
 spec:
   project: default
+  ignoreDifferences:
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+      name: istio-validator-istio-system
+      jqPathExpressions:
+        - .webhooks[]?.failurePolicy
   source:
     repoURL: https://istio-release.storage.googleapis.com/charts
     chart: istiod
@@ -99,6 +105,7 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+      - RespectIgnoreDifferences=true
     automated:
       prune: true
       selfHeal: true

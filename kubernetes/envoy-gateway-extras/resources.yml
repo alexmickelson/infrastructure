@@ -46,5 +46,6 @@ spec:
       tls:
         mode: Terminate
         certificateRefs:
-          - kind: Secret
+          - group: ""
+            kind: Secret
             name: alexmickelson-tls-cert

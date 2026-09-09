@@ -45,7 +45,8 @@ spec:
       tls:
         mode: Terminate
         certificateRefs:
-          - kind: Secret
+          - group: ""
+            kind: Secret
             name: alexmickelson-tls-cert
 ---
 # Pangolin terminates public TLS on the VPS and forwards HTTP through Newt to

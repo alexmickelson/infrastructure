@@ -5,9 +5,13 @@ metadata:
   namespace: monitoring
 spec:
   parentRefs:
-    - name: main-gateway
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: main-gateway
       namespace: istio-ingress
-    - name: pangolin-gateway
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: pangolin-gateway
       namespace: istio-ingress
   hostnames:
     - prometheus.alexmickelson.guru
@@ -17,5 +21,8 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: prometheus-server
+        - group: ""
+          kind: Service
+          name: prometheus-server
           port: 80
+          weight: 1

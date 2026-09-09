@@ -1,8 +1,40 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  name: envoy-gateway-crds
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  project: default
+  source:
+    chart: gateway-crds-helm
+    repoURL: docker.io/envoyproxy
+    targetRevision: v0.0.0-latest
+    helm:
+      values: |
+        crds:
+          gatewayAPI:
+            enabled: false
+          envoyGateway:
+            enabled: true
+  destination:
+    namespace: envoy-gateway-system
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    syncOptions:
+      - ServerSideApply=true
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
   name: envoy-gateway
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   project: default
   source:
@@ -10,8 +42,9 @@ spec:
     repoURL: docker.io/envoyproxy
     targetRevision: v0.0.0-latest
     helm:
-      skipCrds: true
       values: |
+        crds:
+          enabled: false
         config:
           envoyGateway:
             gateway:
@@ -26,7 +59,7 @@ spec:
       - CreateNamespace=true
       - ServerSideApply=true
     automated:
-      prune: true
+      prune: false
       selfHeal: true
 ---
 apiVersion: argoproj.io/v1alpha1
