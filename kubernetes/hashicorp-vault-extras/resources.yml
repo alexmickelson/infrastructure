@@ -29,8 +29,38 @@ spec:
       ports:
         - protocol: TCP
           port: 8200
+    - ports:
         - protocol: TCP
           port: 15008
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: vault-access
+  namespace: hashicorp-vault
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vault
+      component: server
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/external-secrets-system/sa/external-secrets
+      to:
+        - operation:
+            ports:
+              - "8200"
+    - from:
+        - source:
+            notPrincipals:
+              - "*"
+      to:
+        - operation:
+            ports:
+              - "8200"
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
