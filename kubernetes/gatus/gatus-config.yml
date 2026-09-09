@@ -115,6 +115,13 @@ data:
         conditions:
           - "[STATUS] >= 200"
           - "[STATUS] < 400"
+      - name: Shell
+        group: Public services
+        url: https://shell.alexmickelson.guru
+        interval: 60s
+        conditions:
+          - "[STATUS] >= 200"
+          - "[STATUS] < 400"
       - name: Audiobookshelf (Tailnet)
         group: Private services
         url: https://audiobook.beefalo-newton.ts.net
