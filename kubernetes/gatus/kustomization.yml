@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - gatus-config.yml
   - dns-endpoint.yml
+  - httproute.yml

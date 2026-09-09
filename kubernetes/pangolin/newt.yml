@@ -16,19 +16,29 @@ spec:
   target:
     name: newt-auth
     creationPolicy: Owner
+    deletionPolicy: Retain
   data:
     - secretKey: PANGOLIN_ENDPOINT
       remoteRef:
         key: newt
         property: PANGOLIN_ENDPOINT
+        conversionStrategy: Default
+        decodingStrategy: None
+        metadataPolicy: None
     - secretKey: NEWT_ID
       remoteRef:
         key: newt
         property: NEWT_ID
+        conversionStrategy: Default
+        decodingStrategy: None
+        metadataPolicy: None
     - secretKey: NEWT_SECRET
       remoteRef:
         key: newt
         property: NEWT_SECRET
+        conversionStrategy: Default
+        decodingStrategy: None
+        metadataPolicy: None
 ---
 apiVersion: apps/v1
 kind: Deployment
