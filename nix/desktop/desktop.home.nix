@@ -1,4 +1,9 @@
-{ pkgs, inputs, lib, ... }:
+{
+  pkgs,
+  inputs,
+  lib,
+  ...
+}:
 let
   myNeovimFlake = inputs.neovim;
   neovimPackages = myNeovimFlake.packages.${pkgs.stdenv.hostPlatform.system};
@@ -17,15 +22,16 @@ in
         sdk_9_0
       ];
     bitwardenSshAgent = true;
-    appendConfig = ''
-      function k --wraps kubectl --description "Alias for kubectl"
-        kubectl $argv
-      end
-      complete -c k -w kubectl
-      function ks --wraps k9s --description "Alias for k9s"
-        k9s $argv
-      end
-    '';
+    abbreviations = {
+      k = "kubectl";
+      ks = "k9s";
+      g = "git";
+      gp = "git push";
+      gm = {
+        setCursor = true;
+        expansion = ''git commit -m "%"'';
+      };
+    };
   };
   home.packages = with pkgs; [
     k9s

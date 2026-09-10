@@ -22,6 +22,12 @@ in
 
     bitwardenSshAgent = lib.mkEnableOption "Bitwarden SSH agent (sets SSH_AUTH_SOCK)";
 
+    abbreviations = lib.mkOption {
+      type = lib.types.attrsOf lib.types.str;
+      default = { };
+      description = "Fish shell abbreviations.";
+    };
+
     appendConfig = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
       default = null;
@@ -32,6 +38,7 @@ in
   config = {
     programs.fish = {
       enable = true;
+      shellAbbrs = cfg.abbreviations;
       shellInit = lib.concatStringsSep "\n" (
         lib.filter (s: s != "") [
 
