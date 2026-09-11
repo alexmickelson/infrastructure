@@ -7,6 +7,17 @@ resources:
 
 patches:
   - target:
+      group: networking.k8s.io
+      version: v1
+      kind: NetworkPolicy
+    patch: |-
+      - op: add
+        path: /spec/ingress/-
+        value:
+          ports:
+            - port: 15008
+              protocol: TCP
+  - target:
       version: v1
       kind: ConfigMap
       name: argocd-cmd-params-cm

@@ -17,6 +17,8 @@ spec:
           deployment:
             accessible_namespaces:
               - "**"
+            network_policy:
+              enabled: false
           external_services:
             prometheus:
               url: http://prometheus-server.monitoring.svc.cluster.local
