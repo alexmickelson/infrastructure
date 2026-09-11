@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: homeassistant
+  labels:
+    istio.io/dataplane-mode: ambient
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -19,11 +21,14 @@ spec:
       labels:
         app: homeassistant
     spec:
-      hostNetwork: true
       containers:
       - name: homeassistant
         image: homeassistant/home-assistant:stable@sha256:612d76760b544cb40b7ba01387fdac964c59a6a550a50a4d30b4773c822d2918
         imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8123
+          protocol: TCP
         env:
         - name: TZ
           value: "America/Denver"

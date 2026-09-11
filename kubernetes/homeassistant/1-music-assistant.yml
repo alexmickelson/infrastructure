@@ -13,12 +13,17 @@ spec:
     metadata:
       labels:
         app: music-assistant-server
+        istio.io/dataplane-mode: none
     spec:
       hostNetwork: true
       containers:
       - name: music-assistant-server
         image: ghcr.io/music-assistant/server:2@sha256:50666a6f8d7f87d53d993dc41860ab06dda11047f6e433bb5bdbcb6e309ac74c
         imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8095
+          protocol: TCP
         env:
         - name: LOG_LEVEL
           value: "info"
@@ -38,8 +43,6 @@ kind: Service
 metadata:
   name: music-assistant
   namespace: homeassistant
-  # annotations:
-  #   tailscale.com/expose: "true"
 spec:
   selector:
     app: music-assistant-server

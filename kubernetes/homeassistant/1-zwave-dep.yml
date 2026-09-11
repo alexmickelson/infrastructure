@@ -14,7 +14,6 @@ spec:
       labels:
         app: zwave-js-ui
     spec:
-      hostNetwork: true
       containers:
       - name: zwave-js-ui
         image: zwavejs/zwave-js-ui:11.22.3@sha256:14d018bb689eecce4029229764d2191d9b8d8f211106fcabaef421e7b0f8cf9c
