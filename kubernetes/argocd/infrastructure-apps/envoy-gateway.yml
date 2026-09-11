@@ -1,3 +1,17 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: envoy-gateway-system
+  labels:
+    istio.io/dataplane-mode: ambient
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: envoy-gateway-ingress
+  labels:
+    istio.io/dataplane-mode: ambient
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -84,8 +98,3 @@ spec:
       selfHeal: true
     syncOptions:
       - ServerSideApply=true
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: envoy-gateway-ingress

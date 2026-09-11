@@ -1,3 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: istio-system
+  labels:
+    istio.io/dataplane-mode: ambient
+---
 # Ambient Istio installation for this K3s cluster. This installs the mesh
 # components only; no application namespace is enrolled until it receives
 # the label `istio.io/dataplane-mode: ambient`.

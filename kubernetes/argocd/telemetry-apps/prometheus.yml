@@ -1,3 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+  labels:
+    istio.io/dataplane-mode: ambient
+---
 # Prometheus retains data only for the life of its pod.  This is intentional:
 # its server data directory is backed by an emptyDir volume, not a PVC.
 apiVersion: argoproj.io/v1alpha1
