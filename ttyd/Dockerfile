@@ -1,3 +1,29 @@
+FROM ubuntu:24.04 AS web-client
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+    && apt-get install --yes --no-install-recommends ca-certificates curl unzip ttyd woff2 \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG NERD_FONTS_VERSION=v3.4.0
+ARG FIRACODE_SHA256=7cc4ffd8f7a1fc914cdab7b149808298165ff7a7f40e40d82dea9ebe41e8ca0b
+
+RUN curl --proto '=https' --tlsv1.2 --silent --show-error --fail --location \
+        --output /tmp/FiraCode.zip \
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/${NERD_FONTS_VERSION}/FiraCode.zip" \
+    && printf '%s  %s\n' "$FIRACODE_SHA256" /tmp/FiraCode.zip | sha256sum --check \
+    && unzip -j /tmp/FiraCode.zip \
+        FiraCodeNerdFontMono-Regular.ttf \
+        FiraCodeNerdFontMono-Bold.ttf \
+        -d /tmp/firacode \
+    && woff2_compress /tmp/firacode/FiraCodeNerdFontMono-Regular.ttf \
+    && woff2_compress /tmp/firacode/FiraCodeNerdFontMono-Bold.ttf
+
+COPY --chmod=0755 build-web-client /usr/local/bin/build-web-client
+
+RUN /usr/local/bin/build-web-client
+
 FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -34,6 +60,7 @@ WORKDIR /home/alex/workspace
 EXPOSE 7681
 
 COPY supervisord.conf /etc/supervisor/supervisord.conf
+COPY --from=web-client /etc/ttyd/index.html /etc/ttyd/index.html
 COPY theme.json /etc/ttyd/theme.json
 COPY --chmod=0755 start-ttyd /usr/local/bin/start-ttyd
 

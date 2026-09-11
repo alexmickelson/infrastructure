@@ -1,0 +1,32 @@
+#!/bin/sh
+
+set -eu
+
+raw_index=/tmp/ttyd-index.html
+output_index=/etc/ttyd/index.html
+regular_font=/tmp/firacode/FiraCodeNerdFontMono-Regular.woff2
+bold_font=/tmp/firacode/FiraCodeNerdFontMono-Bold.woff2
+
+install --directory /etc/ttyd
+/usr/bin/ttyd --port 7682 true >/tmp/ttyd.log 2>&1 &
+ttyd_pid=$!
+trap 'kill "$ttyd_pid" 2>/dev/null || true' EXIT
+
+attempt=0
+until curl --silent --show-error --fail http://127.0.0.1:7682/ > "$raw_index"; do
+    attempt=$((attempt + 1))
+    test "$attempt" -lt 30
+    sleep 0.2
+done
+
+kill "$ttyd_pid"
+wait "$ttyd_pid" 2>/dev/null || true
+trap - EXIT
+
+sed 's#</head>.*##' "$raw_index" > "$output_index"
+printf '%s' "<style>@font-face{font-family:'FiraCode Nerd Font Mono';src:url(data:font/woff2;base64," >> "$output_index"
+base64 --wrap=0 "$regular_font" >> "$output_index"
+printf '%s' ") format('woff2');font-style:normal;font-weight:400;font-display:block}@font-face{font-family:'FiraCode Nerd Font Mono';src:url(data:font/woff2;base64," >> "$output_index"
+base64 --wrap=0 "$bold_font" >> "$output_index"
+printf '%s' ") format('woff2');font-style:normal;font-weight:700;font-display:block}</style></head>" >> "$output_index"
+sed 's#.*</head>##;s#<script type="text/javascript">#<script type="text/plain" id="ttyd-application">#;s#</body>#<script>(()=>{const start=()=>{const source=document.getElementById("ttyd-application");const application=document.createElement("script");application.text=source.text;document.body.appendChild(application)};Promise.all([document.fonts.load("400 16px '\''FiraCode Nerd Font Mono'\''"),document.fonts.load("700 16px '\''FiraCode Nerd Font Mono'\''")]).then(start,start)})()</script></body>#' "$raw_index" >> "$output_index"
