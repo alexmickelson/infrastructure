@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yml
+  - https://git.alexmickelson.guru/alex/musicDownloader/raw/branch/main/k8s/deployment.yaml
+  - https://git.alexmickelson.guru/alex/musicDownloader/raw/branch/main/k8s/service.yaml
+
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: musicdownloader
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: alexmickelson/musicdownloader:3303
