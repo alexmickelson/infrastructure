@@ -35,6 +35,7 @@
         specialArgs = { inherit inputs; };
         modules = [
           home-manager.nixosModules.home-manager
+          ./hardware-configuration.nix
           ./ai-vm-system.nix
         ];
       };
