@@ -16,6 +16,7 @@ in
     tmux
     neovimPackages.default
     neovimPackages.tools
+    busybox
   ];
 
   nixpkgs.config.allowUnfree = true;
