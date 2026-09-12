@@ -1,3 +1,4 @@
+# sudo nixos-generate-config --show-hardware-config
 {
   lib,
   modulesPath,
