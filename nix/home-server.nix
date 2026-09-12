@@ -1,15 +1,18 @@
-
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
-  imports =
-    [
-      <home-manager/nixos>
-      ./modules/k3s.nix
-      ./modules/pci-passthrough.nix
-      # ./modules/gitea-runner.nix
-      ./modules/forgejo-runner.nix
-    ];
+  imports = [
+    <home-manager/nixos>
+    ./modules/k3s.nix
+    ./modules/pci-passthrough.nix
+    # ./modules/gitea-runner.nix
+    ./modules/forgejo-runner.nix
+  ];
   services.k3s.nodeIp = "100.110.207.108"; # when changed, need to regenerate kubeconfig
 
   security.pam.loginLimits = [
@@ -31,11 +34,14 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
   networking.networkmanager.enable = true;
-  
+
   networking.nat.enable = true;
-  
+
   boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
   boot.kernel.sysctl."net.ipv6.conf.all.forwarding" = 1;
   time.timeZone = "America/Denver";
@@ -69,10 +75,17 @@
   users.users.alex = {
     isNormalUser = true;
     description = "alex";
-    extraGroups = [ "networkmanager" "wheel" "docker" "users" "libvirtd" "cdrom" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "docker"
+      "users"
+      "libvirtd"
+      "cdrom"
+    ];
     shell = pkgs.fish;
   };
-  home-manager.users.alex = { ...}: {
+  home-manager.users.alex = { ... }: {
     home.stateVersion = "24.05";
     imports = [
       ./home-manager/alex.home.nix
@@ -82,7 +95,6 @@
   home-manager.useGlobalPkgs = true;
 
   services.fwupd.enable = true;
-  services.hardware.bolt.enable = true;
   systemd.timers."nix-garbage-collect-weekly" = {
     wantedBy = [ "timers.target" ];
     timerConfig = {
@@ -140,7 +152,11 @@
   # printing
   services.printing = {
     enable = true;
-    drivers = [ pkgs.brgenml1lpr pkgs.brgenml1cupswrapper pkgs.brlaser];
+    drivers = [
+      pkgs.brgenml1lpr
+      pkgs.brgenml1cupswrapper
+      pkgs.brlaser
+    ];
     listenAddresses = [ "*:631" ];
 
     extraConf = ''
@@ -190,14 +206,11 @@
       interfaces = [ "enp5s0" ];
     };
   };
-  
+
   environment.etc = {
-    "qemu/edk2-x86_64-secure-code.fd".source =
-      lib.mkForce "${pkgs.OVMFFull.fd}/FV/OVMF_CODE.ms.fd";
-    "qemu/edk2-x86_64-secure-vars.fd".source =
-      lib.mkForce "${pkgs.OVMFFull.fd}/FV/OVMF_VARS.ms.fd";
-    "qemu/OVMF_VARS.fd".source =
-      lib.mkForce "${pkgs.OVMFFull.fd}/FV/OVMF_VARS.fd";
+    "qemu/edk2-x86_64-secure-code.fd".source = lib.mkForce "${pkgs.OVMFFull.fd}/FV/OVMF_CODE.ms.fd";
+    "qemu/edk2-x86_64-secure-vars.fd".source = lib.mkForce "${pkgs.OVMFFull.fd}/FV/OVMF_VARS.ms.fd";
+    "qemu/OVMF_VARS.fd".source = lib.mkForce "${pkgs.OVMFFull.fd}/FV/OVMF_VARS.fd";
   };
   systemd.tmpfiles.rules = [
     "d /var/lib/libvirt/qemu/nvram 0755 root root -"
@@ -211,7 +224,12 @@
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.forceImportRoot = false;
   networking.hostId = "eafe9551";
-  boot.zfs.extraPools = [ "data-ssd" "backup" "vms-2" "vms-3" ];
+  boot.zfs.extraPools = [
+    "data-ssd"
+    "backup"
+    "vms-2"
+    "vms-3"
+  ];
   services.sanoid = {
     enable = true;
     templates.production = {
@@ -229,7 +247,6 @@
       useTemplate = [ "production" ];
     };
 
-
     templates.backup = {
       hourly = 24;
       daily = 14;
@@ -244,7 +261,6 @@
       useTemplate = [ "backup" ];
     };
 
-
     templates.vms = {
       hourly = 2;
       daily = 1;
@@ -258,7 +274,7 @@
     datasets."vms-2" = {
       useTemplate = [ "vms" ];
     };
-  }; 
+  };
 
   services.github-runners = {
     infrastructure = {
@@ -269,12 +285,12 @@
       url = "https://github.com/alexmickelson/infrastructure";
       extraLabels = [ "home-server" ];
       replace = true;
-      serviceOverrides = { 
-        ReadWritePaths = [ 
-          "/data/cloudflare/" 
-          "/data/runner/infrastructure" 
-          "/data/runner" 
-          "/home/github/infrastructure" 
+      serviceOverrides = {
+        ReadWritePaths = [
+          "/data/cloudflare/"
+          "/data/runner/infrastructure"
+          "/data/runner"
+          "/home/github/infrastructure"
         ];
         PrivateDevices = false;
         DeviceAllow = "/dev/zfs rw";
@@ -283,7 +299,7 @@
         PrivateMounts = false;
         PrivateUsers = false;
         ProtectHome = false;
-        Restart = lib.mkForce  "always";
+        Restart = lib.mkForce "always";
       };
       extraPackages = with pkgs; [
         docker
@@ -297,7 +313,7 @@
       ];
     };
   };
-  
+
   networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
