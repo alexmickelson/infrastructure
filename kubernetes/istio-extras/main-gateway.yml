@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: main-gateway-infrastructure
+  namespace: istio-ingress
+data:
+  service: |
+    metadata:
+      annotations:
+        tailscale.com/hostname: istio-gateway
+    spec:
+      type: LoadBalancer
+      loadBalancerClass: tailscale
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: main-gateway
+  namespace: istio-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: cloudflare-issuer
+    external-dns.alpha.kubernetes.io/target: "100.67.217.88"
+spec:
+  infrastructure:
+    parametersRef:
+      group: ""
+      kind: ConfigMap
+      name: main-gateway-infrastructure
+  gatewayClassName: istio
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: "*.alexmickelson.guru"
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.alexmickelson.guru"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: alexmickelson-tls-cert
+---
+apiVersion: telemetry.istio.io/v1
+kind: Telemetry
+metadata:
+  name: main-gateway-access-logs
+  namespace: istio-ingress
+spec:
+  selector:
+    matchLabels:
+      gateway.networking.k8s.io/gateway-name: main-gateway
+  accessLogging:
+    - providers:
+        - name: envoy
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: main-gateway-crowdsec
+  namespace: istio-ingress
+spec:
+  selector:
+    matchLabels:
+      gateway.networking.k8s.io/gateway-name: main-gateway
+  action: CUSTOM
+  provider:
+    name: crowdsec
+  rules:
+    - to:
+        - operation:
+            ports:
+              - "80"
+              - "443"
