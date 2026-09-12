@@ -11,7 +11,10 @@
   boot.loader.grub.useOSProber = true;
   boot.kernelParams = [ "nvidia-drm.modeset=1" ];
 
-  networking.networkmanager.enable = true;
+  networking = {
+    hostName = "ai-vm";
+    networkmanager.enable = true;
+  };
 
   time.timeZone = "America/Denver";
   i18n.defaultLocale = "en_US.UTF-8";
