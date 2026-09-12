@@ -1,7 +1,5 @@
 ## Rebuild with: sudo nixos-rebuild switch --flake ~/projects/infrastructure/nix/ai-vm#ai-vm
 {
-  description = "Alex's AI VM NixOS and Home Manager configurations";
-
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
