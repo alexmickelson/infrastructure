@@ -1,4 +1,8 @@
-{ inputs, pkgs, ... }:
+{
+  inputs,
+  pkgs,
+  ...
+}:
 let
   neovimPackages = inputs.neovim.packages.${pkgs.stdenv.hostPlatform.system};
 in
@@ -19,7 +23,6 @@ in
     busybox
   ];
 
-  nixpkgs.config.allowUnfree = true;
   programs.ghostty = {
     enable = true;
     enableFishIntegration = true;
@@ -45,6 +48,7 @@ in
       name = "Adwaita-dark";
       package = pkgs.gnome-themes-extra;
     };
+    gtk4.theme = null;
   };
 
   home.file = {
