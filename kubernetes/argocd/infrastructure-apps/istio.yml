@@ -55,7 +55,8 @@ spec:
       releaseName: istio-cni
       values: |
         profile: ambient
-        # K3s stores CNI configuration and binaries in nonstandard paths.
+        ambient:
+          reconcileIptablesOnStartup: true
         global:
           platform: k3s
   destination:
