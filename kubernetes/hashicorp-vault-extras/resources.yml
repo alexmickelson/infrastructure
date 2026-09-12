@@ -1,4 +1,3 @@
-# default deny
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -49,6 +48,7 @@ spec:
         - source:
             principals:
               - cluster.local/ns/external-secrets-system/sa/external-secrets
+              - cluster.local/ns/tailscale/sa/proxies
       to:
         - operation:
             ports:
