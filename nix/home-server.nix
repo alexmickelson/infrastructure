@@ -199,11 +199,10 @@
       swtpm.enable = true;
     };
   };
-  networking.interfaces.enp5s0.useDHCP = true;
   networking.interfaces.br0.useDHCP = true;
   networking.bridges = {
     "br0" = {
-      interfaces = [ "enp5s0" ];
+      interfaces = [ "enp4s0" ];
     };
   };
 
