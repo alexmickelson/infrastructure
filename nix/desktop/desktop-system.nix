@@ -40,6 +40,7 @@
   };
 
   services.xserver.enable = true;
+  services.xserver.videoDrivers = [ "nvidia" ];
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
   services.xserver.xkb = {
@@ -109,6 +110,7 @@
     enable = true;
     enable32Bit = true;
   };
+  hardware.nvidia.open = true;
 
   users.users.alex = {
     isNormalUser = true;

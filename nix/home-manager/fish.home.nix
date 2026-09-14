@@ -23,7 +23,7 @@ in
     bitwardenSshAgent = lib.mkEnableOption "Bitwarden SSH agent (sets SSH_AUTH_SOCK)";
 
     abbreviations = lib.mkOption {
-      type = lib.types.attrsOf lib.types.str;
+      type = with lib.types; attrsOf (either str attrs);
       default = { };
       description = "Fish shell abbreviations.";
     };
