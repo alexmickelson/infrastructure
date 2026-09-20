@@ -22,3 +22,15 @@ spec:
           name: gatus
           port: 80
           weight: 1
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: gatus
+  namespace: external-dns
+spec:
+  endpoints:
+    - dnsName: uptime.alexmickelson.guru
+      recordType: CNAME
+      targets:
+        - igateway.alexmickelson.guru

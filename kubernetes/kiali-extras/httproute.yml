@@ -26,3 +26,15 @@ spec:
           name: kiali
           port: 20001
           weight: 1
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: kiali
+  namespace: external-dns
+spec:
+  endpoints:
+    - dnsName: kiali.alexmickelson.guru
+      recordType: CNAME
+      targets:
+        - egateway.alexmickelson.guru

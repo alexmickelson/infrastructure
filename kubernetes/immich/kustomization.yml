@@ -9,4 +9,3 @@ resources:
   - machine-learning.yml
   - server.yml
   - route.yml
-  - dns-endpoint.yml

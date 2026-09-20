@@ -49,3 +49,15 @@ spec:
           - group: ""
             kind: Secret
             name: alexmickelson-tls-cert
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: envoy-gateway
+  namespace: external-dns
+spec:
+  endpoints:
+    - dnsName: egateway.alexmickelson.guru
+      recordType: A
+      targets:
+        - 100.94.176.125

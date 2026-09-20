@@ -141,3 +141,15 @@ spec:
       backendRefs:
         - name: jellyfin
           port: 8096
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: jellyfin
+  namespace: external-dns
+spec:
+  endpoints:
+    - dnsName: jelly-pub.alexmickelson.guru
+      recordType: CNAME
+      targets:
+        - pangolin.alexmickelson.guru

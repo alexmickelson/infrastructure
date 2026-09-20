@@ -38,9 +38,6 @@ spec:
                 memory: 1Gi
               limits:
                 memory: 2Gi
-    - repoURL: https://git.alexmickelson.guru/alex/infrastructure.git
-      targetRevision: HEAD
-      path: kubernetes/prometheus
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

@@ -20,6 +20,30 @@ spec:
             type: PathPrefix
             value: /
 ---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: forgejo
+  namespace: external-dns
+spec:
+  endpoints:
+    - dnsName: forgejo.alexmickelson.guru
+      recordType: CNAME
+      targets:
+        - igateway.alexmickelson.guru
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: git
+  namespace: external-dns
+spec:
+  endpoints:
+    - dnsName: git.alexmickelson.guru
+      recordType: CNAME
+      targets:
+        - pangolin.alexmickelson.guru
+---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:

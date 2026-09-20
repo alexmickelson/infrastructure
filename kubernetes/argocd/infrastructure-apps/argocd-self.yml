@@ -9,9 +9,6 @@ spec:
     - repoURL: https://git.alexmickelson.guru/alex/infrastructure.git
       targetRevision: HEAD
       path: kubernetes/argocd
-    - repoURL: https://git.alexmickelson.guru/alex/infrastructure.git
-      targetRevision: HEAD
-      path: kubernetes/argocd-self
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
