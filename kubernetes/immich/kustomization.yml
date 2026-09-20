@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yml
+  - database-secret.yml
+  - postgres.yml
+  - valkey.yml
+  - machine-learning.yml
+  - server.yml
+  - route.yml
+  - dns-endpoint.yml
