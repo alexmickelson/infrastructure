@@ -5,7 +5,7 @@ metadata:
   namespace: external-dns
 spec:
   endpoints:
-    - dnsName: igatway.alexmickelson.guru
+    - dnsName: igateway.alexmickelson.guru
       recordType: A
       targets:
         - 100.67.217.88

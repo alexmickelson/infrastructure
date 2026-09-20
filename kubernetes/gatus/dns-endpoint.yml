@@ -6,6 +6,6 @@ metadata:
 spec:
   endpoints:
     - dnsName: uptime.alexmickelson.guru
-      recordType: A
+      recordType: CNAME
       targets:
-        - 100.67.217.88
+        - igateway.alexmickelson.guru
