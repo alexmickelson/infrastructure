@@ -20,7 +20,7 @@ spec:
       serviceAccountName: nextcloud-db
       containers:
         - name: mariadb
-          image: mariadb:12.3@sha256:adbf5727f3d6ffa0ea11109f948247d88d110edd3f43f8d4c134c0a09060c5f3
+          image: mariadb:13.0@sha256:d4fdec0510ad498e4f3127da30a99df3745bd6d5e611ae6ac5f76403d9284a8d
           args:
             [
               "--transaction-isolation=READ-COMMITTED",
