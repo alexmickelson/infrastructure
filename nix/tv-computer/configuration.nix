@@ -3,7 +3,7 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../tv-computer.nix
+    ./system.nix
   ];
 
   networking.hostName = "tv-computer";
