@@ -19,7 +19,7 @@ spec:
         kubernetes.io/hostname: home-server
       containers:
         - name: valkey
-          image: docker.io/valkey/valkey:9.1-alpine@sha256:a0dbf4c1d5708782907c10e2c72deff317518518b5288a58416981d9db95d30b
+          image: docker.io/valkey/valkey:9.2-alpine@sha256:cdcb7b1c7b6f1c9cb9442c71ac6275e78184657448407b2c1fdde7ee8024f4fb
           ports:
             - name: valkey
               containerPort: 6379
