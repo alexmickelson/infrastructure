@@ -12,19 +12,13 @@
   #   "uinput"
   # ];
   
-  boot.kernelPackages = pkgs.linuxPackages_6_6;
-  # boot.kernelPackages = pkgs.linuxPackages_6_1;
   boot.kernelParams = [
     "amdgpu.discovery=0"
   ];
   services.xserver.enable = true;
 
-  services.xserver.displayManager.gdm = {
-    enable = true;
-    wayland = false;
-  };
-
-  services.xserver.desktopManager.gnome.enable = true;
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
   hardware.enableRedistributableFirmware = true;
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -107,10 +101,12 @@
   # programs.virt-manager.enable = true;
 
 
-  systemd.targets.sleep.enable = false;
-  systemd.targets.suspend.enable = false;
-  systemd.targets.hibernate.enable = false;
-  systemd.targets.hybrid-sleep.enable = false;
+  systemd.sleep.settings.Sleep = {
+    AllowSuspend = false;
+    AllowHibernation = false;
+    AllowSuspendThenHibernate = false;
+    AllowHybridSleep = false;
+  };
 
   system.stateVersion = "25.11"; # Did you read the comment?
 
