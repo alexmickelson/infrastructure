@@ -11,7 +11,7 @@
   #   "hid_microsoft" # Xbox One Elite 2 controller driver preferred by Steam
   #   "uinput"
   # ];
-  
+
   boot.kernelParams = [
     "amdgpu.discovery=0"
   ];
@@ -57,7 +57,11 @@
   users.users.alex = {
     isNormalUser = true;
     description = "alex";
-    extraGroups = [ "networkmanager" "wheel" "input" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "input"
+    ];
     packages = with pkgs; [
       firefox
       k9s
@@ -83,8 +87,9 @@
     libva-utils
     libcec
     flirc
+    jq
+    yq
 
-    
     kdePackages.kdeconnect-kde
 
   ];
@@ -99,7 +104,6 @@
   services.flatpak.enable = true;
   # virtualisation.libvirtd.enable = true;
   # programs.virt-manager.enable = true;
-
 
   systemd.targets.sleep.enable = false;
   systemd.targets.suspend.enable = false;
