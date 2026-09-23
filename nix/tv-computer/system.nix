@@ -63,13 +63,15 @@
       "input"
     ];
     packages = with pkgs; [
-      firefox
       k9s
     ];
     shell = pkgs.fish;
   };
 
-  programs.firefox.enable = true;
+  programs.firefox = {
+    enable = true;
+    package = pkgs.firefox-esr;
+  };
   nixpkgs.config.allowUnfree = true;
   services.fwupd.enable = true;
 
