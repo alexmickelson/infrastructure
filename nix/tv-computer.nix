@@ -14,6 +14,9 @@
   
   boot.kernelPackages = pkgs.linuxPackages_6_6;
   # boot.kernelPackages = pkgs.linuxPackages_6_1;
+  boot.kernelParams = [
+    "amdgpu.discovery=0"
+  ];
   services.xserver.enable = true;
 
   services.xserver.displayManager.gdm = {
@@ -22,9 +25,6 @@
   };
 
   services.xserver.desktopManager.gnome.enable = true;
-  #boot.kernelParams = [
-  #  "amdgpu.discovery=1"
-  #];
   hardware.enableRedistributableFirmware = true;
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
