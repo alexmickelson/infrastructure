@@ -63,11 +63,9 @@
   users.users.alex = {
     isNormalUser = true;
     description = "alex";
-    extraGroups = [ "networkmanager" "wheel" "docker" "input" ];
+    extraGroups = [ "networkmanager" "wheel" "input" ];
     packages = with pkgs; [
       firefox
-      docker
-      lazydocker
       k9s
     ];
     shell = pkgs.fish;
@@ -83,7 +81,6 @@
     curl
     git
     gnome-tweaks
-    docker
     btop
     vscode-fhs
     libvirt
@@ -105,7 +102,6 @@
   hardware.xone.enable = true;
 
   programs.fish.enable = true;
-  virtualisation.docker.enable = true;
   services.flatpak.enable = true;
   # virtualisation.libvirtd.enable = true;
   # programs.virt-manager.enable = true;
