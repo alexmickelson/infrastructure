@@ -101,12 +101,10 @@
   # programs.virt-manager.enable = true;
 
 
-  systemd.sleep.settings.Sleep = {
-    AllowSuspend = false;
-    AllowHibernation = false;
-    AllowSuspendThenHibernate = false;
-    AllowHybridSleep = false;
-  };
+  systemd.targets.sleep.enable = false;
+  systemd.targets.suspend.enable = false;
+  systemd.targets.hibernate.enable = false;
+  systemd.targets.hybrid-sleep.enable = false;
 
   system.stateVersion = "25.11"; # Did you read the comment?
 
