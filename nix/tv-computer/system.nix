@@ -5,6 +5,7 @@
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernelPackages = pkgs.linuxPackages_6_6;
   # boot.extraModulePackages = with config.boot.kernelPackages; [ xpadneo ];
   # boot.kernelModules = [ "hid_xpadneo" ];
   # boot.kernelModules = [
@@ -82,7 +83,6 @@
     git
     gnome-tweaks
     btop
-    vscode-fhs
     libvirt
     numix-cursor-theme
     ffmpeg
@@ -92,7 +92,7 @@
     jq
     yq
 
-    kdePackages.kdeconnect-kde
+    dePackages.kdeconnect-kde
 
   ];
   services.openssh.enable = true;
