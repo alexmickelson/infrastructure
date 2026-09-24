@@ -100,7 +100,7 @@
   hardware.flirc.enable = true;
   hardware.steam-hardware.enable = true;
   # hardware.xpadneo.enable = true;
-  hardware.xone.enable = true;
+  # hardware.xone.enable = true;
 
   programs.fish.enable = true;
   services.flatpak.enable = true;
