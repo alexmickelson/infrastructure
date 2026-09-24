@@ -92,7 +92,7 @@
     jq
     yq
 
-    dePackages.kdeconnect-kde
+    kdePackages.kdeconnect-kde
 
   ];
   services.openssh.enable = true;
