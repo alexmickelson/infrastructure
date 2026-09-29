@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paseo
+  namespace: paseo
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: paseo
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: paseo
+    spec:
+      automountServiceAccountToken: false
+      nodeSelector:
+        kubernetes.io/arch: amd64
+        kubernetes.io/hostname: home-server
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      terminationGracePeriodSeconds: 120
+      containers:
+        - name: paseo
+          image: ghcr.io/getpaseo/paseo:0.9.2@sha256:79bf8774b0d71ab3afed3d0f4dc556b160de9d2e15841786eb92b446540dc791
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PASEO_HOSTNAMES
+              value: paseo.alexmickelson.guru
+            - name: PASEO_LISTEN
+              value: 0.0.0.0:6767
+            - name: PASEO_WEB_UI_ENABLED
+              value: "true"
+            - name: PASEO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: paseo
+                  key: PASEO_PASSWORD
+          ports:
+            - name: http
+              containerPort: 6767
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "4"
+              memory: 8Gi
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 6
+          startupProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 24
+          volumeMounts:
+            - name: home
+              mountPath: /home/paseo
+            - name: workspace
+              mountPath: /workspace
+      volumes:
+        - name: home
+          hostPath:
+            path: /data/paseo/home
+            type: DirectoryOrCreate
+        - name: workspace
+          hostPath:
+            path: /data/paseo/workspace
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paseo
+  namespace: paseo
+spec:
+  selector:
+    app.kubernetes.io/name: paseo
+  ports:
+    - name: http
+      port: 6767
+      targetPort: http

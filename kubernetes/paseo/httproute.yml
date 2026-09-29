@@ -1,0 +1,37 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: paseo
+  namespace: paseo
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: main-gateway
+      namespace: istio-ingress
+      sectionName: https
+  hostnames:
+    - paseo.alexmickelson.guru
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: paseo
+          port: 6767
+          weight: 1
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: paseo
+  namespace: external-dns
+spec:
+  endpoints:
+    - dnsName: paseo.alexmickelson.guru
+      recordType: CNAME
+      targets:
+        - igateway.alexmickelson.guru
