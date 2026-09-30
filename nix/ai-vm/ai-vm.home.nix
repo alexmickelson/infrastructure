@@ -1,6 +1,5 @@
 {
   inputs,
-  lib,
   pkgs,
   ...
 }:
@@ -12,8 +11,6 @@ in
 
   home.packages = with pkgs; [
     vscode-fhs
-    gnome-software
-    gnome-tweaks
     nvtopPackages.nvidia
     nerd-fonts.fira-code
     nerd-fonts.droid-sans-mono
@@ -29,23 +26,6 @@ in
     enableFishIntegration = true;
   };
   fonts.fontconfig.enable = true;
-  dconf.enable = true;
-  dconf.settings = {
-    "org/gnome/desktop/session" = {
-      idle-delay = lib.hm.gvariant.mkUint32 0;
-    };
-    "org/gnome/desktop/interface" = {
-      color-scheme = "prefer-dark";
-    };
-    "org/gnome/desktop/wm/keybindings" = {
-      toggle-maximized = [ "<Super>m" ];
-    };
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-      binding = "<Super>t";
-      command = "ghostty";
-      name = "terminal";
-    };
-  };
   gtk = {
     enable = true;
     theme = {

@@ -6,6 +6,11 @@
 }:
 
 {
+  imports = [
+    # ./desktop/gnome.nix
+    ./desktop/quickshell.nix
+  ];
+
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/vda";
   boot.loader.grub.useOSProber = true;
@@ -30,25 +35,6 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  #https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
-  systemd.services."getty@tty1".enable = false;
-  systemd.services."autovt@tty1".enable = false;
-
-  services.xserver.enable = true;
-  services.displayManager = {
-    gdm.enable = true;
-    autoLogin = {
-      enable = true;
-      user = "alex";
-    };
-  };
-  services.desktopManager.gnome.enable = true;
-
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
   services.pulseaudio.enable = false;
 
   security.rtkit.enable = true;
@@ -132,10 +118,6 @@
     capSysAdmin = true;
     openFirewall = true;
   };
-
-  xdg.portal.enable = true;
-  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
-  xdg.portal.config.common.default = [ "gnome" ];
 
   hardware.graphics = {
     enable32Bit = true;
