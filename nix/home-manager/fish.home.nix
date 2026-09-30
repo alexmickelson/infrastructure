@@ -38,7 +38,20 @@ in
   config = {
     programs.fish = {
       enable = true;
-      shellAbbrs = cfg.abbreviations;
+      shellAbbrs = {
+        k = "kubectl";
+        gs = "git status";
+        ga = "git add --all";
+        gm = {
+          setCursor = true;
+          expansion = ''git commit -m "%"'';
+        };
+        gp = "git push";
+        gb = "git branch";
+        gc = "git checkout";
+        g = "git";
+      }
+      // cfg.abbreviations;
       shellInit = lib.concatStringsSep "\n" (
         lib.filter (s: s != "") [
 

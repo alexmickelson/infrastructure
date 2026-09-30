@@ -1,7 +1,10 @@
 { inputs, pkgs, ... }:
 
 {
-  imports = [ ./performance.nix ];
+  imports = [
+    ./performance.nix
+    ./sunshine.nix
+  ];
 
   nixpkgs.config = {
     allowUnfree = true;
