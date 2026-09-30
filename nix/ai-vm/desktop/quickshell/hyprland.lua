@@ -6,7 +6,13 @@ hl.monitor({
   vrr = 0,
 })
 
-hl.monitor({ output = "Virtual-1", disabled = true })
+hl.monitor({
+  output = "Virtual-1",
+  mode = "1920x1080@60",
+  position = "1920x0",
+  scale = 1,
+  vrr = 0,
+})
 
 hl.config({
   general = {
@@ -31,6 +37,12 @@ hl.config({
   dwindle = {
     preserve_split = true,
   },
+})
+
+hl.window_rule({
+  name = "float-all",
+  match = { class = ".*" },
+  float = true,
 })
 
 hl.bind("SUPER + T", hl.dsp.exec_cmd("ghostty"))

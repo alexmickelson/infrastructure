@@ -28,6 +28,7 @@
 
   services.udev.extraRules = ''
     SUBSYSTEM=="drm", KERNEL=="card[0-9]*", KERNELS=="0000:01:00.0", SYMLINK+="dri/nvidia-card"
+    SUBSYSTEM=="drm", KERNEL=="card[0-9]*", KERNELS=="0000:00:01.0", SYMLINK+="dri/qxl-card"
   '';
 
   xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
@@ -50,7 +51,7 @@
     };
 
     xdg.configFile."uwsm/env-hyprland".text = ''
-      export AQ_DRM_DEVICES=/dev/dri/nvidia-card
+      export AQ_DRM_DEVICES=/dev/dri/nvidia-card:/dev/dri/qxl-card
       export GBM_BACKEND=nvidia-drm
       export __GLX_VENDOR_LIBRARY_NAME=nvidia
     '';
