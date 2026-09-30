@@ -134,7 +134,10 @@
     backupFileExtension = "backup";
     users.alex = { ... }: {
       home.stateVersion = "24.11";
-      imports = [ ./desktop.home.nix ];
+      imports = [
+        ./desktop.home.nix
+        (import ./shortcuts.nix).homeManagerModule
+      ];
     };
   };
 

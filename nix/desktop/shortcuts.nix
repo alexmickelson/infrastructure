@@ -22,7 +22,7 @@
           name = "Ghostty clipboard";
           application.only = [ "/(?i)(com\\.mitchellh\\.ghostty|ghostty)/" ];
           remap = {
-            "Alt-c" = "C-S-c";
+            "Alt-c" = "C-insert";
             "Alt-v" = "C-S-v";
           };
         }
@@ -34,6 +34,7 @@
             "Alt-f" = "C-f";
             "Alt-q" = "C-q";
             "Alt-s" = "C-s";
+            "Alt-t" = "C-t";
             "Alt-v" = "C-v";
             "Alt-w" = "C-w";
             "Alt-x" = "C-x";
@@ -45,6 +46,9 @@
   };
   homeManagerModule = {
     dconf.settings = {
+      "org/gnome/shell" = {
+        disable-user-extensions = false;
+      };
       "org/gnome/desktop/wm/keybindings" = {
         minimize = [ "<Alt>m" ];
         switch-applications = [ "<Alt>Tab" ];
