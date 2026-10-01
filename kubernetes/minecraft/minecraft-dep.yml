@@ -63,7 +63,7 @@ spec:
       #     limits:
       #       memory: "6Gi"
       - name: minecraft-create
-        image: itzg/minecraft-server:java21@sha256:7dd4e72e6daf7c98aedf39fd9c9744b4036dee0d9a8b49db4009919b5d2ea89d
+        image: itzg/minecraft-server:java21@sha256:54149e92235f24e7d0df68c2e435b96e0a8b899c54701adddf35830bb479adb9
         stdin: true
         tty: true
         env:
