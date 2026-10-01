@@ -1,0 +1,88 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: openbao
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://openbao.github.io/openbao-helm
+      chart: openbao
+      targetRevision: "0.29.0"
+      helm:
+        releaseName: openbao
+        values: |
+          global:
+            tlsDisable: true
+
+          injector:
+            enabled: false
+
+          server:
+            authDelegator:
+              enabled: false
+
+            resources:
+              requests:
+                memory: 256Mi
+                cpu: 250m
+              limits:
+                memory: 512Mi
+                cpu: 500m
+
+            ingress:
+              enabled: false
+
+            dataStorage:
+              enabled: false
+
+            volumes:
+              - name: openbao-data
+                hostPath:
+                  path: /data/openbao
+                  type: DirectoryOrCreate
+
+            volumeMounts:
+              - name: openbao-data
+                mountPath: /openbao/data
+
+            standalone:
+              enabled: true
+              config: |
+                ui = true
+
+                listener "tcp" {
+                  tls_disable = 1
+                  address = "[::]:8200"
+                  cluster_address = "[::]:8201"
+                }
+
+                storage "file" {
+                  path = "/openbao/data"
+                }
+
+            ha:
+              enabled: false
+
+          ui:
+            enabled: true
+
+          csi:
+            enabled: false
+
+    - repoURL: https://git.alexmickelson.guru/alex/infrastructure.git
+      targetRevision: HEAD
+      path: kubernetes/openbao
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openbao
+  syncPolicy:
+    managedNamespaceMetadata:
+      labels:
+        istio.io/dataplane-mode: ambient
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

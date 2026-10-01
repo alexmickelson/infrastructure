@@ -1,0 +1,97 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: openbao-default-deny-ingress
+  namespace: openbao
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: openbao-allow-istio-tunnel
+  namespace: openbao
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: openbao
+      component: server
+  policyTypes:
+    - Ingress
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: 15008
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: openbao-allow-tailscale-proxy
+  namespace: openbao
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: openbao
+      component: server
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: tailscale
+          podSelector:
+            matchLabels:
+              tailscale.com/managed: "true"
+              tailscale.com/parent-resource: openbao-ts-ingress
+              tailscale.com/parent-resource-ns: openbao
+      ports:
+        - protocol: TCP
+          port: 8200
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: openbao-access
+  namespace: openbao
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: openbao
+      component: server
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/tailscale/sa/proxies
+      to:
+        - operation:
+            ports:
+              - "8200"
+    - from:
+        - source:
+            notPrincipals:
+              - "*"
+      to:
+        - operation:
+            ports:
+              - "8200"
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openbao-ts-ingress
+  namespace: openbao
+spec:
+  ingressClassName: tailscale
+  tls:
+    - hosts:
+        - openbao
+  defaultBackend:
+    service:
+      name: openbao-ui
+      port:
+        number: 8200
