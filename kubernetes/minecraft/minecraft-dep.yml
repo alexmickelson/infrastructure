@@ -36,10 +36,8 @@ spec:
           value: "AUTO_CURSEFORGE"
         - name: CF_SLUG
           value: "create-evolution-renewed"
-        - name: CF_MODPACK_ZIP
-          value: "/modpacks/Create Evolution - MC 1.21.1 - 5.2.0.zip"
-        - name: CF_API_KEY
-          value: "$CF_API_KEY"
+        - name: CF_FILE_ID
+          value: "9026087"
         - name: MEMORY
           value: "8G"
         - name: SERVER_PORT
@@ -53,9 +51,6 @@ spec:
         volumeMounts:
         - name: create-evolution-data
           mountPath: /data
-        - name: create-evolution-modpacks
-          mountPath: /modpacks
-          readOnly: true
         lifecycle:
           preStop:
             exec:
@@ -69,8 +64,4 @@ spec:
       - name: create-evolution-data
         hostPath:
           path: /data/minecraft/create-evolution-data
-          type: DirectoryOrCreate
-      - name: create-evolution-modpacks
-        hostPath:
-          path: /data/minecraft/create-evolution-modpacks
           type: DirectoryOrCreate
