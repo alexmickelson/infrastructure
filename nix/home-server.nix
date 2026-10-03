@@ -63,15 +63,15 @@
     variant = "";
   };
 
-  users.users.github = {
-    isNormalUser = true;
-    description = "github";
-    extraGroups = [ "docker" ];
-    shell = pkgs.fish;
-    packages = with pkgs; [
-      kubernetes-helm
-    ];
-  };
+  # users.users.github = {
+  #   isNormalUser = true;
+  #   description = "github";
+  #   extraGroups = [ "docker" ];
+  #   shell = pkgs.fish;
+  #   packages = with pkgs; [
+  #     kubernetes-helm
+  #   ];
+  # };
   users.users.alex = {
     isNormalUser = true;
     description = "alex";
@@ -121,7 +121,7 @@
     git
     zfs
     gcc-unwrapped
-    github-runner
+    # github-runner
     sanoid
     virtiofsd
     qemu
@@ -275,43 +275,43 @@
     };
   };
 
-  services.github-runners = {
-    infrastructure = {
-      enable = true;
-      name = "infrastructure-runner";
-      user = "github";
-      tokenFile = "/data/runner/github-infrastructure-token.txt";
-      url = "https://github.com/alexmickelson/infrastructure";
-      extraLabels = [ "home-server" ];
-      replace = true;
-      serviceOverrides = {
-        ReadWritePaths = [
-          "/data/cloudflare/"
-          "/data/runner/infrastructure"
-          "/data/runner"
-          "/home/github/infrastructure"
-        ];
-        PrivateDevices = false;
-        DeviceAllow = "/dev/zfs rw";
-        ProtectProc = false;
-        ProtectSystem = false;
-        PrivateMounts = false;
-        PrivateUsers = false;
-        ProtectHome = false;
-        Restart = lib.mkForce "always";
-      };
-      extraPackages = with pkgs; [
-        docker
-        git-secret
-        zfs
-        sanoid
-        mbuffer
-        lzop
-        kubectl
-        kubernetes-helm
-      ];
-    };
-  };
+  # services.github-runners = {
+  #   infrastructure = {
+  #     enable = true;
+  #     name = "infrastructure-runner";
+  #     user = "github";
+  #     tokenFile = "/data/runner/github-infrastructure-token.txt";
+  #     url = "https://github.com/alexmickelson/infrastructure";
+  #     extraLabels = [ "home-server" ];
+  #     replace = true;
+  #     serviceOverrides = {
+  #       ReadWritePaths = [
+  #         "/data/cloudflare/"
+  #         "/data/runner/infrastructure"
+  #         "/data/runner"
+  #         "/home/github/infrastructure"
+  #       ];
+  #       PrivateDevices = false;
+  #       DeviceAllow = "/dev/zfs rw";
+  #       ProtectProc = false;
+  #       ProtectSystem = false;
+  #       PrivateMounts = false;
+  #       PrivateUsers = false;
+  #       ProtectHome = false;
+  #       Restart = lib.mkForce "always";
+  #     };
+  #     extraPackages = with pkgs; [
+  #       docker
+  #       git-secret
+  #       zfs
+  #       sanoid
+  #       mbuffer
+  #       lzop
+  #       kubectl
+  #       kubernetes-helm
+  #     ];
+  #   };
+  # };
 
   networking.firewall.enable = false;
 
