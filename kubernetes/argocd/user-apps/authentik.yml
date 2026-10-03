@@ -16,6 +16,13 @@ spec:
             addPrometheusAnnotations: true
             securityContext:
               fsGroup: 1000
+            env:
+              - name: AUTHENTIK_POSTGRESQL__HOST
+                value: authentik-postgresql
+              - name: AUTHENTIK_POSTGRESQL__NAME
+                value: authentik
+              - name: AUTHENTIK_POSTGRESQL__USER
+                value: authentik
             volumeMounts:
               - name: media
                 mountPath: /data/media
@@ -28,10 +35,6 @@ spec:
           authentik:
             existingSecret:
               secretName: authentik
-            postgresql:
-              host: authentik-postgresql
-              name: authentik
-              user: authentik
 
           postgresql:
             enabled: false
