@@ -85,6 +85,7 @@
   system.stateVersion = "24.11"; # Did you read the comment?
 
   environment.systemPackages = with pkgs; [
+    bazaar
     vim
     nvidia-container-toolkit
     libva-utils
