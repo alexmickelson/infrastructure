@@ -19,6 +19,10 @@
       url = "github:alexmickelson/neovim/";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    pi-sandboxed = {
+      url = "../flakes/pi-agent";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     xremap-flake = {
       url = "github:xremap/nix-flake";

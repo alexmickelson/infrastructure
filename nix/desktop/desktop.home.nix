@@ -9,6 +9,7 @@ let
   neovimPackages = myNeovimFlake.packages.${pkgs.stdenv.hostPlatform.system};
   neovimPackage = neovimPackages.default;
   neovimTools = neovimPackages.tools;
+  piSandboxed = inputs.pi-sandboxed.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
   imports = [ ../home-manager/fish.home.nix ];
@@ -82,6 +83,7 @@ in
     watchman
 
     codex
+    piSandboxed
     neovimPackage
     neovimTools
 

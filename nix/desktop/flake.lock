@@ -1,5 +1,24 @@
 {
   "nodes": {
+    "agent-sandbox": {
+      "inputs": {
+        "nixpkgs": [
+          "pi-sandboxed",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "path": "../agent-sandbox",
+        "type": "path"
+      },
+      "original": {
+        "path": "../agent-sandbox",
+        "type": "path"
+      },
+      "parent": [
+        "pi-sandboxed"
+      ]
+    },
     "crane": {
       "locked": {
         "lastModified": 1785782307,
@@ -190,12 +209,30 @@
         "type": "github"
       }
     },
+    "pi-sandboxed": {
+      "inputs": {
+        "agent-sandbox": "agent-sandbox",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "path": "../flakes/pi-agent",
+        "type": "path"
+      },
+      "original": {
+        "path": "../flakes/pi-agent",
+        "type": "path"
+      },
+      "parent": []
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
         "neovim": "neovim",
         "nix-cachyos-kernel": "nix-cachyos-kernel",
         "nixpkgs": "nixpkgs_2",
+        "pi-sandboxed": "pi-sandboxed",
         "xremap-flake": "xremap-flake"
       }
     },
