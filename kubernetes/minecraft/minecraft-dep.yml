@@ -25,44 +25,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 60
       containers:
-      # - name: minecraft-cobblemon
-      #   image: itzg/minecraft-server:java21
-      #   stdin: true
-      #   tty: true
-      #   env:
-      #   - name: EULA
-      #     value: "true"
-      #   - name: TYPE
-      #     value: "AUTO_CURSEFORGE"
-      #   - name: CF_SLUG
-      #     value: "cobbleverse-cobblemon"
-      #   - name: CF_MODPACK_ZIP
-      #     value: "/modpacks/COBBLEVERSE-1.7.30-CF.zip"
-      #   - name: CF_API_KEY
-      #     value: "$CF_API_KEY"
-      #   - name: MEMORY
-      #     value: "4G"
-      #   - name: SERVER_PORT
-      #     value: "2222"
-      #   - name: RCON_PORT
-      #     value: "25576"
-      #   - name: CF_OVERRIDES_EXCLUSIONS
-      #     value: |
-      #       # Not applicable for server side
-      #       shaderpacks/**
-      #       resourcepacks/**
-      #   volumeMounts:
-      #   - name: cobblemon-data
-      #     mountPath: /data
-      #   - name: modpacks
-      #     mountPath: /modpacks
-      #     readOnly: true
-      #   resources:
-      #     requests:
-      #       memory: "4Gi"
-      #     limits:
-      #       memory: "6Gi"
-      - name: minecraft-create
+      - name: minecraft-create-evolution
         image: itzg/minecraft-server:java21@sha256:99dc8b37f97c3b95915452180bbedf29a7ac8252932e372ce6e5b6e383a5d1e2
         stdin: true
         tty: true
@@ -72,26 +35,25 @@ spec:
         - name: TYPE
           value: "AUTO_CURSEFORGE"
         - name: CF_SLUG
-          value: "create-ultimate-selection-2"
+          value: "create-evolution-renewed"
         - name: CF_MODPACK_ZIP
-          value: "/modpacks/Create Ultimate Selection 2 MC 1.21.1-8.3.0.zip"
+          value: "/modpacks/Create Evolution - MC 1.21.1 - 5.2.0.zip"
         - name: CF_API_KEY
           value: "$CF_API_KEY"
         - name: MEMORY
-          value: "6G"
+          value: "8G"
         - name: SERVER_PORT
           value: "25565"
         - name: RCON_PORT
           value: "25575"
         - name: CF_OVERRIDES_EXCLUSIONS
           value: |
-            # Not applicable for server side
             shaderpacks/**
             resourcepacks/**
         volumeMounts:
-        - name: create-data
+        - name: create-evolution-data
           mountPath: /data
-        - name: modpacks
+        - name: create-evolution-modpacks
           mountPath: /modpacks
           readOnly: true
         lifecycle:
@@ -100,15 +62,15 @@ spec:
               command: ["sh", "-c", "sleep 30"]
         resources:
           requests:
-            memory: "6Gi"
-          limits:
             memory: "8Gi"
+          limits:
+            memory: "10Gi"
       volumes:
-      - name: create-data
+      - name: create-evolution-data
         hostPath:
-          path: /data/minecraft/create-data
+          path: /data/minecraft/create-evolution-data
           type: DirectoryOrCreate
-      - name: modpacks
+      - name: create-evolution-modpacks
         hostPath:
-          path: /data/minecraft/modpacks
+          path: /data/minecraft/create-evolution-modpacks
           type: DirectoryOrCreate
