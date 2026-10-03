@@ -1,0 +1,65 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: authentik
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://charts.goauthentik.io
+      chart: authentik
+      targetRevision: 2026.8.3
+      helm:
+        releaseName: authentik
+        values: |
+          global:
+            addPrometheusAnnotations: true
+            securityContext:
+              fsGroup: 1000
+            volumeMounts:
+              - name: media
+                mountPath: /data/media
+            volumes:
+              - name: media
+                hostPath:
+                  path: /data/authentik/media
+                  type: DirectoryOrCreate
+
+          authentik:
+            existingSecret:
+              secretName: authentik
+            postgresql:
+              host: authentik-postgresql
+              name: authentik
+              user: authentik
+
+          postgresql:
+            enabled: false
+
+          server:
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 1Gi
+
+          worker:
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 1Gi
+    - repoURL: https://git.alexmickelson.guru/alex/infrastructure.git
+      targetRevision: HEAD
+      path: kubernetes/authentik
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: authentik
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true

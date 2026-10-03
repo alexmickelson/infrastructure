@@ -1,0 +1,31 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: authentik
+  namespace: authentik
+spec:
+  parentRefs:
+    - name: main-gateway
+      namespace: istio-ingress
+  hostnames:
+    - auth.alexmickelson.guru
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: authentik-server
+          port: 80
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: authentik
+  namespace: external-dns
+spec:
+  endpoints:
+    - dnsName: auth.alexmickelson.guru
+      recordType: CNAME
+      targets:
+        - igateway.alexmickelson.guru
