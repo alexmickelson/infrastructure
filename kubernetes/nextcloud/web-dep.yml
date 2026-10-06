@@ -22,7 +22,7 @@ spec:
         runAsGroup: 1000
       containers:
         - name: nextcloud
-          image: nextcloud:34@sha256:37b109885aa3cba3e056362a899556a625c986f2c17cd2c0cc157d21c789f53b
+          image: nextcloud:34@sha256:72f5cc3347042dd5dcad72edc376b19d0e042194af344a549820affd04804c8f
           env:
             - name: TZ
               value: America/Denver
