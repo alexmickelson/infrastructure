@@ -105,6 +105,7 @@ in
 
     argocd
     nvtopPackages.nvidia
+    keymapp
   ];
 
   programs.direnv = {
