@@ -22,6 +22,7 @@ spec:
     metadata:
       labels:
         app: audiobookshelf
+        istio.io/dataplane-mode: ambient
     spec:
       containers:
       - name: audiobookshelf
