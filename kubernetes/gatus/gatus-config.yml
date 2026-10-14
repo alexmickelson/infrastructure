@@ -59,13 +59,6 @@ data:
         conditions:
           - "[STATUS] >= 200"
           - "[STATUS] < 400"
-      - name: Audiobookshelf Tailscale
-        group: Public services
-        url: https://audiobook.beefalo-newton.ts.net
-        interval: 60s
-        conditions:
-          - "[STATUS] >= 200"
-          - "[STATUS] < 400"
       - name: Argo CD
         group: Public services
         url: https://argocd.alexmickelson.guru
