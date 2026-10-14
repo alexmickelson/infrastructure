@@ -31,3 +31,28 @@ data:
               headers:
                 - name: Host
                   value: git.alexmickelson.guru
+      musicdownloader:
+        name: MusicDownloader
+        mode: http
+        full-domain: musicdl-pub.alexmickelson.guru
+        enabled: true
+        auth:
+          sso-enabled: true
+        host-header: musicdl-pub.alexmickelson.guru
+        targets:
+          - hostname: pangolin-gateway-istio.istio-ingress.svc.cluster.local
+            port: 80
+            method: http
+            enabled: true
+            healthcheck:
+              enabled: true
+              hostname: pangolin-gateway-istio.istio-ingress.svc.cluster.local
+              port: 80
+              scheme: http
+              path: /
+              method: GET
+              status: 200
+              follow-redirects: false
+              headers:
+                - name: Host
+                  value: musicdl-pub.alexmickelson.guru
