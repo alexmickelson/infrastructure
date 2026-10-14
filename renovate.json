@@ -9,6 +9,7 @@
   ],
   "enabledManagers": [
     "kubernetes",
+    "kustomize",
     "argocd",
     "docker-compose"
   ],
@@ -20,6 +21,9 @@
     "managerFilePatterns": [
       "/^kubernetes/.+\\.ya?ml$/"
     ],
+    "pinDigests": true
+  },
+  "kustomize": {
     "pinDigests": true
   },
   "argocd": {

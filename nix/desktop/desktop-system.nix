@@ -10,6 +10,7 @@
     allowUnfree = true;
     permittedInsecurePackages = [ "electron-39.8.10" ];
   };
+  hardware.keyboard.zsa.enable = true;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -117,6 +118,7 @@
   };
   hardware.nvidia.open = true;
 
+  users.groups.plugdev = { };
   users.users.alex = {
     isNormalUser = true;
     description = "alex";
@@ -127,6 +129,7 @@
       "libvirtd"
       "adbusers"
       "kvm"
+      "plugdev"
     ];
     shell = pkgs.fish;
   };
