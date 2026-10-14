@@ -6,10 +6,7 @@ resources:
   - pangolin.yml
   - https://git.alexmickelson.guru/alex/musicDownloader/raw/branch/main/k8s/deployment.yaml
   - https://git.alexmickelson.guru/alex/musicDownloader/raw/branch/main/k8s/service.yaml
-  - https://git.alexmickelson.guru/alex/musicDownloader/raw/branch/main/k8s/tui-deployment.yaml
 
 images:
   - name: alexmickelson/musicdownloader
     newTag: "3303"
-  - name: alexmickelson/musicdownloader-tui
-    newTag: main
