@@ -9,4 +9,4 @@ resources:
 
 images:
   - name: alexmickelson/musicdownloader
-    newTag: "3303"
+    newTag: latest
