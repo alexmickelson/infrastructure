@@ -9,4 +9,4 @@ resources:
 
 images:
   - name: alexmickelson/musicdownloader
-    newTag: latest@sha256:4304a4119235899e7f91a275524cee007987f3579e66396b11bb6fb616417388
+    newTag: latest@sha256:030738877e62631372f93d9b4429a5dfd385c812405e30c885849e6064fe35f4
