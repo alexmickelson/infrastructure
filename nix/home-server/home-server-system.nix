@@ -1,5 +1,4 @@
 {
-  config,
   pkgs,
   lib,
   ...
@@ -7,13 +6,11 @@
 
 {
   imports = [
-    <home-manager/nixos>
-    ./modules/k3s.nix
-    ./modules/pci-passthrough.nix
-    # ./modules/gitea-runner.nix
-    ./modules/forgejo-runner.nix
+    ../modules/k3s.nix
+    ../modules/pci-passthrough.nix
+    ../modules/forgejo-runner.nix
   ];
-  services.k3s.nodeIp = "100.110.207.108"; # when changed, need to regenerate kubeconfig
+  services.k3s.nodeIp = "100.110.207.108";
 
   security.pam.loginLimits = [
     {
@@ -29,11 +26,9 @@
       value = "65000";
     }
   ];
-  # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
@@ -63,15 +58,6 @@
     variant = "";
   };
 
-  # users.users.github = {
-  #   isNormalUser = true;
-  #   description = "github";
-  #   extraGroups = [ "docker" ];
-  #   shell = pkgs.fish;
-  #   packages = with pkgs; [
-  #     kubernetes-helm
-  #   ];
-  # };
   users.users.alex = {
     isNormalUser = true;
     description = "alex";
@@ -87,10 +73,7 @@
   };
   home-manager.users.alex = { ... }: {
     home.stateVersion = "24.05";
-    imports = [
-      ./home-manager/alex.home.nix
-      ./home-manager/server.home.nix
-    ];
+    imports = [ ./home-server.home.nix ];
   };
   home-manager.useGlobalPkgs = true;
 
@@ -121,7 +104,6 @@
     git
     zfs
     gcc-unwrapped
-    # github-runner
     sanoid
     virtiofsd
     qemu
@@ -137,7 +119,6 @@
   services.openssh.enable = true;
   programs.fish.enable = true;
   virtualisation.docker.enable = true;
-  #virtualisation.docker.extraOptions = "--dns 1.1.1.1 --dns 8.8.8.8 --dns 100.100.100.100";
   services.tailscale.enable = true;
   services.tailscale.extraSetFlags = [
     "--stateful-filtering=false"
@@ -149,7 +130,6 @@
     wheelNeedsPassword = true;
   };
 
-  # printing
   services.printing = {
     enable = true;
     drivers = [
@@ -190,7 +170,6 @@
     };
   };
 
-  # virtualization stuff
   virtualisation.libvirtd = {
     enable = true;
     qemu = {
@@ -219,7 +198,6 @@
   powerManagement.enable = true;
   powerManagement.cpuFreqGovernor = "powersave";
 
-  # zfs stuff
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.forceImportRoot = false;
   networking.hostId = "eafe9551";
@@ -275,51 +253,7 @@
     };
   };
 
-  # services.github-runners = {
-  #   infrastructure = {
-  #     enable = true;
-  #     name = "infrastructure-runner";
-  #     user = "github";
-  #     tokenFile = "/data/runner/github-infrastructure-token.txt";
-  #     url = "https://github.com/alexmickelson/infrastructure";
-  #     extraLabels = [ "home-server" ];
-  #     replace = true;
-  #     serviceOverrides = {
-  #       ReadWritePaths = [
-  #         "/data/cloudflare/"
-  #         "/data/runner/infrastructure"
-  #         "/data/runner"
-  #         "/home/github/infrastructure"
-  #       ];
-  #       PrivateDevices = false;
-  #       DeviceAllow = "/dev/zfs rw";
-  #       ProtectProc = false;
-  #       ProtectSystem = false;
-  #       PrivateMounts = false;
-  #       PrivateUsers = false;
-  #       ProtectHome = false;
-  #       Restart = lib.mkForce "always";
-  #     };
-  #     extraPackages = with pkgs; [
-  #       docker
-  #       git-secret
-  #       zfs
-  #       sanoid
-  #       mbuffer
-  #       lzop
-  #       kubectl
-  #       kubernetes-helm
-  #     ];
-  #   };
-  # };
-
   networking.firewall.enable = false;
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.05"; # Did you read the comment?
+  system.stateVersion = "24.05";
 }
