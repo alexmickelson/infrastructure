@@ -17,7 +17,6 @@ in
     mbuffer
     lzop
     lsof
-    code-server
     vim
     htop
     iputils
