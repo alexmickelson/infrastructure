@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: playwright-service
-          image: ghcr.io/firecrawl/playwright-service@sha256:5c6690c0d6606aaffbe146398526fecbe82bcba6eb4af881969745908c90d00d
+          image: ghcr.io/firecrawl/playwright-service@sha256:6695c13c57b75f0600eb29af1d1b9772e96fd06281c1eed04912bfd73edb67f9
           ports:
             - containerPort: 3000
           env:
