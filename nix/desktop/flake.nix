@@ -1,11 +1,5 @@
-## Rebuild with: sudo nixos-rebuild switch --accept-flake-config --flake ~/projects/infrastructure/nix/desktop#alex-desktop
 {
   description = "Alex's NixOS and Home Manager configurations";
-
-  nixConfig = {
-    extra-substituters = [ "https://attic.xuyh0120.win/lantian" ];
-    extra-trusted-public-keys = [ "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc=" ];
-  };
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -29,7 +23,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
   };
 
   outputs =

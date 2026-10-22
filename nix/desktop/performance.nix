@@ -1,30 +1,17 @@
 {
-  config,
-  inputs,
   pkgs,
   ...
 }:
 
 {
-  nixpkgs.overlays = [ inputs.nix-cachyos-kernel.overlays.pinned ];
-
-  nix.settings = {
-    extra-substituters = [ "https://attic.xuyh0120.win/lantian" ];
-    extra-trusted-public-keys = [ "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc=" ];
-  };
-
   boot = {
-    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-x86_64-v3;
-    kernelParams = [ "mitigations=off" ];
     kernelModules = [
       "bfq"
       "hid_microsoft"
       "ntsync"
     ];
-    zfs.package = config.boot.kernelPackages.zfs_cachyos;
     extraModprobeConfig = ''
       blacklist sp5100_tco
-      options nvidia NVreg_InitializeSystemMemoryAllocations=0
     '';
     kernel.sysctl = {
       "vm.swappiness" = 150;
@@ -34,7 +21,6 @@
       "vm.dirty_writeback_centisecs" = 1500;
       "vm.page-cluster" = 0;
       "kernel.nmi_watchdog" = 0;
-      "kernel.split_lock_mitigate" = 0;
       "net.core.netdev_max_backlog" = 4096;
     };
   };
