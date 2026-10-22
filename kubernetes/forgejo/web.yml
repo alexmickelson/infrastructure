@@ -54,7 +54,7 @@ spec:
             - name: FORGEJO__server__SSH_PORT
               value: "22"
             - name: FORGEJO__webhook__ALLOWED_HOST_LIST
-              value: "external,argocd.alexmickelson.guru"
+              value: "external,argocd.alexmickelson.guru,hermes.beefalo-newton.ts.net"
             - name: FORGEJO__service__ENABLE_BASIC_AUTHENTICATION
               value: "false"
             - name: FORGEJO__service__DISABLE_REGISTRATION
