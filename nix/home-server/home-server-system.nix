@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  inputs,
   ...
 }:
 
@@ -75,6 +76,7 @@
     home.stateVersion = "24.05";
     imports = [ ./home-server.home.nix ];
   };
+  home-manager.extraSpecialArgs = { inherit inputs; };
   home-manager.useGlobalPkgs = true;
 
   services.fwupd.enable = true;
