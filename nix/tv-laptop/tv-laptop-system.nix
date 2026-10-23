@@ -53,6 +53,7 @@
       "networkmanager"
       "wheel"
     ];
+    shell = pkgs.fish;
   };
 
   home-manager.useGlobalPkgs = true;
@@ -61,6 +62,7 @@
   };
 
   programs.firefox.enable = true;
+  programs.fish.enable = true;
   nixpkgs.config.allowUnfree = true;
   services.openssh.enable = true;
   services.tailscale.enable = true;
