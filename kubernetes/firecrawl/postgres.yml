@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: ghcr.io/firecrawl/nuq-postgres@sha256:9b638af78d99873bc0ba2b57c9cbcd01df6ce96efeaa72d36cfbe0f76521e8fc
+          image: ghcr.io/firecrawl/nuq-postgres@sha256:d719b36160eac2fcbe16dc7e7360ddb9c82c40ea5da183d07bf4a755c6a0b2ae
           ports:
             - containerPort: 5432
           env:
