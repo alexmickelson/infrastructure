@@ -65,6 +65,7 @@
   services.openssh.enable = true;
   services.tailscale.enable = true;
   services.flatpak.enable = true;
+  environment.etc."flatpak/remotes.d/flathub.flatpakrepo".source = ./flathub.flatpakrepo;
 
   system.stateVersion = "26.05";
 }
