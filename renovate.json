@@ -3,6 +3,7 @@
   "minimumReleaseAge": "2 days",
   "branchPrefix": "renovate-",
   "automerge": true,
+  "platformAutomerge": false,
   "internalChecksAsSuccess": true,
   "extends": [
     "config:recommended"
