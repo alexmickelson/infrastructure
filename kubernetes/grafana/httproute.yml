@@ -7,8 +7,8 @@ spec:
   parentRefs:
     - group: gateway.networking.k8s.io
       kind: Gateway
-      name: envoy-gateway
-      namespace: envoy-gateway-ingress
+      name: main-gateway
+      namespace: istio-ingress
     - group: gateway.networking.k8s.io
       kind: Gateway
       name: pangolin-gateway
@@ -37,4 +37,4 @@ spec:
     - dnsName: grafana.alexmickelson.guru
       recordType: CNAME
       targets:
-        - egateway.alexmickelson.guru
+        - igateway.alexmickelson.guru
