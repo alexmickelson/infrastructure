@@ -4,6 +4,7 @@
   "branchPrefix": "renovate-",
   "automerge": true,
   "platformAutomerge": false,
+  "ignoreTests": true,
   "internalChecksAsSuccess": true,
   "extends": [
     "config:recommended"
