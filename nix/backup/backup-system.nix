@@ -31,6 +31,12 @@
       "networkmanager"
       "wheel"
     ];
+    packages = with pkgs; [
+      vim
+      git
+      grep
+      ripgrep
+    ];
     shell = pkgs.fish;
   };
 
