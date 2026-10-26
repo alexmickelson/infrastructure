@@ -5,10 +5,17 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.forceImportRoot = false;
+  # boot.zfs.extraPools = [
+  #   "pool-name"
+  # ];
 
   networking.hostName = "backup";
   networking.hostId = "28661dba";
   networking.networkmanager.enable = true;
+
+  services.xserver.enable = true;
+  services.displayManager.sddm.enable = true;
+  services.desktopManager.plasma6.enable = true;
 
   nix.settings.experimental-features = [
     "nix-command"
