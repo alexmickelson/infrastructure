@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homeassistant-dashboards
+  namespace: homeassistant
+data:
+  home-lights.yaml: |
+    views:
+      - type: sections
+        title: Home
+        sections:
+          - type: grid
+            cards:
+              - type: heading
+                heading: Bathroom
+              - type: tile
+                entity: light.bathroom_nightlight
+                name: Bathroom Nightlight
+                tap_action:
+                  action: more-info
+                features:
+                  - type: light-brightness
+                  - type: light-color-temp
+                  - type: light-color-favorites
+                grid_options:
+                  columns: 12
+          - type: grid
+            cards:
+              - type: heading
+                heading: Kids Bathroom
+              - type: tile
+                entity: light.maya_s_bathroom_light
+                name: Maya's Bathroom Light
+                tap_action:
+                  action: more-info
+                features:
+                  - type: light-brightness
+                  - type: light-color-temp
+                  - type: light-color-favorites
+                grid_options:
+                  columns: 12
+          - type: grid
+            cards:
+              - type: heading
+                heading: Kitchen
+              - type: tile
+                entity: light.kitchen_nightlight
+                name: Kitchen Nightlight
+                tap_action:
+                  action: more-info
+                features:
+                  - type: light-brightness
+                  - type: light-color-temp
+                  - type: light-color-favorites
+                grid_options:
+                  columns: 12
+          - type: grid
+            cards:
+              - type: heading
+                heading: Maya's Room
+              - type: tile
+                entity: light.maya_nightlight
+                name: Maya Nightlight
+                tap_action:
+                  action: more-info
+                features:
+                  - type: light-brightness
+                  - type: light-color-temp
+                  - type: light-color-favorites
+                grid_options:
+                  columns: 12

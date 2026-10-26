@@ -12,6 +12,8 @@ metadata:
   namespace: homeassistant
 spec:
   revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
   replicas: 1
   selector:
     matchLabels:
@@ -23,7 +25,7 @@ spec:
     spec:
       containers:
       - name: homeassistant
-        image: homeassistant/home-assistant:stable@sha256:33afb0659d786213264c2211f8d91c5fe87461c56eba6a3a546eb05fc71e89f4
+        image: homeassistant/home-assistant:stable@sha256:23f4dfbb69ce76315dbc4de7915504f1c2dcecd7ca2648113a493a385972e133
         imagePullPolicy: Always
         ports:
         - name: http
@@ -42,6 +44,9 @@ spec:
           readOnly: true
         - name: zigbee-dongle
           mountPath: /dev/serial/by-id/usb-Itead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_V2_0cad0783fc73ef11b46be21e313510fd-if00-port0
+        - name: dashboards
+          mountPath: /config/dashboards
+          readOnly: true
         securityContext:
           privileged: true
           capabilities:
@@ -61,6 +66,9 @@ spec:
         hostPath:
           path: /dev/serial/by-id/usb-Itead_Sonoff_Zigbee_3.0_USB_Dongle_Plus_V2_0cad0783fc73ef11b46be21e313510fd-if00-port0
           type: CharDevice
+      - name: dashboards
+        configMap:
+          name: homeassistant-dashboards
 ---
 apiVersion: v1
 kind: Service
