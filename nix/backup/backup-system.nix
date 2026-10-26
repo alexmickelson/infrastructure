@@ -42,6 +42,7 @@
   programs.fish.enable = true;
   environment.systemPackages = [ pkgs.zfs ];
   services.openssh.enable = true;
+  services.tailscale.enable = true;
 
   system.stateVersion = "26.05";
 }
