@@ -1,0 +1,195 @@
+{
+  pkgs,
+  inputs,
+  lib,
+  ...
+}:
+let
+  myNeovimFlake = inputs.neovim;
+  neovimPackages = myNeovimFlake.packages.${pkgs.stdenv.hostPlatform.system};
+  neovimPackage = neovimPackages.default;
+  neovimTools = neovimPackages.tools;
+in
+{
+  imports = [ ./fish.home.nix ];
+
+  customFish = {
+    bluetuiAliases = true;
+    dotnetPackage =
+      with pkgs.dotnetCorePackages;
+      combinePackages [
+        sdk_8_0
+        sdk_9_0
+      ];
+    bitwardenSshAgent = true;
+    abbreviations = {
+      k = "kubectl";
+      ks = "k9s";
+      g = "git";
+      gp = "git push";
+      gs = "git status";
+      gm = {
+        setCursor = true;
+        expansion = ''git commit -m "%"'';
+      };
+    };
+  };
+  home.packages = with pkgs; [
+    k9s
+    jwt-cli
+    fish
+    kubectl
+    lazydocker
+    btop
+    nix-index
+    usbutils
+    mbuffer
+    lzop
+    lsof
+    vim
+    htop
+    iputils
+    python312
+    gcc
+    gnumake
+    dig
+    pciutils
+    uv
+    openssl
+    bluetui
+
+    gnome-software
+    gnome-tweaks
+    nerd-fonts.fira-code
+    nerd-fonts.droid-sans-mono
+    kubernetes-helm
+    ghostty
+    pnpm
+    ffmpeg
+    gh
+    bitwarden-desktop
+    bluetui
+
+    lazydocker
+    pkgs.beamPackages.elixir
+    elixir-ls
+    inotify-tools
+    watchman
+
+    # codex
+    neovimPackage
+    neovimTools
+
+    git
+    gcc
+    gnumake
+    unzip
+    tree-sitter
+    xclip
+    wl-clipboard
+    curl
+    wget
+    ripgrep
+    rustc
+    cargo
+    gzip
+    fd
+
+    argocd
+  ];
+
+  programs.direnv = {
+    enable = true;
+  };
+  programs.ghostty = {
+    enable = true;
+    enableFishIntegration = true;
+    settings = {
+      window-inherit-working-directory = "false";
+      window-decoration = false;
+      theme = "Atom";
+      font-size = 14;
+      window-height = 30;
+      window-width = 100;
+      background-opacity = 0.99;
+      background-blur = true;
+      window-padding-y = 10;
+      shell-integration = "detect";
+    };
+  };
+  home.sessionVariables = {
+    EDITOR = "vim";
+  };
+
+  fonts.fontconfig.enable = true;
+  dconf.enable = true;
+  dconf.settings = {
+    "org/gnome/desktop/session" = {
+      idle-delay = lib.hm.gvariant.mkUint32 1800;
+    };
+    "org/gnome/desktop/interface" = {
+      color-scheme = "prefer-dark";
+    };
+  };
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
+    };
+    gtk4.theme = null;
+  };
+  home.file = {
+    ".tmux.conf".source = ./.tmux.conf;
+    ".config/lazydocker/config.yml".text = ''
+      gui:
+        returnImmediately: true
+        screenMode: "half"
+    '';
+    ".config/k9s/config.yaml".text = ''
+      k9s:
+        liveViewAutoRefresh: true
+        screenDumpDir: /home/alex/.local/state/k9s/screen-dumps
+        refreshRate: 2
+        maxConnRetry: 5
+        readOnly: false
+        noExitOnCtrlC: false
+        ui:
+          enableMouse: false
+          headless: false
+          logoless: false
+          crumbsless: false
+          reactive: false
+          noIcons: false
+          defaultsToFullScreen: false
+        skipLatestRevCheck: false
+        disablePodCounting: false
+        shellPod:
+          image: busybox:1.35.0
+          namespace: default
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        imageScans:
+          enable: false
+          exclusions:
+            namespaces: []
+            labels: {}
+        logger:
+          tail: 1000
+          buffer: 5000
+          sinceSeconds: -1
+          textWrap: false
+          showTime: false
+        thresholds:
+          cpu:
+            critical: 90
+            warn: 70
+          memory:
+            critical: 90
+            warn: 70
+        namespace:
+          lockFavorites: false
+    '';
+  };
+}

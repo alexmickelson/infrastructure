@@ -202,6 +202,7 @@
 
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.forceImportRoot = false;
+  networking.hostName = "home-server";
   networking.hostId = "eafe9551";
   boot.zfs.extraPools = [
     "data-ssd"
