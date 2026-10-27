@@ -44,6 +44,7 @@
     pulse.enable = true;
   };
   services.fwupd.enable = true;
+  services.fprintd.enable = true;
   services.upower.enable = true;
   services.tailscale.enable = true;
   services.openssh.enable = true;
