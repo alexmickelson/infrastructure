@@ -19,8 +19,8 @@ data:
                 tap_action:
                   action: more-info
                 features:
+                  - type: toggle
                   - type: light-brightness
-                  - type: light-color-temp
                   - type: custom:rgb-light-card-feature
                     entity: light.bathroom_nightlight
                     justify: between
@@ -54,8 +54,8 @@ data:
                 tap_action:
                   action: more-info
                 features:
+                  - type: toggle
                   - type: light-brightness
-                  - type: light-color-temp
                   - type: custom:rgb-light-card-feature
                     entity: light.maya_s_bathroom_light
                     justify: between
@@ -89,8 +89,8 @@ data:
                 tap_action:
                   action: more-info
                 features:
+                  - type: toggle
                   - type: light-brightness
-                  - type: light-color-temp
                   - type: custom:rgb-light-card-feature
                     entity: light.kitchen_nightlight
                     justify: between
@@ -124,8 +124,8 @@ data:
                 tap_action:
                   action: more-info
                 features:
+                  - type: toggle
                   - type: light-brightness
-                  - type: light-color-temp
                   - type: custom:rgb-light-card-feature
                     entity: light.maya_nightlight
                     justify: between
