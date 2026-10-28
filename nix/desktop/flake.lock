@@ -79,11 +79,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793147063,
-        "narHash": "sha256-T+RQZoT0q9bpGtoKcV+Uq5iXH020RIjLZ6SYTBYVAP0=",
+        "lastModified": 1793149479,
+        "narHash": "sha256-Qwa+Hqk11zEQdRdN3sT8VioB2L2OlHD8QxSyIKKeVvk=",
         "owner": "alexmickelson",
         "repo": "neovim",
-        "rev": "41030a23f9c85e4514eedef68801299742f75533",
+        "rev": "c931dd1c1000c9fde4ac907e08405f22fd354cc9",
         "type": "github"
       },
       "original": {
