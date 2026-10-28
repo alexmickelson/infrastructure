@@ -35,6 +35,23 @@
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
   services.xserver.xkb.layout = "us";
+  services.logiops = {
+    enable = true;
+    config.devices = [
+      {
+        name = "Wireless Mouse MX Master 3";
+        buttons = [
+          {
+            cid = 195;
+            action = {
+              type = "Keypress";
+              keys = [ "KEY_LEFTMETA" ];
+            };
+          }
+        ];
+      }
+    ];
+  };
   services.printing.enable = true;
   services.pulseaudio.enable = false;
   services.pipewire = {
