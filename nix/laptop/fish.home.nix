@@ -98,7 +98,7 @@ in
           '')
 
           (lib.optionalString cfg.bitwardenSshAgent ''
-            export SSH_AUTH_SOCK=$HOME/.bitwarden-ssh-agent.sock
+            export SSH_AUTH_SOCK=$HOME/.var/app/com.bitwarden.desktop/data/.bitwarden-ssh-agent.sock
           '')
 
           (lib.optionalString (cfg.appendConfig != null) cfg.appendConfig)
