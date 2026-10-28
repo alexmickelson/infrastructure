@@ -67,7 +67,6 @@ in
     pnpm
     ffmpeg
     gh
-    bitwarden-desktop
     bluetui
 
     lazydocker
@@ -106,7 +105,7 @@ in
     enableFishIntegration = true;
     settings = {
       window-inherit-working-directory = "false";
-      window-decoration = false;
+      # window-decoration = false;
       theme = "Atom";
       font-size = 14;
       window-height = 30;
