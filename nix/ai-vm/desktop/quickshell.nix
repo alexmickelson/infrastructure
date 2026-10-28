@@ -6,12 +6,12 @@
     withUWSM = true;
   };
 
-  programs.dms-shell = {
+  programs.dux-shell = {
     enable = true;
-    enableVPN = false;
-    enableDynamicTheming = false;
-    enableAudioWavelength = false;
-    enableCalendarEvents = false;
+    excludePackages = with pkgs; [
+      cava
+      matugen
+    ];
   };
 
   services.displayManager = {
@@ -20,7 +20,7 @@
       enable = true;
       user = "alex";
     };
-    dms-greeter = {
+    dux-greeter = {
       enable = true;
       compositor.name = "hyprland";
     };
