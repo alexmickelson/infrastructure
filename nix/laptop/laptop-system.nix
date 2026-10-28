@@ -138,7 +138,6 @@
     gcc
     iputils
     tmux
-    libguestfs-with-appliance
     iperf
     mlocate
   ];
