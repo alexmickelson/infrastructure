@@ -19,9 +19,29 @@ data:
                 tap_action:
                   action: more-info
                 features:
+                  - type: toggle
                   - type: light-brightness
-                  - type: light-color-temp
-                  - type: light-color-favorites
+                  - type: custom:rgb-light-card-feature
+                    entity: light.bathroom_nightlight
+                    justify: between
+                    size: 26
+                    colors:
+                      - hs_color: [0, 100]
+                        icon_color: '#f44336'
+                      - hs_color: [30, 100]
+                        icon_color: '#ff9800'
+                      - hs_color: [55, 100]
+                        icon_color: '#ffeb3b'
+                      - hs_color: [120, 100]
+                        icon_color: '#4caf50'
+                      - hs_color: [185, 100]
+                        icon_color: '#00bcd4'
+                      - hs_color: [225, 100]
+                        icon_color: '#2196f3'
+                      - hs_color: [275, 100]
+                        icon_color: '#7c4dff'
+                      - hs_color: [320, 100]
+                        icon_color: '#e91e8c'
                 grid_options:
                   columns: 12
           - type: grid
@@ -34,9 +54,29 @@ data:
                 tap_action:
                   action: more-info
                 features:
+                  - type: toggle
                   - type: light-brightness
-                  - type: light-color-temp
-                  - type: light-color-favorites
+                  - type: custom:rgb-light-card-feature
+                    entity: light.maya_s_bathroom_light
+                    justify: between
+                    size: 26
+                    colors:
+                      - hs_color: [0, 100]
+                        icon_color: '#f44336'
+                      - hs_color: [30, 100]
+                        icon_color: '#ff9800'
+                      - hs_color: [55, 100]
+                        icon_color: '#ffeb3b'
+                      - hs_color: [120, 100]
+                        icon_color: '#4caf50'
+                      - hs_color: [185, 100]
+                        icon_color: '#00bcd4'
+                      - hs_color: [225, 100]
+                        icon_color: '#2196f3'
+                      - hs_color: [275, 100]
+                        icon_color: '#7c4dff'
+                      - hs_color: [320, 100]
+                        icon_color: '#e91e8c'
                 grid_options:
                   columns: 12
           - type: grid
@@ -49,9 +89,29 @@ data:
                 tap_action:
                   action: more-info
                 features:
+                  - type: toggle
                   - type: light-brightness
-                  - type: light-color-temp
-                  - type: light-color-favorites
+                  - type: custom:rgb-light-card-feature
+                    entity: light.kitchen_nightlight
+                    justify: between
+                    size: 26
+                    colors:
+                      - hs_color: [0, 100]
+                        icon_color: '#f44336'
+                      - hs_color: [30, 100]
+                        icon_color: '#ff9800'
+                      - hs_color: [55, 100]
+                        icon_color: '#ffeb3b'
+                      - hs_color: [120, 100]
+                        icon_color: '#4caf50'
+                      - hs_color: [185, 100]
+                        icon_color: '#00bcd4'
+                      - hs_color: [225, 100]
+                        icon_color: '#2196f3'
+                      - hs_color: [275, 100]
+                        icon_color: '#7c4dff'
+                      - hs_color: [320, 100]
+                        icon_color: '#e91e8c'
                 grid_options:
                   columns: 12
           - type: grid
@@ -64,8 +124,28 @@ data:
                 tap_action:
                   action: more-info
                 features:
+                  - type: toggle
                   - type: light-brightness
-                  - type: light-color-temp
-                  - type: light-color-favorites
+                  - type: custom:rgb-light-card-feature
+                    entity: light.maya_nightlight
+                    justify: between
+                    size: 26
+                    colors:
+                      - hs_color: [0, 100]
+                        icon_color: '#f44336'
+                      - hs_color: [30, 100]
+                        icon_color: '#ff9800'
+                      - hs_color: [55, 100]
+                        icon_color: '#ffeb3b'
+                      - hs_color: [120, 100]
+                        icon_color: '#4caf50'
+                      - hs_color: [185, 100]
+                        icon_color: '#00bcd4'
+                      - hs_color: [225, 100]
+                        icon_color: '#2196f3'
+                      - hs_color: [275, 100]
+                        icon_color: '#7c4dff'
+                      - hs_color: [320, 100]
+                        icon_color: '#e91e8c'
                 grid_options:
                   columns: 12
