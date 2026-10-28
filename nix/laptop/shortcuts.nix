@@ -57,6 +57,10 @@
         switch-group-backward = [ "<Shift><Alt>Above_Tab" ];
         toggle-maximized = [ "<Super>m" ];
       };
+      "org/gnome/desktop/wm/preferences" = {
+        mouse-button-modifier = "<Super>";
+        resize-with-right-button = true;
+      };
       "org/gnome/shell/keybindings" = {
         screenshot = [ "<Shift><Alt>3" ];
         show-screenshot-ui = [ "<Shift><Alt>4" ];
