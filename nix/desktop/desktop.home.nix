@@ -46,11 +46,9 @@ in
     mbuffer
     lzop
     lsof
-    code-server
     vim
     htop
     iputils
-    dotnetCorePackages.dotnet_9.sdk
     python312
     gcc
     gnumake
