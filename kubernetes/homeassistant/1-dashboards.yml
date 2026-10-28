@@ -21,9 +21,74 @@ data:
                 features:
                   - type: light-brightness
                   - type: light-color-temp
-                  - type: light-color-favorites
                 grid_options:
                   columns: 12
+              - type: entities
+                entities:
+                  - type: button
+                    name: Red
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.bathroom_nightlight, hs_color: [0, 100]}
+                  - type: button
+                    name: Orange
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.bathroom_nightlight, hs_color: [30, 100]}
+                  - type: button
+                    name: Yellow
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.bathroom_nightlight, hs_color: [55, 100]}
+                  - type: button
+                    name: Green
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.bathroom_nightlight, hs_color: [120, 100]}
+                  - type: button
+                    name: Cyan
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.bathroom_nightlight, hs_color: [185, 100]}
+                  - type: button
+                    name: Blue
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.bathroom_nightlight, hs_color: [225, 100]}
+                  - type: button
+                    name: Violet
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.bathroom_nightlight, hs_color: [275, 100]}
+                  - type: button
+                    name: Magenta
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.bathroom_nightlight, hs_color: [320, 100]}
           - type: grid
             cards:
               - type: heading
@@ -36,9 +101,74 @@ data:
                 features:
                   - type: light-brightness
                   - type: light-color-temp
-                  - type: light-color-favorites
                 grid_options:
                   columns: 12
+              - type: entities
+                entities:
+                  - type: button
+                    name: Red
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.maya_s_bathroom_light, hs_color: [0, 100]}
+                  - type: button
+                    name: Orange
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.maya_s_bathroom_light, hs_color: [30, 100]}
+                  - type: button
+                    name: Yellow
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.maya_s_bathroom_light, hs_color: [55, 100]}
+                  - type: button
+                    name: Green
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.maya_s_bathroom_light, hs_color: [120, 100]}
+                  - type: button
+                    name: Cyan
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.maya_s_bathroom_light, hs_color: [185, 100]}
+                  - type: button
+                    name: Blue
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.maya_s_bathroom_light, hs_color: [225, 100]}
+                  - type: button
+                    name: Violet
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.maya_s_bathroom_light, hs_color: [275, 100]}
+                  - type: button
+                    name: Magenta
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.maya_s_bathroom_light, hs_color: [320, 100]}
           - type: grid
             cards:
               - type: heading
@@ -51,9 +181,74 @@ data:
                 features:
                   - type: light-brightness
                   - type: light-color-temp
-                  - type: light-color-favorites
                 grid_options:
                   columns: 12
+              - type: entities
+                entities:
+                  - type: button
+                    name: Red
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.kitchen_nightlight, hs_color: [0, 100]}
+                  - type: button
+                    name: Orange
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.kitchen_nightlight, hs_color: [30, 100]}
+                  - type: button
+                    name: Yellow
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.kitchen_nightlight, hs_color: [55, 100]}
+                  - type: button
+                    name: Green
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.kitchen_nightlight, hs_color: [120, 100]}
+                  - type: button
+                    name: Cyan
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.kitchen_nightlight, hs_color: [185, 100]}
+                  - type: button
+                    name: Blue
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.kitchen_nightlight, hs_color: [225, 100]}
+                  - type: button
+                    name: Violet
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.kitchen_nightlight, hs_color: [275, 100]}
+                  - type: button
+                    name: Magenta
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.kitchen_nightlight, hs_color: [320, 100]}
           - type: grid
             cards:
               - type: heading
@@ -66,6 +261,71 @@ data:
                 features:
                   - type: light-brightness
                   - type: light-color-temp
-                  - type: light-color-favorites
                 grid_options:
                   columns: 12
+              - type: entities
+                entities:
+                  - type: button
+                    name: Red
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.maya_nightlight, hs_color: [0, 100]}
+                  - type: button
+                    name: Orange
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.maya_nightlight, hs_color: [30, 100]}
+                  - type: button
+                    name: Yellow
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.maya_nightlight, hs_color: [55, 100]}
+                  - type: button
+                    name: Green
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.maya_nightlight, hs_color: [120, 100]}
+                  - type: button
+                    name: Cyan
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.maya_nightlight, hs_color: [185, 100]}
+                  - type: button
+                    name: Blue
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.maya_nightlight, hs_color: [225, 100]}
+                  - type: button
+                    name: Violet
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.maya_nightlight, hs_color: [275, 100]}
+                  - type: button
+                    name: Magenta
+                    icon: mdi:circle
+                    action_name: Set
+                    tap_action:
+                      action: perform-action
+                      perform_action: light.turn_on
+                      data: {entity_id: light.maya_nightlight, hs_color: [320, 100]}
