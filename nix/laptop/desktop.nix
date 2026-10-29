@@ -64,13 +64,23 @@ in
     lib.optionals isHyprland (
       with pkgs;
       [
+        kitty
+        kdePackages.dolphin
+        hyprlauncher
         hyprpaper
         hypridle
         hyprlock
+        hyprpicker
         waybar
         wofi
+        mako
+        libnotify
+        cliphist
+        wl-clip-persist
         grim
         slurp
+        grimblast
+        swayosd
         wl-clipboard
         playerctl
         brightnessctl
