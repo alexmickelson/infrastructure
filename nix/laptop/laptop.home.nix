@@ -9,6 +9,7 @@ let
   neovimPackages = myNeovimFlake.packages.${pkgs.stdenv.hostPlatform.system};
   neovimPackage = neovimPackages.default;
   neovimTools = neovimPackages.tools;
+  piSandboxed = inputs.pi-sandboxed.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
   imports = [ ./fish.home.nix ];
@@ -95,6 +96,8 @@ in
     fd
 
     argocd
+    piSandboxed
+    pi-coding-agent
   ];
 
   programs.direnv = {

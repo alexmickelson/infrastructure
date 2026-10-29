@@ -1,5 +1,24 @@
 {
   "nodes": {
+    "agent-sandbox": {
+      "inputs": {
+        "nixpkgs": [
+          "pi-sandboxed",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "path": "../agent-sandbox",
+        "type": "path"
+      },
+      "original": {
+        "path": "../agent-sandbox",
+        "type": "path"
+      },
+      "parent": [
+        "pi-sandboxed"
+      ]
+    },
     "crane": {
       "locked": {
         "lastModified": 1785782307,
@@ -60,11 +79,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793152410,
-        "narHash": "sha256-o/OCiwn9lnXMB04XNO8X7xZJRmOXWsI+xrHNH9H6EZQ=",
+        "lastModified": 1793229295,
+        "narHash": "sha256-ciCdap8qWHJyE6HNNO9SvsR+C7QrY+unwFMmrKOhAuM=",
         "owner": "alexmickelson",
         "repo": "neovim",
-        "rev": "4cffd15469f3a8bd4b502593f1594acf0fd9116b",
+        "rev": "0e14ab57611ffc6569066584f2572a0959c7e7f0",
         "type": "github"
       },
       "original": {
@@ -104,11 +123,35 @@
         "type": "github"
       }
     },
+    "pi-sandboxed": {
+      "inputs": {
+        "agent-sandbox": "agent-sandbox",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "dir": "nix/flakes/pi-agent",
+        "lastModified": 1793233345,
+        "narHash": "sha256-TwduzvuPWqi2gORZJvXryGGdUcex+p/9ajTXB7ZmHWo=",
+        "owner": "alexmickelson",
+        "repo": "infrastructure",
+        "rev": "efa8fb7c778953f39630677c776f9e3169266683",
+        "type": "github"
+      },
+      "original": {
+        "dir": "nix/flakes/pi-agent",
+        "owner": "alexmickelson",
+        "repo": "infrastructure",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
         "neovim": "neovim",
         "nixpkgs": "nixpkgs",
+        "pi-sandboxed": "pi-sandboxed",
         "xremap-flake": "xremap-flake"
       }
     },

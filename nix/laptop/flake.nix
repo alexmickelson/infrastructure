@@ -18,6 +18,10 @@
       url = "github:xremap/nix-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    pi-sandboxed = {
+      url = "github:alexmickelson/infrastructure?dir=nix/flakes/pi-agent";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
