@@ -59,8 +59,6 @@ in
     openssl
     bluetui
 
-    gnome-software
-    gnome-tweaks
     nerd-fonts.fira-code
     nerd-fonts.droid-sans-mono
     kubernetes-helm

@@ -33,6 +33,7 @@
     }:
     let
       system = "x86_64-linux";
+      desktop = "hyprland";
       shortcuts = import ./shortcuts.nix;
       laptopPkgs = import nixpkgs {
         inherit system;
@@ -48,7 +49,7 @@
 
       nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit inputs; };
+        specialArgs = { inherit inputs desktop; };
         modules = [
           ./hardware-configuration.nix
           home-manager.nixosModules.home-manager
@@ -60,7 +61,7 @@
 
       homeConfigurations."alex@laptop" = home-manager.lib.homeManagerConfiguration {
         pkgs = laptopPkgs;
-        extraSpecialArgs = { inherit inputs; };
+        extraSpecialArgs = { inherit inputs desktop; };
         modules = [
           ./laptop.home.nix
           self.homeManagerModules.shortcuts

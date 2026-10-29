@@ -1,8 +1,8 @@
 {
-  nixosModule = { pkgs, ... }: {
-    environment.systemPackages = [ pkgs.gnomeExtensions.xremap ];
+  nixosModule = { config, pkgs, lib, ... }: {
+    environment.systemPackages = lib.optional config.services.desktopManager.gnome.enable pkgs.gnomeExtensions.xremap;
 
-    systemd.user.services.enable-xremap-extension = {
+    systemd.user.services.enable-xremap-extension = lib.mkIf config.services.desktopManager.gnome.enable {
       description = "Enable xremap GNOME extension";
       after = [ "graphical-session.target" ];
       wantedBy = [ "graphical-session.target" ];
@@ -16,7 +16,8 @@
       serviceMode = "user";
       userName = "alex";
       watch = true;
-      withGnome = true;
+      withGnome = config.services.desktopManager.gnome.enable;
+      withHypr = config.programs.hyprland.enable;
       config.keymap = [
         {
           name = "Ghostty clipboard";

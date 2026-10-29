@@ -1,9 +1,15 @@
-{ inputs, pkgs, ... }:
+{
+  desktop,
+  inputs,
+  pkgs,
+  ...
+}:
 
 {
+  imports = [ ./desktop.nix ];
+
   nixpkgs.config = {
     allowUnfree = true;
-    permittedInsecurePackages = [ "electron-39.8.10" ];
   };
 
   boot.loader.systemd-boot.enable = true;
@@ -31,10 +37,6 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  services.xserver.enable = true;
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
-  services.xserver.xkb.layout = "us";
   services.logiops = {
     enable = true;
     config.devices = [
@@ -111,7 +113,7 @@
   };
 
   home-manager = {
-    extraSpecialArgs = { inherit inputs; };
+    extraSpecialArgs = { inherit desktop inputs; };
     useGlobalPkgs = true;
     backupFileExtension = "backup";
     users.alex = { ... }: {
