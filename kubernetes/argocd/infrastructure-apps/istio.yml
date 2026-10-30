@@ -57,6 +57,8 @@ spec:
         profile: ambient
         ambient:
           reconcileIptablesOnStartup: true
+        istioOwnedCNIConfig: true
+        cniConfFileName: 10-flannel.conflist
         global:
           platform: k3s
   destination:
