@@ -14,106 +14,14 @@
 # and nothing is touched. Pods whose namespace network policy refuses the prober are reported as
 # undecided rather than repaired, because a refusal there is indistinguishable from a missing listener.
 #
-# DRY_RUN=1 reports only. PROBE_NAMESPACE picks a namespace the caller may create Jobs in; the prober
-# has to run inside the cluster, off the mesh, since the pod CIDR is not routable from a peer host.
+# Listing without repairing is istio-mesh-orphan-report.sh. PROBE_NAMESPACE picks a namespace the
+# caller may create Jobs in; the prober has to run inside the cluster, off the mesh, since the pod
+# CIDR is not routable from a peer host.
 set -euo pipefail
+source "$(dirname "$0")/istio-mesh-orphan-lib.sh"
 
-HBONE_PORT=15008
-PROBE_IMAGE="docker.io/library/busybox:1.38.0"
-EXCLUDED_NAMESPACES=" kube-system istio-system "
-PROBE_NAMESPACE="${PROBE_NAMESPACE:-hermes}"
-PROBE_SETTLE_SECONDS="${PROBE_SETTLE_SECONDS:-120}"
 CNI_SETTLE_SECONDS="${CNI_SETTLE_SECONDS:-45}"
 POD_SETTLE_SECONDS="${POD_SETTLE_SECONDS:-20}"
-DRY_RUN="${DRY_RUN:-0}"
-RUN_ID="$(date +%s)"
-PROBE_SEQ=0
-SURVEY_ORPHANS=""
-SURVEY_BLOCKED=""
-
-for command in kubectl awk; do
-  command -v "$command" >/dev/null || { echo "missing required command: $command" >&2; exit 127; }
-done
-
-ambient_namespaces() {
-  kubectl get ns -l istio.io/dataplane-mode=ambient -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
-}
-
-ambient_candidate_pods() {
-  local ambient
-  ambient=" $(ambient_namespaces | tr '\n' ' ') "
-  kubectl get pods -A -o jsonpath='{range .items[*]}{.metadata.namespace}{"|"}{.metadata.name}{"|"}{.status.podIP}{"|"}{.spec.hostNetwork}{"|"}{.status.phase}{"|"}{.metadata.deletionTimestamp}{"|"}{.metadata.labels.istio\.io/dataplane-mode}{"|"}{range .status.conditions[?(@.type=="Ready")]}{.status}{end}{"|"}{range .spec.containers[*]}{range .ports[*]}{.containerPort}{" "}{end}{end}{"\n"}{end}' |
-    awk -F'|' -v ambient="$ambient" -v excluded="$EXCLUDED_NAMESPACES" '
-      index(ambient, " " $1 " ") == 0 || index(excluded, " " $1 " ") != 0 { next }
-      $4 == "true" || $5 != "Running" || $6 != "" || $7 == "none" || $3 == "" || $8 != "True" { next }
-      { sub(/ +$/, "", $9); gsub(/ /, ",", $9); print $1, $2, $3, $9 }'
-}
-
-probe_hbone() {
-  local job result expected actual targets
-  PROBE_SEQ=$((PROBE_SEQ + 1))
-  job="istio-mesh-probe-${RUN_ID}-${PROBE_SEQ}"
-  targets="$(printf '%s\n' "$@" | awk 'NF' | tr '\n' ' ')"
-  kubectl -n "$PROBE_NAMESPACE" create -f - >/dev/null <<EOF
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: $job
-spec:
-  backoffLimit: 0
-  ttlSecondsAfterFinished: 600
-  template:
-    metadata:
-      labels:
-        istio.io/dataplane-mode: none
-    spec:
-      restartPolicy: Never
-      containers:
-        - name: probe
-          image: $PROBE_IMAGE
-          env:
-            - name: HBONE_PORT
-              value: "$HBONE_PORT"
-            - name: PROBE_TARGETS
-              value: "$targets"
-          command: ["/bin/sh", "-c", "for t in \$PROBE_TARGETS; do ip=\$(echo \$t | cut -d: -f1); ports=\$(echo \$t | cut -d: -f2); if nc -w 1 \"\$ip\" \"\$HBONE_PORT\" </dev/null >/dev/null 2>&1; then echo reachable \"\$ip\"; continue; fi; app=; for p in \$(echo \$ports | tr ',' ' '); do nc -w 1 \"\$ip\" \"\$p\" </dev/null >/dev/null 2>&1 && app=yes; done; if [ -n \"\$app\" ]; then echo orphan \"\$ip\"; else echo blocked \"\$ip\"; fi; done"]
-EOF
-  kubectl -n "$PROBE_NAMESPACE" wait --for=condition=complete "job/$job" --timeout="${PROBE_SETTLE_SECONDS}s" >/dev/null
-  result="$(kubectl -n "$PROBE_NAMESPACE" logs "job/$job")"
-  kubectl -n "$PROBE_NAMESPACE" delete job "$job" --wait=false >/dev/null
-  expected="$(printf '%s\n' $targets | awk 'NF' | wc -l)"
-  actual="$(printf '%s\n' "$result" | awk 'NF' | wc -l)"
-  if [ "$expected" != "$actual" ]; then
-    echo "probe returned $actual of $expected results" >&2
-    exit 1
-  fi
-  printf '%s\n' "$result"
-}
-
-pods_in_state() {
-  local results="$1" state="$2" candidates="$3"
-  printf '%s\n' "$results" | awk -v state="$state" '$1 == state { print $2 }' |
-    while read -r ip; do
-      printf '%s\n' "$candidates" | awk -v ip="$ip" '$3 == ip { print $1, $2, $3 }'
-    done
-}
-
-survey() {
-  local candidates results
-  candidates="$(ambient_candidate_pods)"
-  SURVEY_ORPHANS=""
-  SURVEY_BLOCKED=""
-  [ -n "$candidates" ] || return 0
-  results="$(probe_hbone $(printf '%s\n' "$candidates" | awk '{print $3 ":" $4}'))"
-  SURVEY_ORPHANS="$(pods_in_state "$results" orphan "$candidates")"
-  SURVEY_BLOCKED="$(pods_in_state "$results" blocked "$candidates")"
-}
-
-report_blocked() {
-  [ -n "$SURVEY_BLOCKED" ] || return 0
-  echo "undecided, no port on the pod answers the prober, an ingress NetworkPolicy is the likely cause:"
-  printf '%s\n' "$SURVEY_BLOCKED"
-}
 
 restart_cni_agent() {
   kubectl -n istio-system delete pod -l k8s-app=istio-cni-node --wait=false >/dev/null
@@ -133,10 +41,6 @@ workload_of_pod() {
 
 recreate_pod() {
   local ns="$1" name="$2" workload kind host_paths
-  if [ "$DRY_RUN" = "1" ]; then
-    echo "dry run: would recreate $ns/$name"
-    return 0
-  fi
   host_paths="$(kubectl -n "$ns" get pod "$name" -o jsonpath='{range .spec.volumes[*]}{.hostPath.path}{"\n"}{end}')"
   workload="$(workload_of_pod "$ns" "$name")"
   kind="${workload%%/*}"
@@ -167,11 +71,6 @@ fi
 
 echo "ambient pods missing an hbone listener on $HBONE_PORT while the application port answers:"
 printf '%s\n' "$SURVEY_ORPHANS"
-
-if [ "$DRY_RUN" = "1" ]; then
-  echo "dry run: not restarting istio-cni-node and not recreating pods"
-  exit 0
-fi
 
 restart_cni_agent
 survey
