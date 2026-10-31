@@ -1,10 +1,10 @@
 # Hyprland shortcut cheat sheet
 
-The packages are installed by `desktop.nix`, but these bindings only become active after you add them to your Hyprland config and run `hyprctl reload`.
+The packages are installed by `desktop.nix`, but these bindings only become active after you add them to `~/.config/hypr/hyprland.lua` and run `hyprctl reload`.
 
 ## Stock Hyprland 0.56.2 defaults
 
-These are the defaults from the generated config. Check the real values with `hyprctl binds`.
+These are the defaults from the generated Lua config. Check the real values with `hyprctl binds`.
 
 | Shortcut | Action | Note |
 |---|---|---|
@@ -16,6 +16,18 @@ These are the defaults from the generated config. Check the real values with `hy
 | `Super + R` | Open hyprlauncher | Stock default |
 
 > The stock `Super + M` exits your session. If you want `Super + M` for maximize, remove/change the exit bind before using it.
+
+## Lua bind pattern
+
+```lua
+local mainMod = "SUPER"
+
+hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("ghostty"))
+hl.bind(mainMod .. " + M", hl.dsp.window.fullscreen({ action = "toggle", mode = "maximized" }))
+hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exit())
+```
+
+Use `hl.dsp.window.close()` for close, `hl.dsp.focus(...)` for focus, and `hl.dsp.window.move(...)` for moving windows. The full examples are in `hyprland-config.md`.
 
 ## Recommended personal bindings
 

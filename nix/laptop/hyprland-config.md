@@ -1,4 +1,4 @@
-# Hyprland config examples
+# Hyprland Lua config examples
 
 These are copy-paste examples for the packages installed by `desktop.nix`. Nothing here is applied automatically. Add sections to your config one at a time and run:
 
@@ -6,146 +6,152 @@ These are copy-paste examples for the packages installed by `desktop.nix`. Nothi
 hyprctl reload
 ```
 
-The flake currently resolves Hyprland 0.56.2, so these examples use standard `hyprland.conf` syntax.
+The flake currently resolves Hyprland 0.56.2, which uses Lua config at:
+
+```text
+~/.config/hypr/hyprland.lua
+```
 
 Suggested order:
 
 1. Fix the stock `Super + M` exit bind.
 2. Add `Super + T` / `Super + Return` for Ghostty.
-3. Add the `exec-once` programs.
+3. Add the autostart block.
 4. Add the rest once things feel stable.
 
 ## 1. Hyprland core
 
-File: `~/.config/hypr/hyprland.conf`
+File: `~/.config/hypr/hyprland.lua`
 
-Merge these into the generated config. If a bind already exists, replace the generated line instead of adding a duplicate.
+Merge these into the generated Lua config. If a bind already exists, replace the generated line instead of adding a duplicate.
 
-```ini
-monitor = ,preferred,auto,1
+```lua
+local terminal    = "ghostty"
+local fileManager = "dolphin"
+local menu        = "wofi --show drun"
+local mainMod     = "SUPER"
 
-$mainMod = SUPER
-$terminal = ghostty
-$fileManager = dolphin
-$menu = wofi --show drun
+hl.monitor({
+    output = "",
+    mode = "preferred",
+    position = "auto",
+    scale = "auto",
+})
 
-env = XCURSOR_SIZE,24
-env = QT_QPA_PLATFORM,wayland;xcb
+hl.env("XCURSOR_SIZE", "24")
+hl.env("HYPRCURSOR_SIZE", "24")
+hl.env("QT_QPA_PLATFORM", "wayland;xcb")
 
-exec-once = waybar
-exec-once = mako
-exec-once = hyprpaper
-exec-once = hypridle
-exec-once = swayosd-server
-exec-once = wl-paste --watch cliphist store
-exec-once = wl-clip-persist --clipboard regular
+hl.on("hyprland.start", function()
+    hl.exec_cmd("waybar")
+    hl.exec_cmd("mako")
+    hl.exec_cmd("hyprpaper")
+    hl.exec_cmd("hypridle")
+    hl.exec_cmd("swayosd-server")
+    hl.exec_cmd("wl-paste --watch cliphist store")
+    hl.exec_cmd("wl-clip-persist --clipboard regular")
+end)
 
-input {
-    kb_layout = us
-    follow_mouse = 1
-    sensitivity = 0
+hl.config({
+    input = {
+        kb_layout = "us",
+        follow_mouse = 1,
+        sensitivity = 0,
 
-    touchpad {
-        natural_scroll = true
-        tap-to-click = true
-    }
-}
+        touchpad = {
+            natural_scroll = true,
+            tap_to_click = true,
+        },
+    },
 
-general {
-    gaps_in = 5
-    gaps_out = 10
-    border_size = 2
-    col.active_border = rgba(89b4faff)
-    col.inactive_border = rgba(45475aaa)
-    layout = dwindle
-}
+    general = {
+        gaps_in = 5,
+        gaps_out = 10,
+        border_size = 2,
+        col = {
+            active_border = "rgba(89b4faff)",
+            inactive_border = "rgba(45475aaa)",
+        },
+        layout = "dwindle",
+    },
 
-decoration {
-    rounding = 8
-    active_opacity = 1.0
-    inactive_opacity = 0.97
+    decoration = {
+        rounding = 8,
+        active_opacity = 1.0,
+        inactive_opacity = 0.97,
 
-    blur {
-        enabled = true
-        size = 4
-        passes = 2
-    }
-}
+        blur = {
+            enabled = true,
+            size = 4,
+            passes = 2,
+        },
+    },
 
-dwindle {
-    pseudotile = true
-    preserve_split = true
-}
+    dwindle = {
+        pseudotile = true,
+        preserve_split = true,
+    },
 
-misc {
-    disable_hyprland_logo = true
-    force_default_wallpaper = 0
-}
+    misc = {
+        disable_hyprland_logo = true,
+        force_default_wallpaper = 0,
+    },
+})
 
-bind = $mainMod, Return, exec, $terminal
-bind = $mainMod, T, exec, $terminal
-bind = $mainMod, Q, killactive,
-bind = $mainMod, E, exec, $fileManager
-bind = $mainMod, D, exec, $menu
-bind = $mainMod, Space, exec, $menu
-bind = $mainMod, R, exec, hyprlauncher
-bind = $mainMod, V, togglefloating,
-bind = $mainMod, M, fullscreen, 1
-bind = $mainMod SHIFT, E, exit,
-bind = $mainMod, L, exec, hyprlock
-bind = $mainMod, S, togglesplit,
-bind = $mainMod, P, pseudo,
+hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
+hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(terminal))
+hl.bind(mainMod .. " + Q", hl.dsp.window.close())
+hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
+hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(menu))
+hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd(menu))
+hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("hyprlauncher"))
+hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mainMod .. " + M", hl.dsp.window.fullscreen({ action = "toggle", mode = "maximized" }))
+hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exit())
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("hyprlock"))
+hl.bind(mainMod .. " + S", hl.dsp.layout("togglesplit"))
+hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 
-bind = ALT, Tab, cyclenext,
-bind = ALT SHIFT, Tab, cyclenext, prev
+hl.bind("ALT + Tab", hl.dsp.window.cycle_next())
+hl.bind("ALT + SHIFT + Tab", hl.dsp.window.cycle_next({ next = false }))
 
-bind = $mainMod, left, movefocus, l
-bind = $mainMod, right, movefocus, r
-bind = $mainMod, up, movefocus, u
-bind = $mainMod, down, movefocus, d
+hl.bind(mainMod .. " + left", hl.dsp.focus({ direction = "left" }))
+hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
+hl.bind(mainMod .. " + up", hl.dsp.focus({ direction = "up" }))
+hl.bind(mainMod .. " + down", hl.dsp.focus({ direction = "down" }))
 
-bind = $mainMod SHIFT, left, movewindow, l
-bind = $mainMod SHIFT, right, movewindow, r
-bind = $mainMod SHIFT, up, movewindow, u
-bind = $mainMod SHIFT, down, movewindow, d
+hl.bind(mainMod .. " + SHIFT + left", hl.dsp.window.move({ direction = "left" }))
+hl.bind(mainMod .. " + SHIFT + right", hl.dsp.window.move({ direction = "right" }))
+hl.bind(mainMod .. " + SHIFT + up", hl.dsp.window.move({ direction = "up" }))
+hl.bind(mainMod .. " + SHIFT + down", hl.dsp.window.move({ direction = "down" }))
 
-bind = $mainMod CTRL, left, resizeactive, -40 0
-bind = $mainMod CTRL, right, resizeactive, 40 0
-bind = $mainMod CTRL, up, resizeactive, 0 -40
-bind = $mainMod CTRL, down, resizeactive, 0 40
+hl.bind(mainMod .. " + CTRL + left", hl.dsp.window.resize({ x = -40, y = 0, relative = true }))
+hl.bind(mainMod .. " + CTRL + right", hl.dsp.window.resize({ x = 40, y = 0, relative = true }))
+hl.bind(mainMod .. " + CTRL + up", hl.dsp.window.resize({ x = 0, y = -40, relative = true }))
+hl.bind(mainMod .. " + CTRL + down", hl.dsp.window.resize({ x = 0, y = 40, relative = true }))
 
-bind = $mainMod, 1, workspace, 1
-bind = $mainMod, 2, workspace, 2
-bind = $mainMod, 3, workspace, 3
-bind = $mainMod, 4, workspace, 4
-bind = $mainMod, 5, workspace, 5
-bind = $mainMod, 6, workspace, 6
-bind = $mainMod, 7, workspace, 7
-bind = $mainMod, 8, workspace, 8
-bind = $mainMod, 9, workspace, 9
+for i = 1, 9 do
+    hl.bind(mainMod .. " + " .. i, hl.dsp.focus({ workspace = i }))
+    hl.bind(mainMod .. " + SHIFT + " .. i, hl.dsp.window.move({ workspace = i }))
+end
 
-bind = $mainMod SHIFT, 1, movetoworkspace, 1
-bind = $mainMod SHIFT, 2, movetoworkspace, 2
-bind = $mainMod SHIFT, 3, movetoworkspace, 3
-bind = $mainMod SHIFT, 4, movetoworkspace, 4
-bind = $mainMod SHIFT, 5, movetoworkspace, 5
-bind = $mainMod SHIFT, 6, movetoworkspace, 6
-bind = $mainMod SHIFT, 7, movetoworkspace, 7
-bind = $mainMod SHIFT, 8, movetoworkspace, 8
-bind = $mainMod SHIFT, 9, movetoworkspace, 9
+hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
+hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
+hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
+hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 
-bindm = $mainMod, mouse:272, movewindow
-bindm = $mainMod, mouse:273, resizewindow
+hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | wofi --dmenu | cliphist decode | wl-copy"))
+hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd("hyprpicker -a"))
 
-bindel = , XF86AudioRaiseVolume, exec, swayosd-client --output-volume raise
-bindel = , XF86AudioLowerVolume, exec, swayosd-client --output-volume lower
-bindel = , XF86AudioMute, exec, swayosd-client --output-volume mute-toggle
-bindel = , XF86MonBrightnessUp, exec, swayosd-client --brightness raise
-bindel = , XF86MonBrightnessDown, exec, swayosd-client --brightness lower
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --output-volume raise"), { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --output-volume lower"), { locked = true, repeating = true })
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd("swayosd-client --output-volume mute-toggle"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("swayosd-client --brightness raise"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("swayosd-client --brightness lower"), { locked = true, repeating = true })
 
-bind = , Print, exec, grimblast --notify copy area
-bind = SHIFT, Print, exec, grimblast --notify copy output
-bind = $mainMod, Print, exec, grimblast --notify copy active
+hl.bind("Print", hl.dsp.exec_cmd("grimblast --notify copy area"))
+hl.bind("SHIFT + Print", hl.dsp.exec_cmd("grimblast --notify copy output"))
+hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd("grimblast --notify copy active"))
 ```
 
 If `grimblast` complains about `--notify`, remove that flag.
@@ -157,7 +163,7 @@ Files:
 - `~/.config/waybar/config.jsonc`
 - `~/.config/waybar/style.css`
 
-The bar is started by `exec-once = waybar` in the Hyprland config above.
+The bar is started by the `hl.on("hyprland.start", ...)` block above.
 
 ### `~/.config/waybar/config.jsonc`
 
@@ -266,7 +272,7 @@ window#waybar {
 
 File: `~/.config/mako/config`
 
-Started by `exec-once = mako` above.
+Started by `hl.exec_cmd("mako")` in the autostart block above.
 
 ```ini
 max-visible=5
@@ -309,7 +315,7 @@ wallpaper = ,/home/alex/Pictures/wallpaper.png
 splash = false
 ```
 
-Started by `exec-once = hyprpaper` above.
+Started by `hl.exec_cmd("hyprpaper")` in the autostart block above.
 
 Reload after changing it:
 
@@ -392,16 +398,17 @@ hyprlock
 
 `cliphist` and `wl-clipboard` are installed. The core config above starts the history watcher:
 
-```ini
-exec-once = wl-paste --watch cliphist store
-# optional: keep clipboard contents after the source app closes
-exec-once = wl-clip-persist --clipboard regular
+```lua
+hl.on("hyprland.start", function()
+    hl.exec_cmd("wl-paste --watch cliphist store")
+    hl.exec_cmd("wl-clip-persist --clipboard regular")
+end)
 ```
 
 Bind it to a picker:
 
-```ini
-bind = $mainMod SHIFT, V, exec, cliphist list | wofi --dmenu | cliphist decode | wl-copy
+```lua
+hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | wofi --dmenu | cliphist decode | wl-copy"))
 ```
 
 Inspect history directly:
@@ -414,18 +421,20 @@ cliphist list
 
 `swayosd` is installed. It needs the daemon:
 
-```ini
-exec-once = swayosd-server
+```lua
+hl.on("hyprland.start", function()
+    hl.exec_cmd("swayosd-server")
+end)
 ```
 
 The volume and brightness binds are already in the core config:
 
-```ini
-bindel = , XF86AudioRaiseVolume, exec, swayosd-client --output-volume raise
-bindel = , XF86AudioLowerVolume, exec, swayosd-client --output-volume lower
-bindel = , XF86AudioMute, exec, swayosd-client --output-volume mute-toggle
-bindel = , XF86MonBrightnessUp, exec, swayosd-client --brightness raise
-bindel = , XF86MonBrightnessDown, exec, swayosd-client --brightness lower
+```lua
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("swayosd-client --output-volume raise"), { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("swayosd-client --output-volume lower"), { locked = true, repeating = true })
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd("swayosd-client --output-volume mute-toggle"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("swayosd-client --brightness raise"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("swayosd-client --brightness lower"), { locked = true, repeating = true })
 ```
 
 ## 8. Screenshots and color picker
@@ -434,10 +443,10 @@ bindel = , XF86MonBrightnessDown, exec, swayosd-client --brightness lower
 
 Screenshot binds:
 
-```ini
-bind = , Print, exec, grimblast --notify copy area
-bind = SHIFT, Print, exec, grimblast --notify copy output
-bind = $mainMod, Print, exec, grimblast --notify copy active
+```lua
+hl.bind("Print", hl.dsp.exec_cmd("grimblast --notify copy area"))
+hl.bind("SHIFT + Print", hl.dsp.exec_cmd("grimblast --notify copy output"))
+hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd("grimblast --notify copy active"))
 ```
 
 Useful manual commands:
@@ -448,7 +457,106 @@ grimblast save area
 hyprpicker -a
 ```
 
-## 9. Already handled by NixOS
+## 9. Monitors and rotation
+
+`hyprmon` is installed and gives you a TUI for monitor layout, resolution, scale, orientation, mirroring, and profiles.
+
+Run it from a terminal inside Hyprland:
+
+```bash
+hyprmon
+```
+
+Useful keys:
+
+| Key | Action |
+|---|---|
+| `F` | Resolution and refresh rate |
+| `C` / `D` | Advanced display settings, including transform/rotation |
+| `R` | Scale |
+| `A` | Apply live |
+| `S` | Save to the active Hyprland config |
+| `P` | Save the layout as a profile |
+| `Q` | Quit |
+
+`hyprmon` detects `~/.config/hypr/hyprland.lua` and writes monitor rules to `~/.config/hypr/hyprmon.lua` with a managed `require("hyprmon")` include.
+
+If `hyprmon` owns your monitor layout:
+
+- Keep the fallback rule in `hyprland.lua`:
+  ```lua
+  hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "auto" })
+  ```
+- Remove explicit per-monitor `hl.monitor` blocks for monitors that `hyprmon` manages.
+- Do not hand-edit `hyprmon.lua`; it is regenerated with a warning that manual changes may be overwritten.
+
+The fallback catches monitors that have no explicit rule, such as a newly plugged-in display. `hyprmon` only writes rules for the monitors it knows about, so a new monitor will use the fallback until you configure and save it with `hyprmon`.
+
+You can also configure monitors directly in Lua if you are not using `hyprmon`.
+
+### Lua monitor config
+
+```lua
+hl.monitor({
+    output = "eDP-1",
+    mode = "preferred",
+    position = "0x0",
+    scale = 1,
+    transform = 0,
+})
+
+hl.monitor({
+    output = "HDMI-A-1",
+    mode = "2560x1440@144",
+    position = "1920x0",
+    scale = 1,
+    transform = 0,
+})
+```
+
+### Transform values
+
+| Value | Orientation |
+|---|---|
+| `0` | Normal |
+| `1` | 90 degrees |
+| `2` | 180 degrees |
+| `3` | 270 degrees |
+| `4` | Flipped |
+| `5` | Flipped 90 degrees |
+| `6` | Flipped 180 degrees |
+| `7` | Flipped 270 degrees |
+
+Example: rotate the laptop panel 90 degrees:
+
+```lua
+hl.monitor({
+    output = "eDP-1",
+    mode = "preferred",
+    position = "0x0",
+    scale = 1,
+    transform = 1,
+})
+```
+
+The position is based on the scaled/transformed resolution. For example, a 1920x1080 monitor rotated to vertical occupies `1080x1920` in the layout.
+
+Inspect connected monitors and their available modes:
+
+```bash
+hyprctl monitors
+hyprctl monitors all
+```
+
+Apply a temporary monitor change without editing the config:
+
+```bash
+hyprctl keyword monitor "eDP-1, preferred, 0x0, 1, transform, 1"
+```
+
+Then save it permanently in your Lua config, or let `hyprmon` write it.
+
+## 10. Already handled by NixOS
 
 You do not need manual config for:
 
@@ -457,7 +565,7 @@ You do not need manual config for:
 - `hyprpolkitagent` — started as a systemd user service
 - `xdg-desktop-portal` config
 
-## 10. Quick verification
+## 11. Quick verification
 
 ```bash
 hyprctl reload

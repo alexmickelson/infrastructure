@@ -71,6 +71,7 @@ in
         hypridle
         hyprlock
         hyprpicker
+        hyprmon
         waybar
         wofi
         mako

@@ -34,6 +34,7 @@
     let
       system = "x86_64-linux";
       desktop = "hyprland";
+      # desktop = "gnome";
       shortcuts = import ./shortcuts.nix;
       laptopPkgs = import nixpkgs {
         inherit system;

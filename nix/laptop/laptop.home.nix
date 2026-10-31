@@ -115,6 +115,11 @@ in
       background-blur = true;
       window-padding-y = 10;
       shell-integration = "detect";
+      keybind = [
+        "ctrl+shift+equal=increase_font_size:1"
+        "ctrl+numpad_add=increase_font_size:1"
+        "ctrl+numpad_subtract=decrease_font_size:1"
+      ];
     };
   };
   home.sessionVariables = {
