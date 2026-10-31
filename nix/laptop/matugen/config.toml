@@ -1,0 +1,40 @@
+[config]
+caching = true
+prefer = "saturation"
+contrast = 0
+
+[config.wallpaper]
+set = true
+command = "awww img {{image}} --transition-type grow --transition-fps 60"
+
+[templates.hyprland]
+input_path = "~/.config/hypr/colors.tpl"
+output_path = "~/.config/hypr/colors.lua"
+post_hook = "hyprctl reload || true"
+
+[templates.ghostty]
+input_path = "~/.config/matugen/templates/ghostty.conf"
+output_path = "~/.config/ghostty/colors"
+post_hook = "pkill -USR2 -x ghostty || true"
+
+[templates.mako]
+input_path = "~/.config/matugen/templates/mako.conf"
+output_path = "~/.config/mako/config"
+post_hook = "makoctl reload || true"
+
+[templates.kde]
+input_path = "~/.config/matugen/templates/kdeglobals"
+output_path = "~/.config/kdeglobals"
+post_hook = "dbus-send --session --type=signal /KGlobalSettings org.kde.KGlobalSettings.notifyChange int32:0 int32:0"
+
+[templates.gtk3]
+input_path = "~/.config/matugen/templates/gtk.css"
+output_path = "~/.config/gtk-3.0/matugen.css"
+
+[templates.gtk4]
+input_path = "~/.config/matugen/templates/gtk.css"
+output_path = "~/.config/gtk-4.0/matugen.css"
+
+[templates.kitty]
+input_path = "~/.config/matugen/templates/kitty.conf"
+output_path = "~/.config/kitty/colors.conf"

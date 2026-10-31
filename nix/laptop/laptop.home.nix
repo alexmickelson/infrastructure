@@ -12,7 +12,10 @@ let
   piSandboxed = inputs.pi-sandboxed.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
-  imports = [ ./fish.home.nix ];
+  imports = [
+    ./fish.home.nix
+    ./matugen.home.nix
+  ];
 
   customFish = {
     bluetuiAliases = true;
@@ -107,7 +110,7 @@ in
     settings = {
       window-inherit-working-directory = "false";
       # window-decoration = false;
-      theme = "Atom";
+      config-file = "~/.config/ghostty/colors";
       font-size = 14;
       window-height = 30;
       window-width = 100;
@@ -142,13 +145,10 @@ in
       name = "Adwaita-dark";
       package = pkgs.gnome-themes-extra;
     };
+    gtk3.extraCss = "@import 'matugen.css';";
+    gtk4.extraCss = "@import 'matugen.css';";
     gtk4.theme = null;
   };
-  xdg.configFile."kdeglobals".text = ''
-    ${lib.fileContents "${pkgs.kdePackages.breeze}/share/color-schemes/BreezeDark.colors"}
-    [Icons]
-    Theme=breeze-dark
-  '';
   home.file = {
     ".tmux.conf".source = ./.tmux.conf;
     ".config/lazydocker/config.yml".text = ''

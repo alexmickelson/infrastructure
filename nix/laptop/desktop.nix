@@ -49,8 +49,6 @@ in
     MOZ_ENABLE_WAYLAND = "1";
   };
 
-  environment.pathsToLink = lib.mkIf isHyprland [ "/share/color-schemes" ];
-
   systemd.user.services.hyprpolkitagent = lib.mkIf isHyprland {
     description = "Hyprland PolicyKit authentication agent";
     wantedBy = [ "graphical-session.target" ];
