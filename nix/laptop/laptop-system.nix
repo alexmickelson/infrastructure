@@ -95,6 +95,10 @@
     enable32Bit = true;
   };
   hardware.steam-hardware.enable = true;
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
   zramSwap.enable = true;
 
   users.groups.plugdev = { };
@@ -109,6 +113,7 @@
       "adbusers"
       "kvm"
       "plugdev"
+      "bluetooth"
     ];
     shell = pkgs.fish;
   };

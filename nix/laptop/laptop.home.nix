@@ -144,6 +144,11 @@ in
     };
     gtk4.theme = null;
   };
+  xdg.configFile."kdeglobals".text = ''
+    ${lib.fileContents "${pkgs.kdePackages.breeze}/share/color-schemes/BreezeDark.colors"}
+    [Icons]
+    Theme=breeze-dark
+  '';
   home.file = {
     ".tmux.conf".source = ./.tmux.conf;
     ".config/lazydocker/config.yml".text = ''

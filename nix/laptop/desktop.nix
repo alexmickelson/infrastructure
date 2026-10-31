@@ -36,12 +36,20 @@ in
     xwayland.enable = true;
   };
 
+  qt = {
+    enable = true;
+    platformTheme = "kde";
+    style = "breeze";
+  };
+
   services.desktopManager.gnome.enable = isGnome;
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
     MOZ_ENABLE_WAYLAND = "1";
   };
+
+  environment.pathsToLink = lib.mkIf isHyprland [ "/share/color-schemes" ];
 
   systemd.user.services.hyprpolkitagent = lib.mkIf isHyprland {
     description = "Hyprland PolicyKit authentication agent";
@@ -66,6 +74,7 @@ in
       [
         kitty
         kdePackages.dolphin
+        kdePackages.breeze-icons
         hyprlauncher
         hyprpaper
         hypridle
@@ -87,6 +96,7 @@ in
         brightnessctl
         pavucontrol
         networkmanagerapplet
+        blueman
       ]
     )
     ++ lib.optionals isGnome (
