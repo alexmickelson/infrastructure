@@ -66,6 +66,7 @@
 
   services.fprintd.enable = true;
   security.pam.services.polkit-1.fprintAuth = true;
+  security.pam.services.sudo.fprintAuth = false;
   services.gnome.gnome-keyring.enable = true;
 
   services.upower.enable = true;
