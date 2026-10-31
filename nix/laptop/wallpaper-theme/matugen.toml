@@ -38,3 +38,13 @@ output_path = "~/.config/gtk-4.0/matugen.css"
 [templates.kitty]
 input_path = "~/.config/matugen/templates/kitty.conf"
 output_path = "~/.config/kitty/colors.conf"
+
+[templates.firefox-chrome]
+input_path = "~/.config/matugen/templates/firefox-userChrome.css"
+output_path = "~/.cache/matugen/firefox/userChrome.css"
+post_hook = "firefox-theme"
+
+[templates.firefox-content]
+input_path = "~/.config/matugen/templates/firefox-userContent.css"
+output_path = "~/.cache/matugen/firefox/userContent.css"
+post_hook = "firefox-theme"

@@ -14,7 +14,7 @@ in
 {
   imports = [
     ./fish.home.nix
-    ./matugen.home.nix
+    ./wallpaper-theme
   ];
 
   customFish = {

@@ -10,21 +10,46 @@ let
       mako
       glib
       dbus
+      systemd
+      firefoxTheme
     ];
-    text = builtins.readFile ./matugen/wallpaper-theme.sh;
+    text = builtins.readFile ./wallpaper-theme.sh;
+  };
+
+  firefoxTheme = pkgs.writeShellApplication {
+    name = "firefox-theme";
+    runtimeInputs = with pkgs; [
+      procps
+      coreutils
+    ];
+    text = builtins.readFile ./firefox-theme.sh;
+  };
+
+  wallpaperChoose = pkgs.writeShellApplication {
+    name = "wallpaper-choose";
+    runtimeInputs = with pkgs; [
+      kdePackages.kdialog
+      wallpaperTheme
+    ];
+    text = builtins.readFile ./wallpaper-choose.sh;
   };
 in
 {
   home.packages = [
     pkgs.matugen
     pkgs.awww
+    pkgs.kdePackages.kdialog
     wallpaperTheme
+    firefoxTheme
+    wallpaperChoose
   ];
 
   xdg.configFile = {
-    "matugen/config.toml".source = ./matugen/config.toml;
-    "matugen/templates".source = ./matugen/templates;
+    "matugen/config.toml".source = ./matugen.toml;
+    "matugen/templates".source = ./templates;
   };
+
+  xdg.dataFile."kio/servicemenus/set-wallpaper.desktop".source = ./dolphin-servicemenu.desktop;
 
   systemd.user.services.awww-daemon = {
     Unit = {
@@ -34,7 +59,7 @@ in
     };
     Service = {
       ExecStart = "${pkgs.awww}/bin/awww-daemon";
-      Restart = "always";
+      Restart = "on-failure";
       RestartSec = 2;
     };
     Install.WantedBy = [ "graphical-session.target" ];
@@ -43,7 +68,10 @@ in
   systemd.user.services.wallpaper-theme = {
     Unit = {
       Description = "Regenerate colors from the last wallpaper";
-      PartOf = [ "graphical-session.target" ];
+      PartOf = [
+        "graphical-session.target"
+        "awww-daemon.service"
+      ];
       After = [
         "graphical-session.target"
         "awww-daemon.service"

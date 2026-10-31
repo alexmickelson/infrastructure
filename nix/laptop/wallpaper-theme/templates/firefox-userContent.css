@@ -1,0 +1,22 @@
+:root {
+  scrollbar-color: #{{colors.outline.default.hex_stripped}} #{{colors.surface_container.default.hex_stripped}};
+  accent-color: #{{colors.primary.default.hex_stripped}};
+}
+
+::selection {
+  background-color: #{{colors.primary.default.hex_stripped}};
+  color: #{{colors.on_primary.default.hex_stripped}};
+}
+
+@-moz-document url-prefix("about:") {
+  :root {
+    --in-content-page-background: #{{colors.background.default.hex_stripped}} !important;
+    --in-content-page-color: #{{colors.on_background.default.hex_stripped}} !important;
+    --in-content-box-background: #{{colors.surface_container.default.hex_stripped}} !important;
+    --in-content-box-border-color: #{{colors.outline_variant.default.hex_stripped}} !important;
+    --in-content-primary-button-background: #{{colors.primary.default.hex_stripped}} !important;
+    --in-content-primary-button-text-color: #{{colors.on_primary.default.hex_stripped}} !important;
+    --link-color: #{{colors.primary.default.hex_stripped}} !important;
+    --link-color-hover: #{{colors.secondary.default.hex_stripped}} !important;
+  }
+}

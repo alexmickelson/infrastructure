@@ -1,0 +1,57 @@
+:root {
+  --lwt-accent-color: #{{colors.background.default.hex_stripped}} !important;
+  --lwt-text-color: #{{colors.on_background.default.hex_stripped}} !important;
+  --toolbar-bgcolor: #{{colors.surface_container.default.hex_stripped}} !important;
+  --toolbar-color: #{{colors.on_surface.default.hex_stripped}} !important;
+  --tab-selected-bgcolor: #{{colors.surface_container_high.default.hex_stripped}} !important;
+  --tab-selected-textcolor: #{{colors.on_surface.default.hex_stripped}} !important;
+  --lwt-tab-line-color: #{{colors.primary.default.hex_stripped}} !important;
+  --tab-loading-fill: #{{colors.primary.default.hex_stripped}} !important;
+  --toolbarbutton-icon-fill: #{{colors.on_surface.default.hex_stripped}} !important;
+  --toolbarbutton-hover-background: #{{colors.surface_container_high.default.hex_stripped}} !important;
+  --toolbarbutton-active-background: #{{colors.surface_container_highest.default.hex_stripped}} !important;
+  --urlbar-box-bgcolor: #{{colors.surface_container_high.default.hex_stripped}} !important;
+  --urlbar-box-text-color: #{{colors.on_surface.default.hex_stripped}} !important;
+  --urlbar-box-focus-bgcolor: #{{colors.primary_container.default.hex_stripped}} !important;
+  --arrowpanel-background: #{{colors.surface_container_high.default.hex_stripped}} !important;
+  --arrowpanel-color: #{{colors.on_surface.default.hex_stripped}} !important;
+  --arrowpanel-border-color: #{{colors.outline_variant.default.hex_stripped}} !important;
+  --focus-outline-color: #{{colors.primary.default.hex_stripped}} !important;
+  --sidebar-background-color: #{{colors.surface_container_low.default.hex_stripped}} !important;
+  --sidebar-text-color: #{{colors.on_surface.default.hex_stripped}} !important;
+  --sidebar-border-color: #{{colors.outline_variant.default.hex_stripped}} !important;
+}
+
+#navigator-toolbox {
+  background-color: var(--lwt-accent-color) !important;
+  border-bottom: 1px solid #{{colors.outline_variant.default.hex_stripped}} !important;
+}
+
+#nav-bar,
+#PersonalToolbar {
+  background-color: var(--toolbar-bgcolor) !important;
+}
+
+#urlbar-background {
+  background-color: #{{colors.surface.default.hex_stripped}} !important;
+  border: 1px solid #{{colors.outline_variant.default.hex_stripped}} !important;
+}
+
+#urlbar:is([focused], [open]) > #urlbar-background {
+  border-color: #{{colors.primary.default.hex_stripped}} !important;
+  outline-color: #{{colors.primary.default.hex_stripped}} !important;
+}
+
+.tabbrowser-tab[selected] .tab-background {
+  background-color: var(--tab-selected-bgcolor) !important;
+}
+
+.tabbrowser-tab[selected] .tab-content {
+  color: var(--tab-selected-textcolor) !important;
+}
+
+#sidebar-box,
+#sidebar-header {
+  background-color: var(--sidebar-background-color) !important;
+  color: var(--sidebar-text-color) !important;
+}

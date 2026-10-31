@@ -29,9 +29,22 @@ else
   exit 0
 fi
 
-if ! awww query > /dev/null 2>&1; then
-  awww-daemon > /dev/null 2>&1 &
-  sleep 1
-fi
+ensure_daemon() {
+  local attempts=20
+  while ((attempts > 0)); do
+    if awww query > /dev/null 2>&1; then
+      return 0
+    fi
+    if systemctl --user list-unit-files awww-daemon.service > /dev/null 2>&1; then
+      systemctl --user start awww-daemon.service > /dev/null 2>&1 || true
+    fi
+    sleep 1
+    attempts=$((attempts - 1))
+  done
+  echo "wallpaper-theme: wallpaper daemon did not become available, colors only" >&2
+  return 1
+}
+
+ensure_daemon || true
 
 matugen image "$image"
