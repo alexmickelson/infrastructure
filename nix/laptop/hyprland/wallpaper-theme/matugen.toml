@@ -17,6 +17,11 @@ input_path = "~/.config/matugen/templates/hyprshell.css"
 output_path = "~/.config/hyprshell/styles.css"
 post_hook = "hyprshell-reload"
 
+[templates.waybar]
+input_path = "~/.config/matugen/templates/waybar.css"
+output_path = "~/.config/waybar/colors.css"
+post_hook = "waybar-reload"
+
 [templates.ghostty]
 input_path = "~/.config/matugen/templates/ghostty.conf"
 output_path = "~/.config/ghostty/colors"

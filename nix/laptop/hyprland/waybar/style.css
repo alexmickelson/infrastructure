@@ -1,0 +1,66 @@
+@import "colors.css";
+
+* {
+    font-family: "FiraCode Nerd Font";
+    font-size: 11px;
+    min-height: 0;
+    border: none;
+    border-radius: 0;
+}
+
+window#waybar {
+    background: @bg;
+    color: @fg;
+}
+
+#workspaces button {
+    padding: 0 7px;
+    color: @muted;
+    border-bottom: 2px solid transparent;
+}
+
+#workspaces button:hover {
+    background: @hover;
+    color: @fg;
+}
+
+#workspaces button.active {
+    color: @accent;
+    border-bottom-color: @accent;
+}
+
+#window {
+    padding-left: 10px;
+    color: @muted;
+}
+
+#clock {
+    font-weight: bold;
+    color: @fg;
+}
+
+#tray,
+#pulseaudio,
+#network,
+#bluetooth,
+#backlight,
+#battery,
+#cpu,
+#memory {
+    padding: 0 7px;
+    color: @fg;
+}
+
+#pulseaudio.muted,
+#network.disconnected,
+#bluetooth.disabled {
+    color: @muted;
+}
+
+#battery.warning {
+    color: @warning;
+}
+
+#battery.critical {
+    color: @critical;
+}

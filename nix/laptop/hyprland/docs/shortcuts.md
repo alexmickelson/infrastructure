@@ -27,7 +27,7 @@ hl.bind(mainMod .. " + M", hl.dsp.window.fullscreen({ action = "toggle", mode = 
 hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exit())
 ```
 
-Use `hl.dsp.window.close()` for close, `hl.dsp.focus(...)` for focus, and `hl.dsp.window.move(...)` for moving windows. The full examples are in `hyprland-config.md`.
+Use `hl.dsp.window.close()` for close, `hl.dsp.focus(...)` for focus, and `hl.dsp.window.move(...)` for moving windows. The full examples are in `config.md`.
 
 ## Recommended personal bindings
 

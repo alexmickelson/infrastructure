@@ -5,9 +5,18 @@ let
     runtimeInputs = [ pkgs.hyprshell ];
     text = builtins.readFile ./poke.sh;
   };
+
+  reload = pkgs.writeShellApplication {
+    name = "hyprshell-reload";
+    runtimeInputs = [ pkgs.hyprshell ];
+    text = builtins.readFile ./reload.sh;
+  };
 in
 {
-  home.packages = [ pkgs.hyprshell ];
+  home.packages = [
+    pkgs.hyprshell
+    reload
+  ];
 
   xdg.configFile."hyprshell/config.ron".source = ./config.ron;
 

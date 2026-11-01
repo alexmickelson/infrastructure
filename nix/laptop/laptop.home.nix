@@ -14,8 +14,7 @@ in
 {
   imports = [
     ./fish.home.nix
-    ./hyprshell
-    ./wallpaper-theme
+    ./hyprland
   ];
 
   customFish = {

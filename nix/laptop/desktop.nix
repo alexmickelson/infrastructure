@@ -10,6 +10,8 @@ let
   isGnome = desktop == "gnome";
 in
 {
+  imports = lib.optional isHyprland ./hyprland/system.nix;
+
   assertions = [
     {
       assertion = isHyprland || isGnome;
@@ -30,12 +32,6 @@ in
     defaultSession = if isHyprland then "hyprland-uwsm" else "gnome";
   };
 
-  programs.hyprland = {
-    enable = isHyprland;
-    withUWSM = isHyprland;
-    xwayland.enable = true;
-  };
-
   qt = {
     enable = true;
     platformTheme = "kde";
@@ -49,54 +45,13 @@ in
     MOZ_ENABLE_WAYLAND = "1";
   };
 
-  systemd.user.services.hyprpolkitagent = lib.mkIf isHyprland {
-    description = "Hyprland PolicyKit authentication agent";
-    wantedBy = [ "graphical-session.target" ];
-    partOf = [ "graphical-session.target" ];
-    serviceConfig = {
-      ExecStart = "${pkgs.hyprpolkitagent}/bin/hyprpolkitagent";
-      Restart = "on-failure";
-    };
-  };
-
   xdg.portal = {
-    extraPortals =
-      lib.optionals isHyprland [ pkgs.xdg-desktop-portal-gtk ]
-      ++ lib.optionals isGnome [ pkgs.xdg-desktop-portal-gnome ];
+    extraPortals = lib.optional isGnome pkgs.xdg-desktop-portal-gnome;
     config.common.default = lib.mkIf isGnome [ "gnome" ];
   };
 
   environment.systemPackages =
-    lib.optionals isHyprland (
-      with pkgs;
-      [
-        kitty
-        kdePackages.dolphin
-        kdePackages.breeze-icons
-        hyprpaper
-        hypridle
-        hyprlock
-        hyprpicker
-        hyprmon
-        waybar
-        wofi
-        mako
-        libnotify
-        cliphist
-        wl-clip-persist
-        grim
-        slurp
-        grimblast
-        swayosd
-        wl-clipboard
-        playerctl
-        brightnessctl
-        pavucontrol
-        networkmanagerapplet
-        blueman
-      ]
-    )
-    ++ lib.optionals isGnome (
+    lib.optionals isGnome (
       with pkgs;
       [
         gnome-software
