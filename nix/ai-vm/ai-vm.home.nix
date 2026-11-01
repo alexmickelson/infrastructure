@@ -19,7 +19,7 @@ in
     neovimPackages.default
     neovimPackages.tools
     busybox
-    python
+    python3
   ];
 
   programs.ghostty = {
