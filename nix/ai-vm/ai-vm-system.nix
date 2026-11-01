@@ -7,8 +7,7 @@
 
 {
   imports = [
-    # ./desktop/gnome.nix
-    ./desktop/quickshell.nix
+    ./desktop/plasma.nix
   ];
 
   boot.loader.grub.enable = true;
@@ -82,7 +81,7 @@
   programs.firefox.enable = true;
   nixpkgs.config.allowUnfree = true;
 
-  system.stateVersion = "24.11"; # Did you read the comment?
+  system.stateVersion = "24.11";
 
   environment.systemPackages = with pkgs; [
     bazaar
@@ -110,14 +109,14 @@
   systemd.targets.suspend.enable = false;
   systemd.targets.hibernate.enable = false;
   systemd.targets.hybrid-sleep.enable = false;
-  # gaming stuff
-
   services.flatpak.enable = true;
+  programs.steam.enable = true;
   services.sunshine = {
     enable = true;
     autoStart = true;
     capSysAdmin = true;
     openFirewall = true;
+    package = pkgs.sunshine.override { cudaSupport = true; };
   };
 
   hardware.graphics = {
