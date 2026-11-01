@@ -11,15 +11,19 @@ local vars = {
 	terminal = "ghostty",
 	fileManager = "dolphin",
 }
+local theme
 
-local ok, theme = pcall(require, "colors")
-if not ok then
-	theme = {
-		active_border = { "rgba(33ccffee)", "rgba(00ff99ee)" },
-		inactive_border = "rgba(595959aa)",
-		shadow = "rgba(1a1a1aee)",
-		background = "rgba(0e0e0eff)",
-	}
+do -- hot reload colors
+	local ok, loaded = pcall(require, "colors")
+	if not ok then
+		loaded = {
+			active_border = { "rgba(33ccffee)", "rgba(00ff99ee)" },
+			inactive_border = "rgba(595959aa)",
+			shadow = "rgba(1a1a1aee)",
+			background = "rgba(0e0e0eff)",
+		}
+	end
+	theme = loaded
 end
 
 -- See https://wiki.hypr.land/Configuring/Basics/Autostart/
