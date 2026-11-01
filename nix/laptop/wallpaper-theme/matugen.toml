@@ -10,12 +10,17 @@ command = "awww img {{image}} --transition-type grow --transition-fps 60"
 [templates.hyprland]
 input_path = "~/.config/hypr/colors.tpl"
 output_path = "~/.config/hypr/colors.lua"
-post_hook = "hyprctl reload || true"
+post_hook = "hyprland-reload"
+
+[templates.hyprshell]
+input_path = "~/.config/matugen/templates/hyprshell.css"
+output_path = "~/.config/hyprshell/styles.css"
+post_hook = "hyprshell-reload"
 
 [templates.ghostty]
 input_path = "~/.config/matugen/templates/ghostty.conf"
 output_path = "~/.config/ghostty/colors"
-post_hook = "pkill -USR2 -x ghostty || true"
+post_hook = "ghostty-reload"
 
 [templates.mako]
 input_path = "~/.config/matugen/templates/mako.conf"

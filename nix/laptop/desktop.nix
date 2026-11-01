@@ -73,7 +73,6 @@ in
         kitty
         kdePackages.dolphin
         kdePackages.breeze-icons
-        hyprlauncher
         hyprpaper
         hypridle
         hyprlock

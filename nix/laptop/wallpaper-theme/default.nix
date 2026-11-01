@@ -11,9 +11,35 @@ let
       glib
       dbus
       systemd
+      ghosttyReload
       firefoxTheme
+      hyprlandReload
     ];
     text = builtins.readFile ./wallpaper-theme.sh;
+  };
+
+  hyprlandReload = pkgs.writeShellApplication {
+    name = "hyprland-reload";
+    runtimeInputs = with pkgs; [
+      hyprland
+      hyprshell
+    ];
+    text = builtins.readFile ./hyprland-reload.sh;
+  };
+
+  hyprshellReload = pkgs.writeShellApplication {
+    name = "hyprshell-reload";
+    runtimeInputs = [ pkgs.hyprshell ];
+    text = builtins.readFile ./hyprshell-reload.sh;
+  };
+
+  ghosttyReload = pkgs.writeShellApplication {
+    name = "ghostty-reload";
+    runtimeInputs = with pkgs; [
+      procps
+      coreutils
+    ];
+    text = builtins.readFile ./ghostty-reload.sh;
   };
 
   firefoxTheme = pkgs.writeShellApplication {
@@ -40,6 +66,9 @@ in
     pkgs.awww
     pkgs.kdePackages.kdialog
     wallpaperTheme
+    hyprlandReload
+    hyprshellReload
+    ghosttyReload
     firefoxTheme
     wallpaperChoose
   ];

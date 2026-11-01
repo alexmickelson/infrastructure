@@ -14,6 +14,7 @@ in
 {
   imports = [
     ./fish.home.nix
+    ./hyprshell
     ./wallpaper-theme
   ];
 
