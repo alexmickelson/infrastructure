@@ -85,7 +85,7 @@ data:
                 heading: Kitchen
               - type: tile
                 entity: light.kitchen_nightlight
-                name: Kitchen Nightlight
+                name: Bedroom Nightlight
                 tap_action:
                   action: more-info
                 features:
