@@ -223,7 +223,7 @@ hl.device({
 	sensitivity = -0.5,
 })
 
-require("./keybinds.lua")(vars)
+require("keybinds")(vars)
 --------------------------------
 ---- WINDOWS AND WORKSPACES ----
 --------------------------------

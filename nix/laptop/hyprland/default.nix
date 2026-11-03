@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 let
   initializeHypr = pkgs.writeShellApplication {
     name = "initialize-hypr";
@@ -14,6 +14,8 @@ let
     ];
     text = builtins.readFile ./reload.sh;
   };
+
+  checkoutConfig = "${config.home.homeDirectory}/projects/infrastructure/nix/laptop/hyprland/config";
 in
 {
   imports = [
@@ -28,6 +30,6 @@ in
   ];
 
   home.activation.hyprlandConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    $DRY_RUN_CMD ${initializeHypr}/bin/initialize-hypr ${./config}
+    $DRY_RUN_CMD ${initializeHypr}/bin/initialize-hypr ${checkoutConfig}
   '';
 }

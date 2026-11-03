@@ -8,7 +8,7 @@ set = true
 command = "awww img {{image}} --transition-type grow --transition-fps 60"
 
 [templates.hyprland]
-input_path = "~/.config/hypr/colors.tpl"
+input_path = "~/projects/infrastructure/nix/laptop/hyprland/config/colors.tpl"
 output_path = "~/.config/hypr/colors.lua"
 post_hook = "hyprland-reload"
 

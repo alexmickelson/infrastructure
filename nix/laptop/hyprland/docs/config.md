@@ -1,6 +1,6 @@
 # Hyprland Lua config examples
 
-The authoritative config lives in `nix/laptop/hyprland/config/`. `initialize-hypr` runs during home-manager activation and copies it into `~/.config/hypr/`, skipping anything that already exists, and writes placeholder `colors.lua` / `hyprmon.lua` only when they are absent. That means `~/.config/hypr/` stays hot-editable (`hyprctl reload`), repo edits only land when the target file is missing, and deleting a file plus rebuilding restores the repo version. `colors.lua` is overwritten by matugen and `hyprmon.lua` by the HyprMon GUI; the placeholders exist only for a fresh config dir.
+The authoritative config lives in `nix/laptop/hyprland/config/`. `~/.config/hypr/hyprland.lua` is a four-line shim that puts that directory on `package.path` and `dofile`s the repo copy, so edits here are live after `hyprland-reload` with no copy step. `initialize-hypr` writes the shim, plus placeholder `colors.lua` / `hyprmon.lua`, whenever those files are missing; `colors.lua` is then overwritten by matugen and `hyprmon.lua` by the HyprMon GUI.
 
 These are copy-paste examples for the packages installed by `desktop.nix`. Nothing here is applied automatically. Add sections to your config one at a time and run:
 
