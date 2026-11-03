@@ -14,7 +14,8 @@ in
 {
   imports = [
     ./fish.home.nix
-    ./hyprland
+    ./plasma
+    inputs.plasma-manager.homeModules.plasma-manager
   ];
 
   customFish = {

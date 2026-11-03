@@ -1,18 +1,14 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  ...
+}:
 let
   wallpaperTheme = pkgs.writeShellApplication {
     name = "wallpaper-theme";
     runtimeInputs = with pkgs; [
       matugen
-      awww
+      kdePackages.plasma-workspace
       procps
-      hyprland
-      mako
-      glib
-      dbus
-      systemd
-      ghosttyReload
-      firefoxTheme
     ];
     text = builtins.readFile ./wallpaper-theme.sh;
   };
@@ -47,7 +43,6 @@ in
 {
   home.packages = [
     pkgs.matugen
-    pkgs.awww
     pkgs.kdePackages.kdialog
     wallpaperTheme
     ghosttyReload
@@ -62,32 +57,11 @@ in
 
   xdg.dataFile."kio/servicemenus/set-wallpaper.desktop".source = ./dolphin-servicemenu.desktop;
 
-  systemd.user.services.awww-daemon = {
-    Unit = {
-      Description = "Wallpaper daemon";
-      PartOf = [ "graphical-session.target" ];
-      After = [ "graphical-session.target" ];
-    };
-    Service = {
-      ExecStart = "${pkgs.awww}/bin/awww-daemon";
-      Restart = "on-failure";
-      RestartSec = 2;
-    };
-    Install.WantedBy = [ "graphical-session.target" ];
-  };
-
   systemd.user.services.wallpaper-theme = {
     Unit = {
       Description = "Regenerate colors from the last wallpaper";
-      PartOf = [
-        "graphical-session.target"
-        "awww-daemon.service"
-      ];
-      After = [
-        "graphical-session.target"
-        "awww-daemon.service"
-      ];
-      Wants = [ "awww-daemon.service" ];
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
     };
     Service = {
       Type = "oneshot";

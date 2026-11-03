@@ -1,12 +1,11 @@
 {
-  desktop,
   inputs,
   pkgs,
   ...
 }:
 
 {
-  imports = [ ./desktop.nix ];
+  imports = [ ./plasma/system.nix ];
 
   nixpkgs.config = {
     allowUnfree = true;
@@ -119,7 +118,7 @@
   };
 
   home-manager = {
-    extraSpecialArgs = { inherit desktop inputs; };
+    extraSpecialArgs = { inherit inputs; };
     useGlobalPkgs = true;
     backupFileExtension = "backup";
     users.alex = { ... }: {

@@ -22,6 +22,11 @@
       url = "github:alexmickelson/infrastructure?dir=nix/flakes/pi-agent";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    plasma-manager = {
+      url = "github:nix-community/plasma-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -33,8 +38,6 @@
     }:
     let
       system = "x86_64-linux";
-      desktop = "hyprland";
-      # desktop = "gnome";
       shortcuts = import ./shortcuts.nix;
       laptopPkgs = import nixpkgs {
         inherit system;
@@ -50,7 +53,7 @@
 
       nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit inputs desktop; };
+        specialArgs = { inherit inputs; };
         modules = [
           ./hardware-configuration.nix
           home-manager.nixosModules.home-manager
@@ -62,10 +65,11 @@
 
       homeConfigurations."alex@laptop" = home-manager.lib.homeManagerConfiguration {
         pkgs = laptopPkgs;
-        extraSpecialArgs = { inherit inputs desktop; };
+        extraSpecialArgs = { inherit inputs; };
         modules = [
           ./laptop.home.nix
           self.homeManagerModules.shortcuts
+          inputs.plasma-manager.homeModules.plasma-manager
           {
             home = {
               username = "alex";

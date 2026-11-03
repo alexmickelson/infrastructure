@@ -26,7 +26,6 @@ in
       spacing = 4;
       "modules-left" = [
         "ext/workspaces"
-        "hyprland/window"
       ];
       "modules-center" = [ "clock" ];
       "modules-right" = [
@@ -56,12 +55,6 @@ in
         ];
         sort-by-id = true;
         all-outputs = true;
-      };
-
-      "hyprland/window" = {
-        format = "{title}";
-        max-length = 60;
-        separate-outputs = true;
       };
 
       clock = {

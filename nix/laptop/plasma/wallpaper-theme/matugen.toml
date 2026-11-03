@@ -3,20 +3,6 @@ caching = true
 prefer = "saturation"
 contrast = 0
 
-[config.wallpaper]
-set = true
-command = "awww img {{image}} --transition-type grow --transition-fps 60"
-
-[templates.hyprland]
-input_path = "~/projects/infrastructure/nix/laptop/hyprland/config/colors.tpl"
-output_path = "~/.config/hypr/colors.lua"
-post_hook = "hyprland-reload"
-
-[templates.hyprshell]
-input_path = "~/.config/matugen/templates/hyprshell.css"
-output_path = "~/.config/hyprshell/styles.css"
-post_hook = "hyprshell-reload"
-
 [templates.waybar]
 input_path = "~/.config/matugen/templates/waybar.css"
 output_path = "~/.config/waybar/colors.css"
@@ -27,15 +13,10 @@ input_path = "~/.config/matugen/templates/ghostty.conf"
 output_path = "~/.config/ghostty/colors"
 post_hook = "ghostty-reload"
 
-[templates.mako]
-input_path = "~/.config/matugen/templates/mako.conf"
-output_path = "~/.config/mako/config"
-post_hook = "makoctl reload || true"
-
-[templates.kde]
-input_path = "~/.config/matugen/templates/kdeglobals"
-output_path = "~/.config/kdeglobals"
-post_hook = "dbus-send --session --type=signal /KGlobalSettings org.kde.KGlobalSettings.notifyChange int32:0 int32:0"
+[templates.plasma-colorscheme]
+input_path = "~/.config/matugen/templates/plasma-colorscheme"
+output_path = "~/.local/share/color-schemes/Matugen.colors"
+post_hook = "plasma-apply-colorscheme Matugen || true"
 
 [templates.gtk3]
 input_path = "~/.config/matugen/templates/gtk.css"
