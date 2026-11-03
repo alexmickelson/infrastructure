@@ -16,12 +16,12 @@ in
 
   customFish = {
     bluetuiAliases = true;
-    dotnetPackage =
-      with pkgs.dotnetCorePackages;
-      combinePackages [
-        sdk_8_0
-        sdk_9_0
-      ];
+    # dotnetPackage =
+    #   with pkgs.dotnetCorePackages;
+    #   combinePackages [
+    #     sdk_8_0
+    #     sdk_9_0
+    #   ];
     bitwardenSshAgent = true;
     abbreviations = {
       k = "kubectl";
