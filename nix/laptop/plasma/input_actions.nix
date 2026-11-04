@@ -29,12 +29,12 @@
             - on: begin
               plasma_shortcut: kwin,Overview
 
-        - type: swipe
-          fingers: 3
-          direction: down
-          actions:
-            - on: begin
-              plasma_shortcut: kwin,Grid View
+        # - type: swipe
+        #   fingers: 3
+        #   direction: down
+        #   actions:
+        #     - on: begin
+        #       plasma_shortcut: kwin,Grid View
 
         - type: swipe
           fingers: 4

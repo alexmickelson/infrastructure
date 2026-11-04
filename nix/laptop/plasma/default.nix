@@ -5,7 +5,7 @@
 }:
 {
   imports = [
-    ./inputactions.nix
+    ./input_actions.nix
     ./quickshell
     ./wallpaper-theme
     ./waybar
@@ -29,17 +29,7 @@
     shortcuts = {
       kwin = {
         "Window Close" = "Meta+C";
-      } // (lib.listToAttrs (
-        map (i: {
-          name = "Switch to Desktop ${toString i}";
-          value = "Meta+${if i == 10 then "0" else toString i}";
-        }) (lib.range 1 10)
-      )) // (lib.listToAttrs (
-        map (i: {
-          name = "Move Window to Desktop ${toString i}";
-          value = "Meta+Shift+${if i == 10 then "0" else toString i}";
-        }) (lib.range 1 10)
-      ));
+      };
 
       "services/com.mitchellh.Ghostty.desktop" = {
         _launch = "Meta+T";
