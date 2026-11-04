@@ -61,6 +61,6 @@ if [[ $applied -eq 0 ]]; then
   exit 1
 fi
 
-if pgrep -x firefox > /dev/null 2>&1; then
+if pgrep -f '/bin/firefox' > /dev/null 2>&1; then
   echo "firefox-theme: theme written for $applied profile(s); restart Firefox to apply" >&2
 fi

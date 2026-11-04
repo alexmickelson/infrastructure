@@ -18,5 +18,30 @@
     --in-content-primary-button-text-color: #{{colors.on_primary.default.hex_stripped}} !important;
     --link-color: #{{colors.primary.default.hex_stripped}} !important;
     --link-color-hover: #{{colors.secondary.default.hex_stripped}} !important;
+
+    --background-color-canvas: #{{colors.background.default.hex_stripped}} !important;
+    --card-background-color: #{{colors.surface_container.default.hex_stripped}} !important;
+    --text-color: #{{colors.on_background.default.hex_stripped}} !important;
+    --text-color-deemphasized: #{{colors.outline.default.hex_stripped}} !important;
+    --color-accent-primary: #{{colors.primary.default.hex_stripped}} !important;
+    --button-background-color-hover: #{{colors.surface_container_high.default.hex_stripped}} !important;
+    --button-background-color-active: #{{colors.surface_container_highest.default.hex_stripped}} !important;
+    --button-text-color: #{{colors.on_background.default.hex_stripped}} !important;
+    --focus-outline-color: #{{colors.primary.default.hex_stripped}} !important;
+    --border-color: #{{colors.outline_variant.default.hex_stripped}} !important;
+  }
+}
+
+@-moz-document url-prefix("about:newtab"), url-prefix("about:home") {
+  :root {
+    color-scheme: dark !important;
+    --newtab-weather-background-color: #{{colors.surface_container_high.default.hex_stripped}} !important;
+    --newtab-wordmark-color: #{{colors.outline.default.hex_stripped}} !important;
+    --newtab-text-topic-label-color: #{{colors.primary.default.hex_stripped}} !important;
+    --newtab-text-secondary-text: #{{colors.outline.default.hex_stripped}} !important;
+    --newtab-primary-element-text-color: #{{colors.on_primary.default.hex_stripped}} !important;
+    --newtab-button-static-background: #{{colors.surface_container.default.hex_stripped}} !important;
+    --newtab-button-static-hover-background: #{{colors.surface_container_high.default.hex_stripped}} !important;
+    --newtab-button-static-active-background: #{{colors.surface_container_highest.default.hex_stripped}} !important;
   }
 }
