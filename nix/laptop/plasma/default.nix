@@ -5,6 +5,7 @@
 }:
 {
   imports = [
+    ./inputactions.nix
     ./quickshell
     ./wallpaper-theme
     ./waybar
@@ -14,6 +15,11 @@
     enable = true;
 
     kwin.virtualDesktops.number = 10;
+
+    # inputactions kwin plugin: kwin does not auto-load it, and the effect is
+    # off by default (also loadable via Desktop Effects or
+    # `qdbus org.kde.KWin /Effects loadEffect kwin_gestures`)
+    configFile.kwinrc.Plugins."kwin_gesturesEnabled" = true;
 
     startup.desktopScript."remove-panels" = {
       text = "panels().forEach((panel) => panel.remove());";

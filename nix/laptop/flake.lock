@@ -93,6 +93,50 @@
         "type": "github"
       }
     },
+    "inputactions-ctl": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790265237,
+        "narHash": "sha256-d7YovS2tbB9Ms5KN2BEI3PxyBLijOv1bwdSM2nKoTQQ=",
+        "ref": "refs/heads/main",
+        "rev": "cad24c6700e72794e4b9589d1eac2a81e0481b44",
+        "revCount": 11,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/InputActions/ctl"
+      },
+      "original": {
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/InputActions/ctl"
+      }
+    },
+    "inputactions-kwin": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792308134,
+        "narHash": "sha256-4WgbVFF9O08Ny79y1pInApQ2HaA/W8hNOY7KZfEr+R0=",
+        "ref": "refs/heads/main",
+        "rev": "701cb288a9875076c1aed9abf8fd0b2ca088be3f",
+        "revCount": 69,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/InputActions/kwin"
+      },
+      "original": {
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/InputActions/kwin"
+      }
+    },
     "neovim": {
       "inputs": {
         "nixpkgs": [
@@ -191,6 +235,8 @@
     "root": {
       "inputs": {
         "home-manager": "home-manager",
+        "inputactions-ctl": "inputactions-ctl",
+        "inputactions-kwin": "inputactions-kwin",
         "neovim": "neovim",
         "nixpkgs": "nixpkgs",
         "pi-sandboxed": "pi-sandboxed",

@@ -27,6 +27,16 @@
       url = "github:nix-community/plasma-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    inputactions-kwin = {
+      url = "git+https://github.com/InputActions/kwin?submodules=1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    inputactions-ctl = {
+      url = "git+https://github.com/InputActions/ctl?submodules=1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
