@@ -83,6 +83,10 @@ in
   xdg.configFile = {
     "matugen/config.toml".source = ./matugen.toml;
     "matugen/templates".source = ./templates;
+
+    "kde-material-you-colors/config.conf".text = ''
+      frame_contrast = 0.05
+    '';
   };
 
   xdg.dataFile."kio/servicemenus/set-wallpaper.desktop".source = ./dolphin-servicemenu.desktop;
