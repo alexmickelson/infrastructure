@@ -100,6 +100,7 @@ in
     argocd
     piSandboxed
     pi-coding-agent
+    kdePackages.kcalc
   ];
 
   programs.direnv = {
