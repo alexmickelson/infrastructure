@@ -26,20 +26,6 @@
       priority = 2;
     };
 
-    shortcuts = {
-      kwin = {
-        "Window Close" = "Meta+C";
-        "Edit Tiles" = "Meta+Shift+T";
-      };
-
-      "services/com.mitchellh.ghostty.desktop" = {
-        _launch = "Meta+T";
-      };
-
-      "services/org.kde.dolphin.desktop" = {
-        _launch = "Meta+E";
-      };
-    };
   };
 
   xdg.configFile."autostart/nm-applet.desktop".text = ''

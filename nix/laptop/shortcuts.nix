@@ -1,32 +1,12 @@
 {
   nixosModule =
+    { ... }:
     {
-      config,
-      pkgs,
-      lib,
-      ...
-    }:
-    {
-      environment.systemPackages = lib.optional config.services.desktopManager.gnome.enable pkgs.gnomeExtensions.xremap;
-
-      systemd.user.services.enable-xremap-extension =
-        lib.mkIf config.services.desktopManager.gnome.enable
-          {
-            description = "Enable xremap GNOME extension";
-            after = [ "graphical-session.target" ];
-            wantedBy = [ "graphical-session.target" ];
-            script = ''
-              ${pkgs.gnome-shell}/bin/gnome-extensions enable xremap@k0kubun.com
-            '';
-          };
-
       services.xremap = {
         enable = true;
         serviceMode = "user";
         userName = "alex";
         watch = true;
-        withGnome = config.services.desktopManager.gnome.enable;
-        withHypr = config.programs.hyprland.enable;
         config.keymap = [
           {
             name = "Ghostty clipboard";
@@ -54,40 +34,26 @@
         ];
       };
     };
-  homeManagerModule = {
-    dconf.settings = {
-      "org/gnome/shell" = {
-        disable-user-extensions = false;
-      };
-      "org/gnome/desktop/wm/keybindings" = {
-        minimize = [ "<Alt>m" ];
-        toggle-maximized = [ "<Super>m" ];
-      };
-      "org/gnome/desktop/wm/preferences" = {
-        mouse-button-modifier = "<Super>";
-        resize-with-right-button = true;
-      };
-      "org/gnome/shell/keybindings" = {
-        # screenshot = [ "<Shift><Alt>3" ];
-        # show-screenshot-ui = [ "<Shift><Alt>4" ];
-        toggle-overview = [ "<Alt>space" ];
-      };
-      "org/gnome/settings-daemon/plugins/media-keys" = {
-        custom-keybindings = [
-          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
-          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
-        ];
-      };
-      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-        binding = "<Super>t";
-        command = "ghostty";
-        name = "terminal";
-      };
-      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
-        binding = "<Control><Super>n";
-        command = "ghostty";
-        name = "new terminal";
+
+  homeManagerModule =
+    { ... }:
+    {
+      programs.plasma.shortcuts = {
+        kwin = {
+          "Window Close" = "Meta+C";
+          "Edit Tiles" = "Meta+Shift+T";
+          "Overview" = "Meta+Space";
+          "Window Maximize" = "Meta+M";
+        };
+
+        "services/com.mitchellh.ghostty.desktop" = {
+          _launch = "Meta+T";
+          "new-window" = "Meta+Ctrl+N";
+        };
+
+        "services/org.kde.dolphin.desktop" = {
+          _launch = "Meta+E";
+        };
       };
     };
-  };
 }

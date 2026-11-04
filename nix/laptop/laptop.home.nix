@@ -174,9 +174,6 @@ in
   fonts.fontconfig.enable = true;
   dconf.enable = true;
   dconf.settings = {
-    "org/gnome/desktop/session" = {
-      idle-delay = lib.hm.gvariant.mkUint32 1800;
-    };
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
     };
