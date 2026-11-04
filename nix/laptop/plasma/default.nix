@@ -29,9 +29,10 @@
     shortcuts = {
       kwin = {
         "Window Close" = "Meta+C";
+        "Edit Tiles" = "Meta+Shift+T";
       };
 
-      "services/com.mitchellh.Ghostty.desktop" = {
+      "services/com.mitchellh.ghostty.desktop" = {
         _launch = "Meta+T";
       };
 
