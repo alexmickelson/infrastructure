@@ -85,6 +85,7 @@ in
     "matugen/templates".source = ./templates;
 
     "kde-material-you-colors/config.conf".text = ''
+      [CUSTOM]
       frame_contrast = 0.05
     '';
   };

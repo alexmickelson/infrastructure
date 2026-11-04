@@ -62,6 +62,7 @@ in
     uv
     openssl
     bluetui
+    klassy
 
     nerd-fonts.fira-code
     nerd-fonts.droid-sans-mono
