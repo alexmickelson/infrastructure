@@ -39,15 +39,45 @@ let
     ];
     text = builtins.readFile ./wallpaper-choose.sh;
   };
+
+  regenerateAppThemes = pkgs.writeShellApplication {
+    name = "regenerate-app-themes";
+    runtimeInputs = with pkgs; [
+      matugen
+      coreutils
+    ];
+    text = builtins.readFile ./regenerate-app-themes.sh;
+  };
+
+  materialYouColors = pkgs.writeShellApplication {
+    name = "material-you-colors";
+    runtimeInputs = with pkgs; [
+      python3Packages.kde-material-you-colors
+      kdePackages.qttools
+      kdePackages.plasma-workspace
+      coreutils
+    ];
+    text = ''
+      exec kde-material-you-colors \
+        --file "''${XDG_CACHE_HOME:-''$HOME/.cache}/wallpaper-theme/image" \
+        --dark \
+        --disable-konsole \
+        --qdbus-executable qdbus \
+        --on-change-hook ${regenerateAppThemes}/bin/regenerate-app-themes
+    '';
+  };
 in
 {
   home.packages = [
     pkgs.matugen
     pkgs.kdePackages.kdialog
+    pkgs.python3Packages.kde-material-you-colors
     wallpaperTheme
     ghosttyReload
     firefoxTheme
     wallpaperChoose
+    regenerateAppThemes
+    materialYouColors
   ];
 
   xdg.configFile = {
@@ -57,15 +87,20 @@ in
 
   xdg.dataFile."kio/servicemenus/set-wallpaper.desktop".source = ./dolphin-servicemenu.desktop;
 
-  systemd.user.services.wallpaper-theme = {
+  # Long-running daemon: watches the recorded wallpaper state file, applies
+  # its Material You color scheme to Plasma (hot-reload safe via the .colors
+  # / .colors2 toggle) and runs regenerate-app-themes on start and every
+  # wallpaper change.
+  systemd.user.services.material-you-colors = {
     Unit = {
-      Description = "Regenerate colors from the last wallpaper";
+      Description = "Material You color daemon for Plasma";
       PartOf = [ "graphical-session.target" ];
       After = [ "graphical-session.target" ];
     };
     Service = {
-      Type = "oneshot";
-      ExecStart = "${wallpaperTheme}/bin/wallpaper-theme";
+      ExecStart = "${materialYouColors}/bin/material-you-colors";
+      Restart = "on-failure";
+      RestartSec = 5;
     };
     Install.WantedBy = [ "graphical-session.target" ];
   };

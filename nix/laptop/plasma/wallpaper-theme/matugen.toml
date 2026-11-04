@@ -13,11 +13,6 @@ input_path = "~/.config/matugen/templates/ghostty.conf"
 output_path = "~/.config/ghostty/colors"
 post_hook = "ghostty-reload"
 
-[templates.plasma-colorscheme]
-input_path = "~/.config/matugen/templates/plasma-colorscheme"
-output_path = "~/.local/share/color-schemes/Matugen.colors"
-post_hook = "plasma-apply-colorscheme Matugen || true"
-
 [templates.gtk3]
 input_path = "~/.config/matugen/templates/gtk.css"
 output_path = "~/.config/gtk-3.0/matugen.css"

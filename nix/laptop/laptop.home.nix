@@ -130,6 +130,47 @@ in
     EDITOR = "vim";
   };
 
+  # Overrides the system entry (same file id shadows it via XDG precedence) so
+  # ghostty wins krunner's "terminal" search. The services runner scores the
+  # query against Name (100), GenericName (50) and Keywords (25); equal scores
+  # tie on the full query and are then broken by descending DisplayRole text,
+  # which favors "Konsole" over "Ghostty". GenericName=Terminal evens the
+  # score, Name starting with "Terminal" puts ghostty strictly above
+  # (verified live: 4220 vs 2354). The X-TerminalArg* keys keep ghostty
+  # usable as the xdg terminal.
+  xdg.desktopEntries."com.mitchellh.ghostty" = {
+    type = "Application";
+    name = "Terminal (Ghostty)";
+    genericName = "Terminal";
+    comment = "A terminal emulator";
+    exec = "ghostty --gtk-single-instance=true";
+    icon = "com.mitchellh.ghostty";
+    terminal = false;
+    categories = [
+      "System"
+      "TerminalEmulator"
+    ];
+    startupNotify = true;
+    settings = {
+      StartupWMClass = "com.mitchellh.ghostty";
+      Keywords = "terminal;tty;pty;";
+      DBusActivatable = "true";
+      X-KDE-Shortcuts = "Ctrl+Alt+T";
+      X-TerminalArgExec = "-e";
+      X-TerminalArgTitle = "--title=";
+      X-TerminalArgAppId = "--class=";
+      X-TerminalArgDir = "--working-directory=";
+      X-TerminalArgHold = "--wait-after-command";
+      X-GNOME-UsesNotifications = "true";
+    };
+    actions = {
+      new-window = {
+        name = "New Window";
+        exec = "ghostty --gtk-single-instance=true";
+      };
+    };
+  };
+
   fonts.fontconfig.enable = true;
   dconf.enable = true;
   dconf.settings = {

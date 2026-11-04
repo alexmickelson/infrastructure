@@ -73,6 +73,9 @@
   services.openssh.enable = true;
   services.flatpak.enable = true;
 
+  # bitwarden not shutting down quickly on reboot
+  systemd.user.settings.Manager.DefaultTimeoutStopSec = "15s";
+
   systemd.timers."nix-garbage-collect-weekly" = {
     wantedBy = [ "timers.target" ];
     timerConfig = {

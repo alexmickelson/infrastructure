@@ -33,4 +33,5 @@ if ! plasma-apply-wallpaperimage "$image"; then
   echo "wallpaper-theme: failed to apply plasma wallpaper" >&2
 fi
 
-matugen image "$image"
+# material-you-colors watches the state file and regenerates all theming
+# (Plasma colors via its own scheme, other apps via the on-change hook)

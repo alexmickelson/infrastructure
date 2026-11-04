@@ -41,13 +41,13 @@
           direction: up
           actions:
             - on: end
-              plasma_shortcut: kwin,Switch One Desktop Up
+              plasma_shortcut: kwin,Switch One Desktop Down
 
         - type: swipe
           fingers: 4
           direction: down
           actions:
             - on: end
-              plasma_shortcut: kwin,Switch One Desktop Down
+              plasma_shortcut: kwin,Switch One Desktop Up
   '';
 }
