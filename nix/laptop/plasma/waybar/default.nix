@@ -39,26 +39,26 @@ in
         "memory"
       ];
 
-      "ext/workspaces" = {
-        format = "{name}";
-        format-icons = [
-          "1"
-          "2"
-          "3"
-          "4"
-          "5"
-          "6"
-          "7"
-          "8"
-          "9"
-          "10"
-        ];
+      # "ext/workspaces" = {
+      #   format = "{name}";
+      #   format-icons = [
+      #     "1"
+      #     "2"
+      #     "3"
+      #     "4"
+      #     "5"
+      #     "6"
+      #     "7"
+      #     "8"
+      #     "9"
+      #     "10"
+      #   ];
         sort-by-id = true;
         all-outputs = true;
       };
 
       clock = {
-        format = "{:%a %d %b  %H:%M}";
+        format = "{:%a %d %b  %I:%M %p}";
         tooltip-format = "<tt>{calendar}</tt>";
         calendar = {
           mode = "month";
