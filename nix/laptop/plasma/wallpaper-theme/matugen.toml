@@ -1,12 +1,13 @@
 [config]
 caching = true
 prefer = "saturation"
-contrast = 0
+contrast = 0.5
 
 [templates.waybar]
 input_path = "~/.config/matugen/templates/waybar.css"
 output_path = "~/.config/waybar/colors.css"
 post_hook = "waybar-reload"
+
 
 [templates.ghostty]
 input_path = "~/.config/matugen/templates/ghostty.conf"
