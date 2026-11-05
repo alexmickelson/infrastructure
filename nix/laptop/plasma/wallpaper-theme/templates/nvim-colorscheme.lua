@@ -16,7 +16,26 @@ local c = {
 	tertiary = "#{{colors.tertiary.default.hex_stripped}}",
 	tertiary_container = "#{{colors.tertiary_container.default.hex_stripped}}",
 	error = "#{{colors.error.default.hex_stripped}}",
+	ter_sat = {{colors.tertiary.default.saturation}},
+	ter_light = {{colors.tertiary.default.lightness}},
+	ter_cont_light = {{colors.tertiary_container.default.lightness}},
+	err_light = {{colors.error.default.lightness}},
 }
+
+local function hsl(h, s, l)
+	s, l = s / 100, l / 100
+	local a = s * math.min(l, 1 - l)
+	local function f(n)
+		local k = (n + h / 30) % 12
+		return l - a * math.max(math.min(k - 3, 9 - k, 1), -1)
+	end
+	return string.format("#%02x%02x%02x", f(0) * 255, f(8) * 255, f(4) * 255)
+end
+
+local git_green = hsl(140, c.ter_sat, c.ter_light)
+local git_green_dim = hsl(140, c.ter_sat, math.min(c.ter_cont_light, 20))
+local git_red = hsl(8, c.ter_sat, c.err_light)
+local git_red_dim = hsl(8, c.ter_sat, math.min(c.ter_cont_light, 30))
 
 local hi = function(name, spec)
 	vim.api.nvim_set_hl(0, name, spec)
@@ -73,13 +92,19 @@ hi("WarningMsg", { fg = c.tertiary })
 hi("Error", { fg = c.error })
 hi("Todo", { fg = c.primary, bold = true })
 hi("Underlined", { fg = c.primary, underline = true })
-hi("DiffAdd", { bg = c.primary_container, fg = c.on_primary_container })
+hi("DiffAdd", { bg = git_green_dim, fg = git_green })
 hi("DiffChange", { bg = c.surface_high })
-hi("DiffDelete", { bg = c.error, fg = c.fg })
+hi("DiffDelete", { bg = git_red_dim, fg = git_red })
 hi("DiffText", { bg = c.tertiary_container, fg = c.fg, bold = true })
-hi("Added", { fg = c.primary })
-hi("Removed", { fg = c.error })
+hi("Added", { fg = git_green })
+hi("Removed", { fg = git_red })
 hi("Changed", { fg = c.tertiary })
+hi("GitSignsAdd", { fg = git_green })
+hi("GitSignsChange", { fg = c.tertiary })
+hi("GitSignsDelete", { fg = git_red })
+hi("@diff.plus", { link = "Added" })
+hi("@diff.minus", { link = "Removed" })
+hi("@diff.delta", { link = "Changed" })
 hi("DiagnosticError", { fg = c.error })
 hi("DiagnosticWarn", { fg = c.tertiary })
 hi("DiagnosticInfo", { fg = c.secondary })
@@ -110,8 +135,8 @@ vim.g.terminal_color_0 = c.line
 vim.g.terminal_color_8 = c.muted
 vim.g.terminal_color_1 = c.error
 vim.g.terminal_color_9 = c.error
-vim.g.terminal_color_2 = c.primary
-vim.g.terminal_color_10 = c.primary
+vim.g.terminal_color_2 = git_green
+vim.g.terminal_color_10 = git_green
 vim.g.terminal_color_3 = c.tertiary
 vim.g.terminal_color_11 = c.tertiary
 vim.g.terminal_color_4 = c.secondary
