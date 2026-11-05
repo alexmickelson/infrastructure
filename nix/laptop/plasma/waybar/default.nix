@@ -53,9 +53,9 @@ in
       #     "9"
       #     "10"
       #   ];
-        sort-by-id = true;
-        all-outputs = true;
-      };
+      #   sort-by-id = true;
+      #   all-outputs = true;
+      # };
 
       clock = {
         format = "{:%a %d %b  %I:%M %p}";

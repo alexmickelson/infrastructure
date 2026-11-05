@@ -10,7 +10,7 @@
     };
 
     neovim = {
-      url = "github:alexmickelson/neovim/";
+      url = "path:/home/alex/projects/neovim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

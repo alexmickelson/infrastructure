@@ -30,6 +30,10 @@ input_path = "~/.config/matugen/templates/firefox-userChrome.css"
 output_path = "~/.cache/matugen/firefox/userChrome.css"
 post_hook = "firefox-theme"
 
+[templates.nvim]
+input_path = "~/.config/matugen/templates/nvim-colorscheme.lua"
+output_path = "~/.config/matugen/nvim-colorscheme.lua"
+
 [templates.firefox-content]
 input_path = "~/.config/matugen/templates/firefox-userContent.css"
 output_path = "~/.cache/matugen/firefox/userContent.css"

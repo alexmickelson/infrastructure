@@ -7,7 +7,7 @@
 let
   myNeovimFlake = inputs.neovim;
   neovimPackages = myNeovimFlake.packages.${pkgs.stdenv.hostPlatform.system};
-  neovimPackage = neovimPackages.default;
+  neovimPackage = neovimPackages.follow-system-style;
   neovimTools = neovimPackages.tools;
   piSandboxed = inputs.pi-sandboxed.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in

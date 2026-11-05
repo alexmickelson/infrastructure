@@ -144,17 +144,14 @@
         ]
       },
       "locked": {
-        "lastModified": 1793382191,
-        "narHash": "sha256-WW5c8qOikcMUcWf8P15YoCbEEY317jEi5sMjzkYr++w=",
-        "owner": "alexmickelson",
-        "repo": "neovim",
-        "rev": "3f0a888c71038ad388d4f9ed5fe9a947e1562ad4",
-        "type": "github"
+        "lastModified": 1793838012,
+        "narHash": "sha256-31+mCRUohmrFdOe+K6NspCwqmE7hA28GkWBrt1qNskw=",
+        "path": "/home/alex/projects/neovim",
+        "type": "path"
       },
       "original": {
-        "owner": "alexmickelson",
-        "repo": "neovim",
-        "type": "github"
+        "path": "/home/alex/projects/neovim",
+        "type": "path"
       }
     },
     "nixpkgs": {
