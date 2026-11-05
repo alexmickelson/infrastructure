@@ -33,8 +33,10 @@
       "klassy/klassyrc" = {
         Global.LookAndFeelSet = "org.kde.breezedark.desktop";
         Style.SplitterProxyEnabled = true;
-        TitleBarOpacity.ActiveTitleBarOpacity = 20;
-        TitleBarOpacity.InactiveTitleBarOpacity = 20;
+        TitleBarOpacity.ActiveTitleBarOpacity = 90;
+        TitleBarOpacity.InactiveTitleBarOpacity = 90;
+        TitleBarOpacity.ApplyOpacityToHeader = false;
+        TitleBarOpacity.BlurTransparentTitleBars = false;
         Windeco.DrawTitleBarSeparator = false;
         Windeco.MatchTitleBarToApplicationColor = true;
         Windeco.WindowCornerRadius = 15;

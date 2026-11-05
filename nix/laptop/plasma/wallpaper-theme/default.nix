@@ -45,6 +45,7 @@ let
     runtimeInputs = with pkgs; [
       matugen
       coreutils
+      kdePackages.kconfig
     ];
     text = builtins.readFile ./regenerate-app-themes.sh;
   };

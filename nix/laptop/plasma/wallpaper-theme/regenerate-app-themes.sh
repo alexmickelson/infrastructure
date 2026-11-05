@@ -18,4 +18,8 @@ if [[ ! -f $image ]]; then
   exit 0
 fi
 
-exec matugen image "$image"
+matugen image "$image"
+
+kwriteconfig6 --file kscreenlockerrc \
+  --group Greeter --group Wallpaper --group org.kde.image --group General \
+  --key Image "$image"

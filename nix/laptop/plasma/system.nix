@@ -72,6 +72,35 @@
     MOZ_ENABLE_WAYLAND = "1";
   };
 
+  systemd.services.sync-login-wallpaper = {
+    description = "Sync login screen wallpaper with desktop wallpaper";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      UMask = "0022";
+    };
+    script = ''
+      state=/home/alex/.cache/wallpaper-theme/image
+      [ -f "$state" ] || exit 0
+      read -r image < "$state"
+      [ -f "$image" ] || exit 0
+      install -D -m 0644 "$image" /var/cache/plasma-wallpaper/current.jpg
+      install -D -m 0644 /dev/null /etc/plasmalogin.conf.d/50-wallpaper.conf
+      cat > /etc/plasmalogin.conf.d/50-wallpaper.conf <<'EOF'
+      [Greeter]
+      WallpaperPluginId=org.kde.image
+
+      [Greeter][Wallpaper][org.kde.image][General]
+      Image=/var/cache/plasma-wallpaper/current.jpg
+      EOF
+    '';
+  };
+
+  systemd.paths.sync-login-wallpaper = {
+    wantedBy = [ "multi-user.target" ];
+    pathConfig.PathChanged = "/home/alex/.cache/wallpaper-theme/image";
+  };
+
   environment.systemPackages = with pkgs; [
     # InputActions: touchpad gestures are compiled into kwin (no kwinrc option),
     # so the 3-/4-finger swipe swap is done by this plugin instead of patching
