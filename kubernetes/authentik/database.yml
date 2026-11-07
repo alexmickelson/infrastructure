@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: postgresql
-          image: postgres:17.11-bookworm@sha256:839fbb5a4942a7758dd93e18b42ea5649807491a0545b5eeeb8f0b8bb11857a5
+          image: postgres:17.11-bookworm@sha256:665dc7b37ac52a17e298511414c21d23ffa4e6a6ef6225b3e5d59c7afb35e994
           ports:
             - name: postgresql
               containerPort: 5432
