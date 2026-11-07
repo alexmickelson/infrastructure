@@ -105,7 +105,9 @@ spec:
   parentRefs:
     - name: envoy-gateway
       namespace: envoy-gateway-ingress
-    - name: pangolin-gateway
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: main-gateway
       namespace: istio-ingress
   hostnames:
     - next.alexmickelson.guru
@@ -128,4 +130,4 @@ spec:
     - dnsName: next.alexmickelson.guru
       recordType: CNAME
       targets:
-        - egateway.alexmickelson.guru
+        - igateway.alexmickelson.guru
