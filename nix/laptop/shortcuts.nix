@@ -7,6 +7,7 @@
         serviceMode = "user";
         userName = "alex";
         watch = true;
+        withKDE = true;
         config.keymap = [
           {
             name = "Ghostty clipboard";
