@@ -9,34 +9,49 @@
 }
 
 window#waybar {
-    background: @bg;
+    background: linear-gradient(90deg, alpha(@surface, 0.45), alpha(@bg, 0.8));
     color: @fg;
+    border-radius: 16px;
+}
+
+#workspaces {
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: 12px;
+    margin: 5px 0 5px 6px;
+    padding: 0 3px;
 }
 
 #workspaces button {
-    padding: 0 7px;
+    padding: 0 8px;
+    margin: 3px 2px;
+    border-radius: 8px;
     color: @muted;
-    border-bottom: 2px solid transparent;
+    transition: background-color 150ms ease, color 150ms ease;
 }
 
 #workspaces button:hover {
-    background: @hover;
     color: @fg;
+    background: alpha(@outline, 0.55);
 }
 
 #workspaces button.active {
-    color: @accent;
-    border-bottom-color: @accent;
+    color: @bg;
+    background: linear-gradient(to bottom, @accent, @secondary);
 }
 
-#window {
-    padding-left: 10px;
+#workspaces button.hidden {
     color: @muted;
 }
 
-#clock {
-    font-weight: bold;
-    color: @fg;
+#workspaces button.urgent {
+    color: @critical;
+}
+
+#modules-right {
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: 12px;
+    margin: 5px 0;
+    padding: 0 4px;
 }
 
 #tray,
@@ -47,8 +62,17 @@ window#waybar {
 #battery,
 #cpu,
 #memory {
-    padding: 0 7px;
+    padding: 0 8px;
     color: @fg;
+}
+
+#clock {
+    padding: 0 10px;
+    margin: 5px 0;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.45);
+    color: @fg;
+    font-weight: bold;
 }
 
 #pulseaudio.muted,
@@ -63,4 +87,14 @@ window#waybar {
 
 #battery.critical {
     color: @critical;
+}
+
+#battery.charging {
+    color: @accent;
+}
+
+tooltip {
+    background: alpha(@bg, 0.92);
+    color: @fg;
+    border-radius: 10px;
 }

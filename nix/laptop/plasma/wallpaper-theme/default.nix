@@ -53,7 +53,7 @@ let
   materialYouColors = pkgs.writeShellApplication {
     name = "material-you-colors";
     runtimeInputs = with pkgs; [
-      python3Packages.kde-material-you-colors
+      kde-material-you-colors
       kdePackages.qttools
       kdePackages.plasma-workspace
       coreutils
@@ -72,7 +72,7 @@ in
   home.packages = [
     pkgs.matugen
     pkgs.kdePackages.kdialog
-    pkgs.python3Packages.kde-material-you-colors
+    pkgs.kde-material-you-colors
     wallpaperTheme
     ghosttyReload
     firefoxTheme

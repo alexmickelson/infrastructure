@@ -23,10 +23,18 @@ in
       layer = "top";
       position = "top";
       height = 34;
-      spacing = 4;
+      spacing = 6;
+      margin-top = 6;
+      margin-left = 8;
+      margin-right = 8;
       "modules-left" = [
         "ext/workspaces"
       ];
+      "ext/workspaces" = {
+        format = "{name}";
+        sort-by-id = true;
+        all-outputs = true;
+      };
       "modules-center" = [ "clock" ];
       "modules-right" = [
         "tray"

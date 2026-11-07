@@ -144,7 +144,7 @@
         ]
       },
       "locked": {
-        "lastModified": 1793838794,
+        "lastModified": 1793920856,
         "narHash": "sha256-4DgN/o421Hpp2WxNiFbS0U0Kb705nsUWRz0W3ER03Uw=",
         "path": "/home/alex/projects/neovim",
         "type": "path"
