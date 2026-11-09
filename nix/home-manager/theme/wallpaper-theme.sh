@@ -25,13 +25,8 @@ elif [[ -f $state_file ]]; then
     exit 1
   fi
 else
-  echo "wallpaper-theme: no wallpaper recorded yet, run: wallpaper-theme <image>" >&2
   exit 0
 fi
 
-if ! plasma-apply-wallpaperimage "$image"; then
-  echo "wallpaper-theme: failed to apply plasma wallpaper" >&2
-fi
-
-# material-you-colors watches the state file and regenerates all theming
-# (Plasma colors via its own scheme, other apps via the on-change hook)
+regenerate-app-themes
+wallpaper-apply "$image"

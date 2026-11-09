@@ -12,7 +12,15 @@ let
   piSandboxed = inputs.pi-sandboxed.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
-  imports = [ ../home-manager/fish.home.nix ];
+  imports = [
+    ../home-manager/fish.home.nix
+    ../home-manager/theme
+  ];
+
+  wallpaperTheme = {
+    enable = true;
+    gnome.enable = true;
+  };
 
   customFish = {
     bluetuiAliases = true;

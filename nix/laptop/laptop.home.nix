@@ -15,9 +15,16 @@ in
   imports = [
     ./fish.home.nix
     ./gnome
+    ../home-manager/theme
     # ./plasma
     # inputs.plasma-manager.homeModules.plasma-manager
   ];
+
+  wallpaperTheme = {
+    enable = true;
+    gnome.enable = true;
+    kde.enable = true;
+  };
 
   customFish = {
     bluetuiAliases = true;

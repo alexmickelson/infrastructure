@@ -6,7 +6,7 @@ contrast = 0.5
 [templates.waybar]
 input_path = "~/.config/matugen/templates/waybar.css"
 output_path = "~/.config/waybar/colors.css"
-post_hook = "waybar-reload"
+post_hook = "command -v waybar-reload >/dev/null && waybar-reload || true"
 
 
 [templates.ghostty]

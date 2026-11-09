@@ -7,7 +7,6 @@
   imports = [
     ./input_actions.nix
     ./quickshell
-    ./wallpaper-theme
     ./waybar
   ];
 
