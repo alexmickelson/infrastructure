@@ -79,7 +79,7 @@
         modules = [
           ./laptop.home.nix
           self.homeManagerModules.shortcuts
-          inputs.plasma-manager.homeModules.plasma-manager
+          # inputs.plasma-manager.homeModules.plasma-manager
           {
             home = {
               username = "alex";

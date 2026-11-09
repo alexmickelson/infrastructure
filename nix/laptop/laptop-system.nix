@@ -5,7 +5,10 @@
 }:
 
 {
-  imports = [ ./plasma/system.nix ];
+  imports = [
+    ./gnome/system.nix
+    # ./plasma/system.nix
+  ];
 
   nixpkgs.config = {
     allowUnfree = true;
@@ -67,6 +70,8 @@
   security.pam.services.polkit-1.fprintAuth = true;
   security.pam.services.sudo.fprintAuth = false;
   services.gnome.gnome-keyring.enable = true;
+
+  powerManagement.enable = true;
 
   services.upower.enable = true;
   services.tailscale.enable = true;

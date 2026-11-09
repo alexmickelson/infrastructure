@@ -39,22 +39,22 @@
   homeManagerModule =
     { ... }:
     {
-      programs.plasma.shortcuts = {
-        kwin = {
-          "Window Close" = "Meta+C";
-          "Edit Tiles" = "Meta+Shift+T";
-          "Overview" = "Meta+Space";
-          "Window Maximize" = "Meta+M";
-        };
-
-        "services/com.mitchellh.ghostty.desktop" = {
-          _launch = "Meta+T";
-          "new-window" = "Meta+Ctrl+N";
-        };
-
-        "services/org.kde.dolphin.desktop" = {
-          _launch = "Meta+E";
-        };
-      };
+      # programs.plasma.shortcuts = {
+      #   kwin = {
+      #     "Window Close" = "Meta+C";
+      #     "Edit Tiles" = "Meta+Shift+T";
+      #     "Overview" = "Meta+Space";
+      #     "Window Maximize" = "Meta+M";
+      #   };
+      #
+      #   "services/com.mitchellh.ghostty.desktop" = {
+      #     _launch = "Meta+T";
+      #     "new-window" = "Meta+Ctrl+N";
+      #   };
+      #
+      #   "services/org.kde.dolphin.desktop" = {
+      #     _launch = "Meta+E";
+      #   };
+      # };
     };
 }

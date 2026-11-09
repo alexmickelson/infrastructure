@@ -15,8 +15,12 @@
   xdg.configFile."inputactions/config.yaml".text = ''
     # 45° tolerance so sloppy swipes don't get cancelled and leak kwin's
     # built-in gestures (see InputActions discussion #85); disables diagonals.
+    # 0.9.0.0 null-derefs in TouchpadTriggerHandler::touchMotion on evdev-replayed
+    # touch ids and segfaults the compositor; swipes come from kwin's libinput
+    # events, so the evdev backend is not needed for them.
     device_rules:
       - conditions: $touchpad
+        handle_evdev_events: false
         swipe:
           angle_tolerance: 45
 

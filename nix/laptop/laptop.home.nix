@@ -14,8 +14,9 @@ in
 {
   imports = [
     ./fish.home.nix
-    ./plasma
-    inputs.plasma-manager.homeModules.plasma-manager
+    ./gnome
+    # ./plasma
+    # inputs.plasma-manager.homeModules.plasma-manager
   ];
 
   customFish = {
@@ -62,7 +63,7 @@ in
     uv
     openssl
     bluetui
-    klassy
+    # klassy
 
     nerd-fonts.fira-code
     nerd-fonts.droid-sans-mono
@@ -174,23 +175,6 @@ in
   };
 
   fonts.fontconfig.enable = true;
-  dconf.enable = true;
-  dconf.settings = {
-    "org/gnome/desktop/interface" = {
-      color-scheme = "prefer-dark";
-    };
-  };
-  gtk = {
-    enable = true;
-    gtk2.enable = false;
-    theme = {
-      name = "Adwaita-dark";
-      package = pkgs.gnome-themes-extra;
-    };
-    gtk3.extraCss = "@import 'matugen.css';";
-    gtk4.extraCss = "@import 'matugen.css';";
-    gtk4.theme = null;
-  };
   home.file = {
     ".tmux.conf".source = ./.tmux.conf;
     ".config/lazydocker/config.yml".text = ''
