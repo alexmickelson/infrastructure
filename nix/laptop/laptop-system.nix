@@ -7,6 +7,7 @@
 {
   imports = [
     ./gnome/system.nix
+    ./touchpad/keep-controller-powered.nix
     # ./plasma/system.nix
   ];
 
