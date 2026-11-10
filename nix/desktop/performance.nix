@@ -54,9 +54,9 @@
   };
 
   services = {
-    scx = {
+    scx-loader = {
       enable = true;
-      scheduler = "scx_lavd";
+      config.default_sched = "scx_lavd";
     };
     pipewire.extraConfig.pipewire."92-low-latency"."context.properties" = {
       "default.clock.rate" = 48000;
