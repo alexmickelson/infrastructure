@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: t3-ts-ingress
+  namespace: t3
+  annotations:
+    tailscale.com/funnel: "false"
+spec:
+  ingressClassName: tailscale
+  defaultBackend:
+    service:
+      name: t3
+      port:
+        number: 3773
+  tls:
+    - hosts:
+        - t3
