@@ -26,3 +26,30 @@ patches:
         path: /data
         value:
           server.insecure: "true"
+  - target:
+      version: v1
+      kind: ConfigMap
+      name: argocd-cm
+    patch: |-
+      - op: add
+        path: /data
+        value:
+          url: https://argocd.alexmickelson.guru
+          oidc.config: |
+            name: Tailscale
+            issuer: https://idp.beefalo-newton.ts.net
+            clientID: $argocd-tsidp:client-id
+            clientSecret: $argocd-tsidp:client-secret
+            requestedScopes: ["openid", "profile", "email"]
+  - target:
+      version: v1
+      kind: ConfigMap
+      name: argocd-rbac-cm
+    patch: |-
+      - op: add
+        path: /data
+        value:
+          policy.default: role:readonly
+          policy.csv: |
+            g, alexmickelson@github, role:admin
+            g, alexmickelson96@gmail.com, role:admin

@@ -13,8 +13,18 @@ spec:
         releaseName: kiali
         values: |
           auth:
-            strategy: anonymous
+            strategy: openid
+            openid:
+              client_id: 0e3e2b73e28f0ea806eef0e7ec429254
+              issuer_uri: https://idp.beefalo-newton.ts.net
+              username_claim: email
+              scopes:
+                - openid
+                - profile
+                - email
+              disable_rbac: true
           deployment:
+            secret_name: kiali-tsidp
             accessible_namespaces:
               - "**"
             network_policy:
