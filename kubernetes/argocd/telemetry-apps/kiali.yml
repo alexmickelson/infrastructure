@@ -31,6 +31,8 @@ spec:
               enabled: false
           server:
             web_fqdn: kiali.alexmickelson.guru
+            web_port: "443"
+            web_schema: https
           external_services:
             prometheus:
               url: http://prometheus-server.monitoring.svc.cluster.local
