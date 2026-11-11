@@ -30,7 +30,7 @@ spec:
               auth_url: https://idp.beefalo-newton.ts.net/authorize
               token_url: https://idp.beefalo-newton.ts.net/token
               api_url: https://idp.beefalo-newton.ts.net/userinfo
-              role_attribute_path: "'Viewer'"
+              role_attribute_path: "\"'Viewer'\""
               role_attribute_strict: true
               use_pkce: true
           envFromSecret: grafana-tsidp
