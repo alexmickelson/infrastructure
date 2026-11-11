@@ -51,5 +51,5 @@ patches:
         value:
           policy.default: role:readonly
           policy.csv: |
-            g, alexmickelson@github, role:admin
-            g, alexmickelson96@gmail.com, role:admin
+            g, userid:3931962569565554, role:admin
+            g, userid:51839577132867915, role:admin
