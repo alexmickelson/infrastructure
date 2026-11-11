@@ -48,6 +48,7 @@ in
     };
   };
   home.packages = with pkgs; [
+    lima
     k9s
     jwt-cli
     fish

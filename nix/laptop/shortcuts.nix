@@ -1,13 +1,24 @@
 {
   nixosModule =
-    { ... }:
+    { pkgs, ... }:
     {
+      environment.systemPackages = [ pkgs.gnomeExtensions.xremap ];
+
+      systemd.user.services.enable-xremap-extension = {
+        description = "Enable xremap GNOME extension";
+        after = [ "graphical-session.target" ];
+        wantedBy = [ "graphical-session.target" ];
+        script = ''
+          ${pkgs.gnome-shell}/bin/gnome-extensions enable xremap@k0kubun.com
+        '';
+      };
+
       services.xremap = {
         enable = true;
         serviceMode = "user";
         userName = "alex";
         watch = true;
-        withKDE = true;
+        withGnome = true;
         config.keymap = [
           {
             name = "Ghostty clipboard";
@@ -39,6 +50,8 @@
   homeManagerModule =
     { ... }:
     {
+      dconf.settings."org/gnome/shell".disable-user-extensions = false;
+
       # programs.plasma.shortcuts = {
       #   kwin = {
       #     "Window Close" = "Meta+C";
