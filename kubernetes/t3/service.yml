@@ -5,7 +5,8 @@ metadata:
   namespace: t3
 spec:
   ports:
-    - port: 3773
+    - name: http
+      port: 3773
       targetPort: 3773
       protocol: TCP
 ---
