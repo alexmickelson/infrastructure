@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tsidp
+  namespace: tsidp
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: tsidp
+  template:
+    metadata:
+      labels:
+        app: tsidp
+    spec:
+      automountServiceAccountToken: false
+      nodeSelector:
+        kubernetes.io/hostname: home-server
+      initContainers:
+        - name: state-permissions
+          image: docker.io/library/busybox:1.38.0@sha256:a46257e06c82ad85242d0d38077d0a52d9896389ca60a1a59d3463db586e5fa4
+          command: ["chown", "-R", "1001:1001", "/data"]
+          volumeMounts:
+            - name: state
+              mountPath: /data
+      containers:
+        - name: tsidp
+          image: ghcr.io/tailscale/tsidp:v0.0.18@sha256:3b39de93c1dd1a6bd6923b8871957ab938d049128035634b2b7204a900fb4661
+          env:
+            - name: TAILSCALE_USE_WIP_CODE
+              value: "1"
+            - name: TS_STATE_DIR
+              value: /data
+            - name: TS_HOSTNAME
+              value: idp
+            - name: TS_ADVERTISE_TAGS
+              value: tag:tsidp
+            - name: TS_AUTHKEY_FILE
+              value: /etc/tsidp-auth/authkey
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+          volumeMounts:
+            - name: state
+              mountPath: /data
+            - name: auth
+              mountPath: /etc/tsidp-auth
+              readOnly: true
+      volumes:
+        - name: state
+          hostPath:
+            path: /data/tsidp
+            type: DirectoryOrCreate
+        - name: auth
+          secret:
+            secretName: tsidp-auth

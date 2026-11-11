@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tsidp
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://git.alexmickelson.guru/alex/infrastructure.git
+    targetRevision: HEAD
+    path: kubernetes/tsidp
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tsidp
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
