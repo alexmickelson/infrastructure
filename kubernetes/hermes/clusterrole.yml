@@ -62,6 +62,16 @@ rules:
       - watch
   - apiGroups: [""]
     resources:
+      - secrets
+    verbs:
+      - create
+  - apiGroups: [""]
+    resources:
+      - namespaces
+    verbs:
+      - create
+  - apiGroups: [""]
+    resources:
       - pods
     verbs:
       - delete
