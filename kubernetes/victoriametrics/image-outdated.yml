@@ -6,18 +6,83 @@ metadata:
 data:
   outdated.sh: |
     #!/usr/bin/env bash
+    # Publishes how many days older the running image is than the newest upstream tag.
     set -uo pipefail
-
+    
     VM=${VM_URL:-http://vmsingle-vmsingle.monitoring.svc.cluster.local:8429}
     WORK=$(mktemp -d)
     trap 'rm -rf "$WORK"' EXIT
-
+    
     series() {
       curl -sS -m 20 -G "$VM/api/v1/query" \
         --data-urlencode 'query=count by (image, current_version, latest_version) (version_checker_is_latest_version)' |
         jq -r '.data.result[]? | "\(.metric.image)\t\(.metric.current_version)\t\(.metric.latest_version)"' | sort -u
     }
-
+    
+    registry_token() {
+      case "$1" in
+        docker.io|index.docker.io)
+          curl -sS -m 20 "https://auth.docker.io/token?service=registry.docker.io&scope=repository:$2:pull" | jq -r '.token // empty'
+          ;;
+        ghcr.io)
+          curl -sS -m 20 "https://ghcr.io/token?scope=repository:$2:pull&service=ghcr.io" | jq -r '.token // empty'
+          ;;
+        quay.io)
+          curl -sS -m 20 "https://quay.io/v2/auth?service=quay.io&scope=repository:$2:pull" | jq -r '.token // empty'
+          ;;
+      esac
+    }
+    
+    registry_host() {
+      case "$1" in
+        docker.io|index.docker.io) echo registry-1.docker.io ;;
+        *) echo "$1" ;;
+      esac
+    }
+    
+    manifest_config() {
+      local host=$1 repo=$2 ref=$3 tok=$4 m cfg
+      m=$(curl -sSL -m 25 -H "Authorization: Bearer $tok" \
+        -H 'Accept: application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.v2+json' \
+        "https://$host/v2/$repo/manifests/$ref")
+      if [ "$(jq -r 'has("manifests")' <<<"$m" 2>/dev/null)" = true ]; then
+        cfg=$(curl -sSL -m 25 -H "Authorization: Bearer $tok" \
+          -H 'Accept: application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.v2+json' \
+          "https://$host/v2/$repo/manifests/$(jq -r '.manifests[0].digest' <<<"$m")" | jq -r '.config.digest // empty')
+      else
+        cfg=$(jq -r '.config.digest // empty' <<<"$m")
+      fi
+      [ -n "$cfg" ] && printf '%s\n' "$cfg"
+    }
+    
+    digest_created() {
+      local image=$1 digest=$2 rest first registry repo host tok cfg created
+      rest=$image
+      first=${rest%%/*}
+      registry=docker.io
+      repo=$rest
+      case "$first" in
+        *.*|*:*)
+          registry=$first
+          repo=${rest#*/}
+          ;;
+        *)
+          case "$repo" in
+            */*) : ;;
+            *) repo=library/$repo ;;
+          esac
+          ;;
+      esac
+      host=$(registry_host "$registry")
+      tok=$(registry_token "$registry" "$repo")
+      [ -n "$tok" ] || return 1
+      cfg=$(manifest_config "$host" "$repo" "$digest" "$tok") || return 1
+      [ -n "$cfg" ] || return 1
+      created=$(curl -sSL -m 25 -H "Authorization: Bearer $tok" "https://$host/v2/$repo/blobs/$cfg" | jq -r '.created // empty')
+      [ -n "$created" ] || return 1
+      date -u -d "$created" +%s 2>/dev/null
+    }
+    
     docker_hub() {
       local repo=$1 tag=$2 out
       case "$repo" in
@@ -28,36 +93,16 @@ data:
         jq -r --arg t "$tag" '.results[]? | select(.name==$t) | .tag_last_pushed // empty' | head -1)
       [ -n "$out" ] && date -u -d "$out" +%s
     }
-
-    ghcr() {
-      local repo=$1 tag=$2 tok m cfg created
-      tok=$(curl -sS -m 20 "https://ghcr.io/token?scope=repository:$repo:pull&service=ghcr.io" | jq -r '.token // empty')
-      [ -n "$tok" ] || return 1
-      m=$(curl -sS -m 20 -H "Authorization: Bearer $tok" \
-        -H 'Accept: application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.v2+json' \
-        "https://ghcr.io/v2/$repo/manifests/$tag")
-      if [ "$(jq -r 'has("manifests")' <<<"$m" 2>/dev/null)" = true ]; then
-        cfg=$(curl -sS -m 20 -H "Authorization: Bearer $tok" \
-          -H 'Accept: application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.v2+json' \
-          "https://ghcr.io/v2/$repo/manifests/$(jq -r '.manifests[0].digest' <<<"$m")" | jq -r '.config.digest // empty')
-      else
-        cfg=$(jq -r '.config.digest // empty' <<<"$m")
-      fi
-      [ -n "$cfg" ] || return 1
-      created=$(curl -sS -m 20 -H "Authorization: Bearer $tok" "https://ghcr.io/v2/$repo/blobs/$cfg" | jq -r '.created // empty')
-      [ -n "$created" ] || return 1
-      date -u -d "$created" +%s
-    }
-
+    
     quay() {
       local org=$1 repo=$2 tag=$3 out
       out=$(curl -sS -m 20 "https://quay.io/api/v1/repository/$org/$repo/tag/?specificTag=$tag&limit=1" |
         jq -r '.tags[0].last_modified // empty')
       [ -n "$out" ] && date -u -d "$out" +%s
     }
-
-    lookup() {
-      local image=$1 tag=$2 first registry repo rest
+    
+    tag_created() {
+      local image=$1 tag=$2 rest first registry repo host tok cfg created
       rest=$image
       first=${rest%%/*}
       registry=docker.io
@@ -67,19 +112,31 @@ data:
           registry=$first
           repo=${rest#*/}
           ;;
+        *)
+          case "$repo" in
+            */*) : ;;
+            *) repo=library/$repo ;;
+          esac
+          ;;
       esac
       case "$registry" in
-        docker.io|index.docker.io) docker_hub "$repo" "$tag" ;;
-        ghcr.io) ghcr "$repo" "$tag" ;;
-        quay.io) quay "${repo%%/*}" "${repo#*/}" "$tag" ;;
-        *) return 1 ;;
+        docker.io|index.docker.io) docker_hub "$repo" "$tag" && return 0 ;;
+        quay.io) quay "${repo%%/*}" "${repo#*/}" "$tag" && return 0 ;;
       esac
+      host=$(registry_host "$registry")
+      tok=$(registry_token "$registry" "$repo")
+      [ -n "$tok" ] || return 1
+      cfg=$(manifest_config "$host" "$repo" "$tag" "$tok") || return 1
+      [ -n "$cfg" ] || return 1
+      created=$(curl -sSL -m 25 -H "Authorization: Bearer $tok" "https://$host/v2/$repo/blobs/$cfg" | jq -r '.created // empty')
+      [ -n "$created" ] || return 1
+      date -u -d "$created" +%s 2>/dev/null
     }
-
+    
     plausible() {
       local v=$1
       case "$v" in
-        ""|latest|sha256:*|unknown) return 1 ;;
+        ""|latest|stable|alpine|edge|main|master|sha256:*|unknown) return 1 ;;
       esac
       case "$v" in
         *.*) return 0 ;;
@@ -88,30 +145,63 @@ data:
       esac
       return 1
     }
-
+    
     : >"$WORK/out"
     while IFS=$'\t' read -r image cur latest; do
       [ -n "$image" ] || continue
-      cur=${cur%%@*}
-      latest=${latest%%@*}
-      plausible "$cur" || continue
-      plausible "$latest" || continue
-      if [ "$cur" = "$latest" ]; then
+      cur_digest=""
+      latest_digest=""
+      case "$cur" in
+        *@sha256:*) cur_digest=${cur#*@} ; cur=${cur%%@*} ;;
+        sha256:*) cur_digest=$cur ; cur="" ;;
+      esac
+      case "$latest" in
+        *@sha256:*) latest_digest=${latest#*@} ; latest=${latest%%@*} ;;
+        sha256:*) latest_digest=$latest ; latest="" ;;
+      esac
+      cur_name=${cur:-${cur_digest:0:19}}
+      latest_name=${latest:-${latest_digest:0:19}}
+      now=$(date -u +%s)
+    
+      if [ -n "$cur_digest" ] && [ "$cur_digest" = "$latest_digest" ]; then
         days=0
-      else
-        cur_ts=$(lookup "$image" "$cur") || continue
-        latest_ts=$(lookup "$image" "$latest") || continue
+        waiting=0
+      elif [ -n "$cur_digest" ] && { ! plausible "$cur" || ! plausible "$latest"; }; then
+        cur_ts=$(digest_created "$image" "$cur_digest") || continue
+        latest_ts=$(digest_created "$image" "$latest_digest") || continue
         days=$(( (latest_ts - cur_ts) / 86400 ))
         [ "$days" -lt 0 ] && days=0
+        waiting=$(( (now - latest_ts) / 86400 ))
+        [ "$waiting" -lt 0 ] && waiting=0
+      else
+        plausible "$cur" || continue
+        plausible "$latest" || continue
+        if [ "$cur" = "$latest" ]; then
+          days=0
+          waiting=0
+        else
+          cur_ts=$(tag_created "$image" "$cur") || continue
+          latest_ts=$(tag_created "$image" "$latest") || continue
+          days=$(( (latest_ts - cur_ts) / 86400 ))
+          [ "$days" -lt 0 ] && days=0
+          waiting=$(( (now - latest_ts) / 86400 ))
+          [ "$waiting" -lt 0 ] && waiting=0
+        fi
       fi
+    
+      [ "$days" -eq 0 ] && waiting=0
+    
       printf 'image_outdated_days{image="%s",current_version="%s",latest_version="%s"} %s\n' \
-        "$image" "$cur" "$latest" "$days" >>"$WORK/out"
+        "$image" "$cur_name" "$latest_name" "$days" >>"$WORK/out"
+      printf 'image_update_waiting_days{image="%s",current_version="%s",latest_version="%s"} %s\n' \
+        "$image" "$cur_name" "$latest_name" "$waiting" >>"$WORK/out"
     done < <(series)
-
+    
     cat "$WORK/out"
     if [ "${PUSH:-0}" = 1 ] && [ -s "$WORK/out" ]; then
       curl -sS -m 30 -X POST --data-binary @"$WORK/out" "$VM/api/v1/import/prometheus" >/dev/null
     fi
+---
 ---
 apiVersion: batch/v1
 kind: CronJob
