@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: version-checker
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://charts.jetstack.io
+    chart: version-checker
+    targetRevision: v0.11.0
+    helm:
+      releaseName: version-checker
+      values: |
+        serviceMonitor:
+          enabled: false
+        versionChecker:
+          testAllContainers: true
+          imageCacheTimeout: 30m
+          logLevel: info
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            memory: 256Mi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    automated:
+      prune: true
+      selfHeal: true

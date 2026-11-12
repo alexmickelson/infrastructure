@@ -32,6 +32,8 @@ spec:
             emptyDir:
               sizeLimit: 20Gi
             retention: 7d
+            remoteWrite:
+              - url: http://vmsingle-vmsingle.monitoring.svc.cluster.local:8428/api/v1/write
             resources:
               requests:
                 cpu: 250m
