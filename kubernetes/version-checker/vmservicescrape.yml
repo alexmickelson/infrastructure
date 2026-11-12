@@ -1,0 +1,16 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: version-checker
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: version-checker
+  namespaceSelector:
+    matchNames:
+      - monitoring
+  endpoints:
+    - port: web
+      path: /metrics
+      interval: 60s
