@@ -1,0 +1,22 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMSingle
+metadata:
+  name: vmsingle
+  namespace: monitoring
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  retentionPeriod: 30d
+  storageDataPath: /victoria-metrics-data
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 2Gi
+  volumes:
+    - name: data
+      hostPath:
+        path: /data/victoriametrics
+        type: DirectoryOrCreate

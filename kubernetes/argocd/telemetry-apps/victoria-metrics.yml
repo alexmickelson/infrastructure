@@ -5,21 +5,24 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: https://victoriametrics.github.io/helm-charts
-    chart: victoria-metrics-operator
-    targetRevision: 0.68.2
-    helm:
-      releaseName: vmoperator
-      values: |
-        crds:
-          enabled: true
-          plain: false
-        operator:
-          disable_prometheus_converter: false
-        admissionWebhooks:
-          certManager:
+  sources:
+    - repoURL: https://victoriametrics.github.io/helm-charts
+      chart: victoria-metrics-operator
+      targetRevision: 0.68.2
+      helm:
+        releaseName: vmoperator
+        values: |
+          crds:
             enabled: true
+            plain: false
+          operator:
+            disable_prometheus_converter: false
+          admissionWebhooks:
+            certManager:
+              enabled: true
+    - repoURL: https://git.alexmickelson.guru/alex/infrastructure.git
+      targetRevision: HEAD
+      path: kubernetes/victoriametrics
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
