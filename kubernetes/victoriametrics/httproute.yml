@@ -1,0 +1,40 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: vmsingle
+  namespace: monitoring
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: main-gateway
+      namespace: istio-ingress
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: pangolin-gateway
+      namespace: istio-ingress
+  hostnames:
+    - vmetrics.alexmickelson.guru
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: vmsingle-vmsingle
+          port: 8429
+          weight: 1
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: vmsingle
+  namespace: external-dns
+spec:
+  endpoints:
+    - dnsName: vmetrics.alexmickelson.guru
+      recordType: CNAME
+      targets:
+        - igateway.alexmickelson.guru
