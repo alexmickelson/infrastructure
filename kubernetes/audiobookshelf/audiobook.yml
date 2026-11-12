@@ -28,6 +28,9 @@ spec:
       - name: audiobookshelf
         image: ghcr.io/advplyr/audiobookshelf:2.36.0@sha256:180acad33d69c99ed208676465d8edcb268fa46967735579a7810859885b1a8e
         imagePullPolicy: Always
+        env:
+        - name: ROUTER_BASE_PATH
+          value: ""
         ports:
         - containerPort: 80
           hostPort: 13378
