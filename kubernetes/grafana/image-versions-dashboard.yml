@@ -16,7 +16,7 @@ data:
       ],
       "timezone": "browser",
       "schemaVersion": 39,
-      "version": 1,
+      "version": 2,
       "refresh": "5m",
       "editable": true,
       "time": {
@@ -33,8 +33,8 @@ data:
         {
           "id": 1,
           "type": "stat",
-          "title": "Days behind the newest release",
-          "description": "One card per image version-checker reports. Value is how many days older the running tag is than the newest upstream tag; n/a means no registry date could be resolved.",
+          "title": "Days the newer release has been available",
+          "description": "One card per image version-checker reports. Value is how many days the newer release has been available and 0 means the running image already matches it; the name carries the running and newest version. Red marks an image that is behind and whose update has been waiting more than a week. n/a means no registry date could be resolved.",
           "datasource": {
             "type": "prometheus",
             "uid": "victoriametrics"
@@ -52,7 +52,7 @@ data:
                 "type": "prometheus",
                 "uid": "victoriametrics"
               },
-              "expr": "label_replace(max by (image, current_version, latest_version) (last_over_time(image_outdated_days[6h])) or on(image) label_replace(label_replace(label_replace(max by (image, current_version, latest_version) (version_checker_is_latest_version) * 0 - 1, \"current_version\", \"$1\", \"current_version\", \"([^@]+)@.*\"), \"latest_version\", \"$1\", \"latest_version\", \"([^@]+)@.*\"), \"current_version\", \"digest\", \"current_version\", \"sha256:.*\"), \"image\", \"$1\", \"image\", \"^[A-Za-z0-9-]+\\\\.[A-Za-z0-9.-]+/(.*)$\")",
+              "expr": "label_replace(max by (image, current_version, latest_version) (last_over_time(image_update_waiting_days[6h])) or on(image) label_replace(label_replace(label_replace(max by (image, current_version, latest_version) (version_checker_is_latest_version) * 0 - 1, \"current_version\", \"$1\", \"current_version\", \"([^@]+)@.*\"), \"latest_version\", \"$1\", \"latest_version\", \"([^@]+)@.*\"), \"current_version\", \"digest\", \"current_version\", \"sha256:.*\"), \"image\", \"$1\", \"image\", \"^[A-Za-z0-9-]+\\\\.[A-Za-z0-9.-]+/(.*)$\")",
               "legendFormat": "{{image}} · {{current_version}} → {{latest_version}}",
               "instant": true,
               "range": false
