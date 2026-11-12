@@ -20,7 +20,7 @@ data:
       "refresh": "5m",
       "editable": true,
       "time": {
-        "from": "now-10m",
+        "from": "now-6h",
         "to": "now"
       },
       "templating": {
@@ -40,7 +40,7 @@ data:
             "uid": "victoriametrics"
           },
           "gridPos": {
-            "h": 18,
+            "h": 30,
             "w": 24,
             "x": 0,
             "y": 0
@@ -52,10 +52,10 @@ data:
                 "type": "prometheus",
                 "uid": "victoriametrics"
               },
-              "expr": "max by (image, current_version, latest_version) (image_outdated_days) or on(image) label_replace(label_replace(label_replace(max by (image, current_version, latest_version) (version_checker_is_latest_version) * 0 - 1, \"current_version\", \"$1\", \"current_version\", \"([^@]+)@.*\"), \"latest_version\", \"$1\", \"latest_version\", \"([^@]+)@.*\"), \"current_version\", \"digest\", \"current_version\", \"sha256:.*\")",
+              "expr": "label_replace(max by (image, current_version, latest_version) (last_over_time(image_outdated_days[6h])) or on(image) label_replace(label_replace(label_replace(max by (image, current_version, latest_version) (version_checker_is_latest_version) * 0 - 1, \"current_version\", \"$1\", \"current_version\", \"([^@]+)@.*\"), \"latest_version\", \"$1\", \"latest_version\", \"([^@]+)@.*\"), \"current_version\", \"digest\", \"current_version\", \"sha256:.*\"), \"image\", \"$1\", \"image\", \"^[A-Za-z0-9-]+\\\\.[A-Za-z0-9.-]+/(.*)$\")",
               "legendFormat": "{{image}} · {{current_version}} → {{latest_version}}",
-              "instant": false,
-              "range": true
+              "instant": true,
+              "range": false
             }
           ],
           "options": {
@@ -70,7 +70,8 @@ data:
             "textMode": "value_and_name",
             "colorMode": "background",
             "graphMode": "none",
-            "justifyMode": "auto"
+            "justifyMode": "auto",
+            "wideLayout": false
           },
           "fieldConfig": {
             "defaults": {
