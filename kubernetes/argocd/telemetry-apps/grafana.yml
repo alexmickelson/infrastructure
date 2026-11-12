@@ -51,6 +51,15 @@ spec:
                   url: http://prometheus-server.monitoring.svc.cluster.local
                   isDefault: true
                   editable: false
+                - name: VictoriaMetrics
+                  uid: victoriametrics
+                  type: prometheus
+                  access: proxy
+                  url: http://vmsingle-vmsingle.monitoring.svc.cluster.local:8429
+                  editable: false
+          sidecar:
+            dashboards:
+              enabled: true
           resources:
             requests:
               cpu: 100m

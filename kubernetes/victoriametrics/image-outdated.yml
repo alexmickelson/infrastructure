@@ -1,0 +1,156 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: image-outdated
+  namespace: monitoring
+data:
+  outdated.sh: |
+    #!/usr/bin/env bash
+    set -uo pipefail
+
+    VM=${VM_URL:-http://vmsingle-vmsingle.monitoring.svc.cluster.local:8429}
+    WORK=$(mktemp -d)
+    trap 'rm -rf "$WORK"' EXIT
+
+    series() {
+      curl -sS -m 20 -G "$VM/api/v1/query" \
+        --data-urlencode 'query=count by (image, current_version, latest_version) (version_checker_is_latest_version)' |
+        jq -r '.data.result[]? | "\(.metric.image)\t\(.metric.current_version)\t\(.metric.latest_version)"' | sort -u
+    }
+
+    docker_hub() {
+      local repo=$1 tag=$2 out
+      case "$repo" in
+        */*) : ;;
+        *) repo=library/$repo ;;
+      esac
+      out=$(curl -sS -m 20 "https://hub.docker.com/v2/repositories/$repo/tags?page_size=100&name=$tag" |
+        jq -r --arg t "$tag" '.results[]? | select(.name==$t) | .tag_last_pushed // empty' | head -1)
+      [ -n "$out" ] && date -u -d "$out" +%s
+    }
+
+    ghcr() {
+      local repo=$1 tag=$2 tok m cfg created
+      tok=$(curl -sS -m 20 "https://ghcr.io/token?scope=repository:$repo:pull&service=ghcr.io" | jq -r '.token // empty')
+      [ -n "$tok" ] || return 1
+      m=$(curl -sS -m 20 -H "Authorization: Bearer $tok" \
+        -H 'Accept: application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.v2+json' \
+        "https://ghcr.io/v2/$repo/manifests/$tag")
+      if [ "$(jq -r 'has("manifests")' <<<"$m" 2>/dev/null)" = true ]; then
+        cfg=$(curl -sS -m 20 -H "Authorization: Bearer $tok" \
+          -H 'Accept: application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.v2+json' \
+          "https://ghcr.io/v2/$repo/manifests/$(jq -r '.manifests[0].digest' <<<"$m")" | jq -r '.config.digest // empty')
+      else
+        cfg=$(jq -r '.config.digest // empty' <<<"$m")
+      fi
+      [ -n "$cfg" ] || return 1
+      created=$(curl -sS -m 20 -H "Authorization: Bearer $tok" "https://ghcr.io/v2/$repo/blobs/$cfg" | jq -r '.created // empty')
+      [ -n "$created" ] || return 1
+      date -u -d "$created" +%s
+    }
+
+    quay() {
+      local org=$1 repo=$2 tag=$3 out
+      out=$(curl -sS -m 20 "https://quay.io/api/v1/repository/$org/$repo/tag/?specificTag=$tag&limit=1" |
+        jq -r '.tags[0].last_modified // empty')
+      [ -n "$out" ] && date -u -d "$out" +%s
+    }
+
+    lookup() {
+      local image=$1 tag=$2 first registry repo rest
+      rest=$image
+      first=${rest%%/*}
+      registry=docker.io
+      repo=$rest
+      case "$first" in
+        *.*|*:*)
+          registry=$first
+          repo=${rest#*/}
+          ;;
+      esac
+      case "$registry" in
+        docker.io|index.docker.io) docker_hub "$repo" "$tag" ;;
+        ghcr.io) ghcr "$repo" "$tag" ;;
+        quay.io) quay "${repo%%/*}" "${repo#*/}" "$tag" ;;
+        *) return 1 ;;
+      esac
+    }
+
+    plausible() {
+      local v=$1
+      case "$v" in
+        ""|latest|sha256:*|unknown) return 1 ;;
+      esac
+      case "$v" in
+        *.*) return 0 ;;
+        20[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]) return 0 ;;
+        [0-9]|[0-9][0-9]) return 0 ;;
+      esac
+      return 1
+    }
+
+    : >"$WORK/out"
+    while IFS=$'\t' read -r image cur latest; do
+      [ -n "$image" ] || continue
+      cur=${cur%%@*}
+      latest=${latest%%@*}
+      plausible "$cur" || continue
+      plausible "$latest" || continue
+      if [ "$cur" = "$latest" ]; then
+        days=0
+      else
+        cur_ts=$(lookup "$image" "$cur") || continue
+        latest_ts=$(lookup "$image" "$latest") || continue
+        days=$(( (latest_ts - cur_ts) / 86400 ))
+        [ "$days" -lt 0 ] && days=0
+      fi
+      printf 'image_outdated_days{image="%s",current_version="%s",latest_version="%s"} %s\n' \
+        "$image" "$cur" "$latest" "$days" >>"$WORK/out"
+    done < <(series)
+
+    cat "$WORK/out"
+    if [ "${PUSH:-0}" = 1 ] && [ -s "$WORK/out" ]; then
+      curl -sS -m 30 -X POST --data-binary @"$WORK/out" "$VM/api/v1/import/prometheus" >/dev/null
+    fi
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: image-outdated
+  namespace: monitoring
+spec:
+  schedule: "23 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        spec:
+          restartPolicy: Never
+          automountServiceAccountToken: false
+          containers:
+            - name: image-outdated
+              image: alpine:3.22
+              command: ["/bin/sh", "-c"]
+              args:
+                - apk add --no-cache bash curl jq >/dev/null && bash /scripts/outdated.sh
+              env:
+                - name: PUSH
+                  value: "1"
+                - name: VM_URL
+                  value: http://vmsingle-vmsingle.monitoring.svc.cluster.local:8429
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  memory: 128Mi
+              volumeMounts:
+                - name: script
+                  mountPath: /scripts
+          volumes:
+            - name: script
+              configMap:
+                name: image-outdated
