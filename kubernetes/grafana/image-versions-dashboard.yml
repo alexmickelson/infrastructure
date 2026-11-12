@@ -1,0 +1,112 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-image-versions
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  image-versions.json: |
+    {
+      "uid": "image-versions",
+      "title": "Image versions",
+      "tags": [
+        "images",
+        "cleanup"
+      ],
+      "timezone": "browser",
+      "schemaVersion": 39,
+      "version": 1,
+      "refresh": "5m",
+      "editable": true,
+      "time": {
+        "from": "now-10m",
+        "to": "now"
+      },
+      "templating": {
+        "list": []
+      },
+      "annotations": {
+        "list": []
+      },
+      "panels": [
+        {
+          "id": 1,
+          "type": "stat",
+          "title": "Days behind the newest release",
+          "description": "One card per image version-checker reports. Value is how many days older the running tag is than the newest upstream tag; n/a means no registry date could be resolved.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "gridPos": {
+            "h": 18,
+            "w": 24,
+            "x": 0,
+            "y": 0
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "victoriametrics"
+              },
+              "expr": "max by (image, current_version, latest_version) (image_outdated_days) or on(image) label_replace(label_replace(label_replace(max by (image, current_version, latest_version) (version_checker_is_latest_version) * 0 - 1, \"current_version\", \"$1\", \"current_version\", \"([^@]+)@.*\"), \"latest_version\", \"$1\", \"latest_version\", \"([^@]+)@.*\"), \"current_version\", \"digest\", \"current_version\", \"sha256:.*\")",
+              "legendFormat": "{{image}} · {{current_version}} → {{latest_version}}",
+              "instant": false,
+              "range": true
+            }
+          ],
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "orientation": "auto",
+            "textMode": "value_and_name",
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "decimals": 0,
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [
+                {
+                  "type": "value",
+                  "options": {
+                    "-1": {
+                      "index": 0,
+                      "text": "n/a"
+                    }
+                  }
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  },
+                  {
+                    "color": "#7f1d1d",
+                    "value": 7,
+                    "gt": true
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          }
+        }
+      ]
+    }
