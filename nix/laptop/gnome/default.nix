@@ -17,16 +17,6 @@
     "org/gnome/desktop/wm/preferences" = {
       button-layout = "appmenu:minimize,maximize,close";
     };
-    "org/gnome/settings-daemon/plugins/media-keys" = {
-      custom-keybindings = [
-        "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
-      ];
-    };
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-      name = "Terminal";
-      command = "ghostty --gtk-single-instance=true";
-      binding = "<Super>t";
-    };
     "org/gnome/desktop/peripherals/touchpad" = {
       send-events = "enabled";
     };

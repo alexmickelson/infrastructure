@@ -15,6 +15,11 @@
     allowUnfree = true;
   };
 
+  shortcuts = {
+    desktop = "gnome";
+    user = "alex";
+  };
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -42,20 +47,23 @@
 
   services.logiops = {
     enable = true;
-    config.devices = [
-      {
-        name = "Wireless Mouse MX Master 3";
-        buttons = [
-          {
-            cid = 195;
-            action = {
-              type = "Keypress";
-              keys = [ "KEY_LEFTMETA" ];
-            };
-          }
-        ];
-      }
-    ];
+    config = {
+      io_timeout = 3000;
+      devices = [
+        {
+          name = "MX Master 4";
+          buttons = [
+            {
+              cid = 416;
+              action = {
+                type = "Keypress";
+                keys = [ "KEY_LEFTMETA" ];
+              };
+            }
+          ];
+        }
+      ];
+    };
   };
   services.printing.enable = true;
   services.pulseaudio.enable = false;
@@ -132,9 +140,10 @@
     backupFileExtension = "backup";
     users.alex = { ... }: {
       home.stateVersion = "26.05";
+      shortcuts.desktop = "gnome";
       imports = [
         ./laptop.home.nix
-        (import ./shortcuts.nix).homeManagerModule
+        inputs.shortcuts.homeModules.default
       ];
     };
   };

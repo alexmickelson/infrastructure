@@ -14,8 +14,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    xremap-flake = {
-      url = "github:xremap/nix-flake";
+    shortcuts = {
+      url = "../flakes/shortcuts";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     pi-sandboxed = {
@@ -48,7 +48,6 @@
     }:
     let
       system = "x86_64-linux";
-      shortcuts = import ./shortcuts.nix;
       laptopPkgs = import nixpkgs {
         inherit system;
         config = {
@@ -58,18 +57,14 @@
       };
     in
     {
-      nixosModules.shortcuts = shortcuts.nixosModule;
-      homeManagerModules.shortcuts = shortcuts.homeManagerModule;
-
       nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit inputs; };
         modules = [
           ./hardware-configuration.nix
           home-manager.nixosModules.home-manager
-          inputs.xremap-flake.nixosModules.default
+          inputs.shortcuts.nixosModules.default
           ./laptop-system.nix
-          self.nixosModules.shortcuts
         ];
       };
 
@@ -78,7 +73,7 @@
         extraSpecialArgs = { inherit inputs; };
         modules = [
           ./laptop.home.nix
-          self.homeManagerModules.shortcuts
+          inputs.shortcuts.homeModules.default
           # inputs.plasma-manager.homeModules.plasma-manager
           {
             home = {
