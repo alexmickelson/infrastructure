@@ -39,14 +39,22 @@ data:
         *) echo "$1" ;;
       esac
     }
-    
+
+    anonymous_pull() {
+      case "$1" in
+        registry.k8s.io) return 0 ;;
+      esac
+      return 1
+    }
+
     manifest_config() {
-      local host=$1 repo=$2 ref=$3 tok=$4 m cfg
-      m=$(curl -sSL -m 25 -H "Authorization: Bearer $tok" \
+      local host=$1 repo=$2 ref=$3 tok=$4 m cfg auth=()
+      [ -n "$tok" ] && auth=(-H "Authorization: Bearer $tok")
+      m=$(curl -sSL -m 25 "${auth[@]}" \
         -H 'Accept: application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.v2+json' \
         "https://$host/v2/$repo/manifests/$ref")
       if [ "$(jq -r 'has("manifests")' <<<"$m" 2>/dev/null)" = true ]; then
-        cfg=$(curl -sSL -m 25 -H "Authorization: Bearer $tok" \
+        cfg=$(curl -sSL -m 25 "${auth[@]}" \
           -H 'Accept: application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.v2+json' \
           "https://$host/v2/$repo/manifests/$(jq -r '.manifests[0].digest' <<<"$m")" | jq -r '.config.digest // empty')
       else
@@ -56,7 +64,7 @@ data:
     }
     
     digest_created() {
-      local image=$1 digest=$2 rest first registry repo host tok cfg created
+      local image=$1 digest=$2 rest first registry repo host tok cfg created creation_year auth=()
       rest=$image
       first=${rest%%/*}
       registry=docker.io
@@ -75,11 +83,15 @@ data:
       esac
       host=$(registry_host "$registry")
       tok=$(registry_token "$registry" "$repo")
-      [ -n "$tok" ] || return 1
+      if [ -z "$tok" ] && ! anonymous_pull "$registry"; then return 1; fi
+      auth=()
+      [ -n "$tok" ] && auth=(-H "Authorization: Bearer $tok")
       cfg=$(manifest_config "$host" "$repo" "$digest" "$tok") || return 1
       [ -n "$cfg" ] || return 1
-      created=$(curl -sSL -m 25 -H "Authorization: Bearer $tok" "https://$host/v2/$repo/blobs/$cfg" | jq -r '.created // empty')
+      created=$(curl -sSL -m 25 "${auth[@]}" "https://$host/v2/$repo/blobs/$cfg" | jq -r '.created // empty')
       [ -n "$created" ] || return 1
+      creation_year=${created%%-*}
+      [ "$creation_year" -gt 2000 ] 2>/dev/null || return 1
       date -u -d "$created" +%s 2>/dev/null
     }
     
@@ -102,7 +114,7 @@ data:
     }
     
     tag_created() {
-      local image=$1 tag=$2 rest first registry repo host tok cfg created
+      local image=$1 tag=$2 rest first registry repo host tok cfg created creation_year auth=()
       rest=$image
       first=${rest%%/*}
       registry=docker.io
@@ -125,11 +137,15 @@ data:
       esac
       host=$(registry_host "$registry")
       tok=$(registry_token "$registry" "$repo")
-      [ -n "$tok" ] || return 1
+      if [ -z "$tok" ] && ! anonymous_pull "$registry"; then return 1; fi
+      auth=()
+      [ -n "$tok" ] && auth=(-H "Authorization: Bearer $tok")
       cfg=$(manifest_config "$host" "$repo" "$tag" "$tok") || return 1
       [ -n "$cfg" ] || return 1
-      created=$(curl -sSL -m 25 -H "Authorization: Bearer $tok" "https://$host/v2/$repo/blobs/$cfg" | jq -r '.created // empty')
+      created=$(curl -sSL -m 25 "${auth[@]}" "https://$host/v2/$repo/blobs/$cfg" | jq -r '.created // empty')
       [ -n "$created" ] || return 1
+      creation_year=${created%%-*}
+      [ "$creation_year" -gt 2000 ] 2>/dev/null || return 1
       date -u -d "$created" +%s 2>/dev/null
     }
     
@@ -180,8 +196,11 @@ data:
           days=0
           waiting=0
         else
-          cur_ts=$(tag_created "$image" "$cur") || continue
-          latest_ts=$(tag_created "$image" "$latest") || continue
+          if ! { cur_ts=$(tag_created "$image" "$cur") && latest_ts=$(tag_created "$image" "$latest"); }; then
+            [ -n "$cur_digest" ] && [ -n "$latest_digest" ] || continue
+            cur_ts=$(digest_created "$image" "$cur_digest") || continue
+            latest_ts=$(digest_created "$image" "$latest_digest") || continue
+          fi
           days=$(( (latest_ts - cur_ts) / 86400 ))
           [ "$days" -lt 0 ] && days=0
           waiting=$(( (now - latest_ts) / 86400 ))
