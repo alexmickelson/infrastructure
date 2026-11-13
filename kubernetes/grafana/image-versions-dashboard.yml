@@ -16,7 +16,7 @@ data:
       ],
       "timezone": "browser",
       "schemaVersion": 39,
-      "version": 3,
+      "version": 4,
       "refresh": "5m",
       "editable": true,
       "time": {
@@ -82,7 +82,7 @@ data:
                 "type": "prometheus",
                 "uid": "victoriametrics"
               },
-              "expr": "label_replace(max by (image, current_version, latest_version) (last_over_time(image_update_waiting_days{image=\"$image\"}[6h])) or on(image) label_replace(label_replace(label_replace(max by (image, current_version, latest_version) (version_checker_is_latest_version{image=\"$image\"}) * 0 - 1, \"current_version\", \"$1\", \"current_version\", \"([^@]+)@.*\"), \"latest_version\", \"$1\", \"latest_version\", \"([^@]+)@.*\"), \"current_version\", \"digest\", \"current_version\", \"sha256:.*\"), \"image\", \"$1\", \"image\", \"^[A-Za-z0-9-]+\\\\.[A-Za-z0-9.-]+/(.*)$\")",
+              "expr": "label_replace(max by (image, current_version, latest_version) (last_over_time(image_update_waiting_days{image=~\"$image\"}[6h])) or on(image) label_replace(label_replace(label_replace(max by (image, current_version, latest_version) (version_checker_is_latest_version{image=~\"$image\"}) * 0 - 1, \"current_version\", \"$1\", \"current_version\", \"([^@]+)@.*\"), \"latest_version\", \"$1\", \"latest_version\", \"([^@]+)@.*\"), \"current_version\", \"digest\", \"current_version\", \"sha256:.*\"), \"image\", \"$1\", \"image\", \"^[A-Za-z0-9-]+\\\\.[A-Za-z0-9.-]+/(.*)$\")",
               "legendFormat": "{{current_version}} → {{latest_version}}",
               "instant": true,
               "range": false
