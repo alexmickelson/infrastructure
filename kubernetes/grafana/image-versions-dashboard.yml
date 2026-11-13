@@ -16,7 +16,7 @@ data:
       ],
       "timezone": "browser",
       "schemaVersion": 39,
-      "version": 2,
+      "version": 3,
       "refresh": "5m",
       "editable": true,
       "time": {
@@ -24,7 +24,37 @@ data:
         "to": "now"
       },
       "templating": {
-        "list": []
+        "list": [
+          {
+            "name": "image",
+            "label": "image",
+            "type": "query",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "victoriametrics"
+            },
+            "definition": "label_values(version_checker_is_latest_version, image)",
+            "query": {
+              "query": "label_values(version_checker_is_latest_version, image)",
+              "refId": "image"
+            },
+            "refresh": 1,
+            "sort": 1,
+            "multi": true,
+            "includeAll": true,
+            "hide": 2,
+            "current": {
+              "selected": true,
+              "text": [
+                "All"
+              ],
+              "value": [
+                "$__all"
+              ]
+            },
+            "options": []
+          }
+        ]
       },
       "annotations": {
         "list": []
@@ -33,15 +63,15 @@ data:
         {
           "id": 1,
           "type": "stat",
-          "title": "Days the newer release has been available",
-          "description": "One card per image version-checker reports. Value is how many days the newer release has been available and 0 means the running image already matches it; the name carries the running and newest version. Red marks an image that is behind and whose update has been waiting more than a week. n/a means no registry date could be resolved.",
+          "title": "$image",
+          "description": "How many days the newer release has been available; 0 means the running image already matches it. The card names the running and newest version. Red marks an image that is behind and whose update has been waiting more than a week, and n/a means no registry date could be resolved.",
           "datasource": {
             "type": "prometheus",
             "uid": "victoriametrics"
           },
           "gridPos": {
-            "h": 30,
-            "w": 24,
+            "h": 4,
+            "w": 6,
             "x": 0,
             "y": 0
           },
@@ -52,8 +82,8 @@ data:
                 "type": "prometheus",
                 "uid": "victoriametrics"
               },
-              "expr": "label_replace(max by (image, current_version, latest_version) (last_over_time(image_update_waiting_days[6h])) or on(image) label_replace(label_replace(label_replace(max by (image, current_version, latest_version) (version_checker_is_latest_version) * 0 - 1, \"current_version\", \"$1\", \"current_version\", \"([^@]+)@.*\"), \"latest_version\", \"$1\", \"latest_version\", \"([^@]+)@.*\"), \"current_version\", \"digest\", \"current_version\", \"sha256:.*\"), \"image\", \"$1\", \"image\", \"^[A-Za-z0-9-]+\\\\.[A-Za-z0-9.-]+/(.*)$\")",
-              "legendFormat": "{{image}} · {{current_version}} → {{latest_version}}",
+              "expr": "label_replace(max by (image, current_version, latest_version) (last_over_time(image_update_waiting_days{image=\"$image\"}[6h])) or on(image) label_replace(label_replace(label_replace(max by (image, current_version, latest_version) (version_checker_is_latest_version{image=\"$image\"}) * 0 - 1, \"current_version\", \"$1\", \"current_version\", \"([^@]+)@.*\"), \"latest_version\", \"$1\", \"latest_version\", \"([^@]+)@.*\"), \"current_version\", \"digest\", \"current_version\", \"sha256:.*\"), \"image\", \"$1\", \"image\", \"^[A-Za-z0-9-]+\\\\.[A-Za-z0-9.-]+/(.*)$\")",
+              "legendFormat": "{{current_version}} → {{latest_version}}",
               "instant": true,
               "range": false
             }
@@ -71,7 +101,11 @@ data:
             "colorMode": "background",
             "graphMode": "none",
             "justifyMode": "auto",
-            "wideLayout": false
+            "wideLayout": false,
+            "text": {
+              "valueSize": 30,
+              "titleSize": 14
+            }
           },
           "fieldConfig": {
             "defaults": {
@@ -107,7 +141,10 @@ data:
               }
             },
             "overrides": []
-          }
+          },
+          "repeat": "image",
+          "repeatDirection": "h",
+          "maxPerRow": 4
         }
       ]
     }
