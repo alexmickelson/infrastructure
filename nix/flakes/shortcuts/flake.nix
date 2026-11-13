@@ -45,6 +45,14 @@
           description = "Command launched by the terminal shortcuts.";
         };
       };
+
+      logitech = {
+        options.shortcuts.logitech = lib.mkOption {
+          type = lib.types.bool;
+          default = true;
+          description = "Remap the Logitech MX Master thumb button to the overview shortcut.";
+        };
+      };
     in
     {
       nixosModules.default = {
@@ -52,7 +60,9 @@
           xremap-flake.nixosModules.default
           desktop
           user
+          logitech
           ./modules/nixos/xremap.nix
+          ./modules/nixos/logitech.nix
         ];
       };
 

@@ -18,6 +18,7 @@
   shortcuts = {
     desktop = "gnome";
     user = "alex";
+    logitech = true;
   };
 
   boot.loader.systemd-boot.enable = true;
@@ -45,26 +46,6 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  services.logiops = {
-    enable = true;
-    config = {
-      io_timeout = 3000;
-      devices = [
-        {
-          name = "MX Master 4";
-          buttons = [
-            {
-              cid = 416;
-              action = {
-                type = "Keypress";
-                keys = [ "KEY_LEFTMETA" ];
-              };
-            }
-          ];
-        }
-      ];
-    };
-  };
   services.printing.enable = true;
   services.pulseaudio.enable = false;
   services.pipewire = {
