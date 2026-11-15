@@ -112,6 +112,7 @@
   hardware.enableAllFirmware = true;
   hardware.firmware = with pkgs; [ linux-firmware ];
   hardware.steam-hardware.enable = true;
+  programs.steam.enable = true;
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
