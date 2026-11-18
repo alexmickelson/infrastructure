@@ -26,7 +26,7 @@ spec:
       terminationGracePeriodSeconds: 60
       containers:
       - name: minecraft-create-evolution
-        image: itzg/minecraft-server:java21@sha256:e68f79e5150c85c83f9acf3d74d50efe75f477e65179ddae55e57a8caac564a9
+        image: itzg/minecraft-server:java21@sha256:ab71f66b2174377d3c52f1ca56fd5063f3acb3180d4965d58a97521b3bf4a112
         stdin: true
         tty: true
         env:
