@@ -22,7 +22,7 @@ spec:
         runAsGroup: 1000
       containers:
         - name: nextcloud
-          image: nextcloud:34@sha256:4074efbd8b2d555750965a1aabaab1b13f86ce2e9376f4fdf2fad6ad6163dc2a
+          image: nextcloud:34@sha256:d379e08c5e74f2209675bec4e274eba3ba586a0f3c0c200ac078c81b396bf6a9
           command: [ "/cron.sh" ]
           env:
             - name: TZ
