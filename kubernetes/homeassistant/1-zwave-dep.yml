@@ -23,7 +23,10 @@ spec:
         tty: true
         env:
         - name: SESSION_SECRET
-          value: "iqpwoeinf9384bw3p48gbwer"
+          valueFrom:
+            secretKeyRef:
+              name: zwave-js-ui-session
+              key: SESSION_SECRET
         - name: TZ
           value: "America/Denver"
         volumeMounts:
