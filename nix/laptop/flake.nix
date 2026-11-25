@@ -23,11 +23,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    plasma-manager = {
-      url = "github:nix-community/plasma-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     inputactions-kwin = {
       url = "git+https://github.com/InputActions/kwin?submodules=1";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -48,13 +43,6 @@
     }:
     let
       system = "x86_64-linux";
-      laptopPkgs = import nixpkgs {
-        inherit system;
-        config = {
-          allowUnfree = true;
-          permittedInsecurePackages = [ "electron-39.8.10" ];
-        };
-      };
     in
     {
       nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
@@ -65,23 +53,6 @@
           home-manager.nixosModules.home-manager
           inputs.shortcuts.nixosModules.default
           ./laptop-system.nix
-        ];
-      };
-
-      homeConfigurations."alex@laptop" = home-manager.lib.homeManagerConfiguration {
-        pkgs = laptopPkgs;
-        extraSpecialArgs = { inherit inputs; };
-        modules = [
-          ./laptop.home.nix
-          inputs.shortcuts.homeModules.default
-          # inputs.plasma-manager.homeModules.plasma-manager
-          {
-            home = {
-              username = "alex";
-              homeDirectory = "/home/alex";
-              stateVersion = "26.05";
-            };
-          }
         ];
       };
     };

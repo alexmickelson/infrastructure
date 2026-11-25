@@ -14,17 +14,10 @@ in
 {
   imports = [
     ./fish.home.nix
-    ./gnome
     ../home-manager/theme
-    # ./plasma
-    # inputs.plasma-manager.homeModules.plasma-manager
   ];
 
-  wallpaperTheme = {
-    enable = true;
-    gnome.enable = true;
-    kde.enable = true;
-  };
+  wallpaperTheme.enable = true;
 
   customFish = {
     bluetuiAliases = true;
@@ -71,7 +64,6 @@ in
     uv
     openssl
     bluetui
-    # klassy
 
     nerd-fonts.fira-code
     nerd-fonts.droid-sans-mono
@@ -183,6 +175,31 @@ in
   };
 
   fonts.fontconfig.enable = true;
+
+  dconf.enable = true;
+  dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
+
+  gtk = {
+    enable = true;
+    gtk2.enable = false;
+    theme = {
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
+    };
+    gtk3.extraCss = "@import 'matugen.css';";
+    gtk4.extraCss = "@import 'matugen.css';";
+    gtk4.theme = null;
+  };
+
+  home.pointerCursor = {
+    enable = true;
+    name = "Adwaita";
+    package = pkgs.adwaita-icon-theme;
+    size = 24;
+    gtk.enable = true;
+    x11.enable = true;
+  };
+
   home.file = {
     ".tmux.conf".source = ./.tmux.conf;
     ".config/lazydocker/config.yml".text = ''

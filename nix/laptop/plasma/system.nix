@@ -11,12 +11,7 @@
 
   services.displayManager.plasma-login-manager.enable = true;
 
-  powerManagement.enable = true;
-
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
+  shortcuts.desktop = "plasma";
 
   qt = {
     platformTheme = "kde";
@@ -67,11 +62,6 @@
     ]
   );
 
-  environment.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
-    MOZ_ENABLE_WAYLAND = "1";
-  };
-
   systemd.services.sync-login-wallpaper = {
     description = "Sync login screen wallpaper with desktop wallpaper";
     wantedBy = [ "multi-user.target" ];
@@ -111,21 +101,5 @@
     # with `inputactions config reload`.
     inputs.inputactions-kwin.packages.${stdenv.hostPlatform.system}.default
     inputs.inputactions-ctl.packages.${stdenv.hostPlatform.system}.default
-
-    kitty
-    libnotify
-    cliphist
-    wl-clip-persist
-    wl-clipboard
-    grim
-    slurp
-    grimblast
-    swayosd
-    hyprpicker
-    brightnessctl
-    playerctl
-    pavucontrol
-    networkmanagerapplet
-    blueman
   ];
 }

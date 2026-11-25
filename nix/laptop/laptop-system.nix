@@ -6,9 +6,8 @@
 
 {
   imports = [
-    ./gnome/system.nix
+    ./gnome/default.nix
     ./touchpad/keep-controller-powered.nix
-    # ./plasma/system.nix
   ];
 
   nixpkgs.config = {
@@ -16,7 +15,6 @@
   };
 
   shortcuts = {
-    desktop = "gnome";
     user = "alex";
     logitech = true;
   };
@@ -26,6 +24,16 @@
 
   networking.hostName = "laptop";
   networking.networkmanager.enable = true;
+
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "";
+  };
+
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+    MOZ_ENABLE_WAYLAND = "1";
+  };
 
   nix.settings.experimental-features = [
     "nix-command"
@@ -121,7 +129,6 @@
     backupFileExtension = "backup";
     users.alex = { ... }: {
       home.stateVersion = "26.05";
-      shortcuts.desktop = "gnome";
       imports = [
         ./laptop.home.nix
         inputs.shortcuts.homeModules.default
@@ -150,6 +157,21 @@
     tmux
     iperf
     mlocate
+    kitty
+    libnotify
+    cliphist
+    wl-clip-persist
+    wl-clipboard
+    grim
+    slurp
+    grimblast
+    swayosd
+    hyprpicker
+    brightnessctl
+    playerctl
+    pavucontrol
+    networkmanagerapplet
+    blueman
     (pkgs.writeTextDir "share/polkit-1/actions/com.bitwarden.Bitwarden.policy" ''
       <?xml version="1.0" encoding="UTF-8"?>
       <!DOCTYPE policyconfig PUBLIC
