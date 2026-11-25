@@ -26,6 +26,7 @@
           type = lib.types.enum [
             "gnome"
             "plasma"
+            "cosmic"
           ];
           description = "Desktop environment whose shortcut settings are generated.";
         };

@@ -16,6 +16,5 @@ for applier in wallpaper-apply-plasma wallpaper-apply-gnome; do
 done
 
 if ((applied == 0)); then
-  echo "wallpaper-apply: no desktop backend enabled (wallpaperTheme.gnome.enable / wallpaperTheme.kde.enable)" >&2
-  exit 1
+  echo "wallpaper-apply: no desktop backend enabled, leaving the wallpaper to the desktop" >&2
 fi

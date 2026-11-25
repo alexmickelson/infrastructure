@@ -6,7 +6,7 @@
 
 {
   imports = [
-    ./gnome/default.nix
+    ./cosmic/default.nix
     ./touchpad/keep-controller-powered.nix
   ];
 

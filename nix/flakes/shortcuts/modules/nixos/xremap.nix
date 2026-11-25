@@ -20,6 +20,7 @@ in
       watch = true;
       withGnome = cfg.desktop == "gnome";
       withKDE = cfg.desktop == "plasma";
+      withCosmic = cfg.desktop == "cosmic";
       config.keymap = [
         {
           name = "macOS application shortcuts";
