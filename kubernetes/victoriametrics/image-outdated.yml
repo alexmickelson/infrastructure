@@ -6,7 +6,6 @@ metadata:
 data:
   outdated.sh: |
     #!/usr/bin/env bash
-    # Publishes how many days older the running image is than the newest upstream tag.
     set -uo pipefail
     
     VM=${VM_URL:-http://vmsingle-vmsingle.monitoring.svc.cluster.local:8429}
@@ -14,9 +13,21 @@ data:
     trap 'rm -rf "$WORK"' EXIT
     
     series() {
-      curl -sS -m 20 -G "$VM/api/v1/query" \
-        --data-urlencode 'query=count by (image, current_version, latest_version) (version_checker_is_latest_version)' |
-        jq -r '.data.result[]? | "\(.metric.image)\t\(.metric.current_version)\t\(.metric.latest_version)"' | sort -u
+      curl -fsS -m 20 -G "$VM/api/v1/query" \
+        --data-urlencode 'query=count by (image, current_version, latest_version) (version_checker_is_latest_version)' >"$WORK/versions.json" || return 1
+      curl -fsS -m 20 -G "$VM/api/v1/query" \
+        --data-urlencode 'query=sum by (image) (increase(version_checker_image_failures_total[2h])) > 0' >"$WORK/failures.json" || return 1
+      jq -ers '
+        if all(.[]; .status == "success" and (.data.result | type == "array")) then
+          (.[0].data.result | map([.metric.image, .metric.current_version, .metric.latest_version])) as $versions |
+          (.[1].data.result | map(.metric.image | . as $ref |
+            split("@")[0] as $tagged |
+            ($tagged | sub(":[^/:]+$"; "")) as $image |
+            [$image, (if $tagged != $image then $ref[($image | length) + 1:] else ($ref | split("@")[1] // "unknown") end), "unknown"]) |
+            map(select(.[0] as $image | all($versions[]; .[0] != $image)))) as $failures |
+          ($versions + $failures | unique | .[] | @tsv)
+        else error("version-checker query failed") end
+      ' "$WORK/versions.json" "$WORK/failures.json"
     }
     
     registry_token() {
@@ -162,7 +173,37 @@ data:
       return 1
     }
     
+    measure() {
+      local cur_ts latest_ts
+      if [ -n "$cur_digest" ] && [ "$cur_digest" = "$latest_digest" ]; then
+        days=0
+        waiting=0
+        return 0
+      fi
+      if [ -z "$cur_digest$latest_digest" ] && [ "$cur" = "$latest" ] && plausible "$cur"; then
+        days=0
+        waiting=0
+        return 0
+      fi
+      if [ -n "$cur_digest" ] && [ -n "$latest_digest" ]; then
+        cur_ts=$(digest_created "$image" "$cur_digest") || return 1
+        latest_ts=$(digest_created "$image" "$latest_digest") || return 1
+      else
+        plausible "$cur" && plausible "$latest" || return 1
+        cur_ts=$(tag_created "$image" "$cur") || return 1
+        latest_ts=$(tag_created "$image" "$latest") || return 1
+      fi
+      days=$(( (latest_ts - cur_ts) / 86400 ))
+      [ "$days" -lt 0 ] && days=0
+      waiting=$(( (now - latest_ts) / 86400 ))
+      [ "$waiting" -lt 0 ] && waiting=0
+      return 0
+    }
+
     : >"$WORK/out"
+    series >"$WORK/series" || exit 1
+    [ -s "$WORK/series" ] || exit 1
+    now=$(date -u +%s)
     while IFS=$'\t' read -r image cur latest; do
       [ -n "$image" ] || continue
       cur_digest=""
@@ -177,48 +218,28 @@ data:
       esac
       cur_name=${cur:-${cur_digest:0:19}}
       latest_name=${latest:-${latest_digest:0:19}}
-      now=$(date -u +%s)
-    
-      if [ -n "$cur_digest" ] && [ "$cur_digest" = "$latest_digest" ]; then
-        days=0
-        waiting=0
-      elif [ -n "$cur_digest" ] && { ! plausible "$cur" || ! plausible "$latest"; }; then
-        cur_ts=$(digest_created "$image" "$cur_digest") || continue
-        latest_ts=$(digest_created "$image" "$latest_digest") || continue
-        days=$(( (latest_ts - cur_ts) / 86400 ))
-        [ "$days" -lt 0 ] && days=0
-        waiting=$(( (now - latest_ts) / 86400 ))
-        [ "$waiting" -lt 0 ] && waiting=0
-      else
-        plausible "$cur" || continue
-        plausible "$latest" || continue
-        if [ "$cur" = "$latest" ]; then
-          days=0
-          waiting=0
-        else
-          if ! { cur_ts=$(tag_created "$image" "$cur") && latest_ts=$(tag_created "$image" "$latest"); }; then
-            [ -n "$cur_digest" ] && [ -n "$latest_digest" ] || continue
-            cur_ts=$(digest_created "$image" "$cur_digest") || continue
-            latest_ts=$(digest_created "$image" "$latest_digest") || continue
-          fi
-          days=$(( (latest_ts - cur_ts) / 86400 ))
-          [ "$days" -lt 0 ] && days=0
-          waiting=$(( (now - latest_ts) / 86400 ))
-          [ "$waiting" -lt 0 ] && waiting=0
-        fi
+      success=1
+      if ! measure; then
+        success=0
+        days=-1
+        waiting=-1
       fi
-    
-      [ "$days" -eq 0 ] && waiting=0
-    
-      printf 'image_outdated_days{image="%s",current_version="%s",latest_version="%s"} %s\n' \
-        "$image" "$cur_name" "$latest_name" "$days" >>"$WORK/out"
-      printf 'image_update_waiting_days{image="%s",current_version="%s",latest_version="%s"} %s\n' \
-        "$image" "$cur_name" "$latest_name" "$waiting" >>"$WORK/out"
-    done < <(series)
-    
+      {
+        printf 'image_version_lookup_success{image="%s",current_version="%s",latest_version="%s"} %s\n' \
+          "$image" "$cur_name" "$latest_name" "$success"
+        printf 'image_report_timestamp_seconds{image="%s",current_version="%s",latest_version="%s"} %s\n' \
+          "$image" "$cur_name" "$latest_name" "$now"
+        printf 'image_outdated_days{image="%s",current_version="%s",latest_version="%s"} %s\n' \
+          "$image" "$cur_name" "$latest_name" "$days"
+        printf 'image_update_waiting_days{image="%s",current_version="%s",latest_version="%s"} %s\n' \
+          "$image" "$cur_name" "$latest_name" "$waiting"
+      } >>"$WORK/out"
+    done <"$WORK/series"
+    [ -s "$WORK/out" ] || exit 1
+    printf 'image_report_last_success_timestamp_seconds %s\n' "$now" >>"$WORK/out"
     cat "$WORK/out"
-    if [ "${PUSH:-0}" = 1 ] && [ -s "$WORK/out" ]; then
-      curl -sS -m 30 -X POST --data-binary @"$WORK/out" "$VM/api/v1/import/prometheus" >/dev/null
+    if [ "${PUSH:-0}" = 1 ]; then
+      curl -fsS -m 30 -X POST --data-binary @"$WORK/out" "$VM/api/v1/import/prometheus" >/dev/null || exit 1
     fi
 ---
 ---
@@ -244,7 +265,7 @@ spec:
               image: alpine:3.24@sha256:f59abe656b692d901e184be3445e084786602108599d2a51d229c0f5a48c71bf
               command: ["/bin/sh", "-c"]
               args:
-                - apk add --no-cache bash curl jq >/dev/null && bash /scripts/outdated.sh
+                - apk add --no-cache bash coreutils curl jq >/dev/null && /usr/bin/date --version >/dev/null && bash /scripts/outdated.sh
               env:
                 - name: PUSH
                   value: "1"

@@ -16,7 +16,7 @@ data:
       ],
       "timezone": "browser",
       "schemaVersion": 39,
-      "version": 4,
+      "version": 5,
       "refresh": "5m",
       "editable": true,
       "time": {
@@ -33,9 +33,9 @@ data:
               "type": "prometheus",
               "uid": "victoriametrics"
             },
-            "definition": "label_values(version_checker_is_latest_version, image)",
+            "definition": "label_values({__name__=~\"image_version_lookup_success|version_checker_is_latest_version\"}, image)",
             "query": {
-              "query": "label_values(version_checker_is_latest_version, image)",
+              "query": "label_values({__name__=~\"image_version_lookup_success|version_checker_is_latest_version\"}, image)",
               "refId": "image"
             },
             "refresh": 1,
@@ -61,19 +61,19 @@ data:
       },
       "panels": [
         {
-          "id": 1,
+          "id": 2,
           "type": "stat",
-          "title": "$image",
-          "description": "How many days the newer release has been available; 0 means the running image already matches it. The card names the running and newest version. Red marks an image that is behind and whose update has been waiting more than a week, and n/a means no registry date could be resolved.",
+          "title": "Last successful report",
+          "description": "",
           "datasource": {
             "type": "prometheus",
             "uid": "victoriametrics"
           },
           "gridPos": {
-            "h": 4,
-            "w": 6,
             "x": 0,
-            "y": 0
+            "y": 0,
+            "w": 8,
+            "h": 4
           },
           "targets": [
             {
@@ -82,8 +82,219 @@ data:
                 "type": "prometheus",
                 "uid": "victoriametrics"
               },
-              "expr": "label_replace(max by (image, current_version, latest_version) (last_over_time(image_update_waiting_days{image=~\"$image\"}[6h])) or on(image) label_replace(label_replace(label_replace(max by (image, current_version, latest_version) (version_checker_is_latest_version{image=~\"$image\"}) * 0 - 1, \"current_version\", \"$1\", \"current_version\", \"([^@]+)@.*\"), \"latest_version\", \"$1\", \"latest_version\", \"([^@]+)@.*\"), \"current_version\", \"digest\", \"current_version\", \"sha256:.*\"), \"image\", \"$1\", \"image\", \"^[A-Za-z0-9-]+\\\\.[A-Za-z0-9.-]+/(.*)$\")",
-              "legendFormat": "{{current_version}} → {{latest_version}}",
+              "expr": "time() - max(last_over_time(image_report_last_success_timestamp_seconds[24h]))",
+              "legendFormat": "Last successful report",
+              "instant": true,
+              "range": false
+            }
+          ],
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "orientation": "auto",
+            "textMode": "value_and_name",
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "wideLayout": false,
+            "text": {
+              "valueSize": 30,
+              "titleSize": 14
+            }
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "decimals": 0,
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 7200
+                  }
+                ]
+              },
+              "noValue": "n/a"
+            },
+            "overrides": []
+          }
+        },
+        {
+          "id": 3,
+          "type": "stat",
+          "title": "Unknown release dates",
+          "description": "",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "gridPos": {
+            "x": 8,
+            "y": 0,
+            "w": 8,
+            "h": 4
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "victoriametrics"
+              },
+              "expr": "sum(1 - min by(image) (last_over_time(image_version_lookup_success[2h]) and on(image,current_version,latest_version) (last_over_time(image_report_timestamp_seconds[2h]) == on(image) group_left max by(image) (last_over_time(image_report_timestamp_seconds[2h])))))",
+              "legendFormat": "Unknown release dates",
+              "instant": true,
+              "range": false
+            }
+          ],
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "orientation": "auto",
+            "textMode": "value_and_name",
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "wideLayout": false,
+            "text": {
+              "valueSize": 30,
+              "titleSize": 14
+            }
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "decimals": 0,
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  }
+                ]
+              },
+              "noValue": "n/a"
+            },
+            "overrides": []
+          }
+        },
+        {
+          "id": 4,
+          "type": "stat",
+          "title": "Registry lookup failures (2h)",
+          "description": "",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "gridPos": {
+            "x": 16,
+            "y": 0,
+            "w": 8,
+            "h": 4
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "victoriametrics"
+              },
+              "expr": "count(sum by(image) (increase(version_checker_image_failures_total[2h])) > 0) or (count(version_checker_last_checked) * 0)",
+              "legendFormat": "Registry lookup failures (2h)",
+              "instant": true,
+              "range": false
+            }
+          ],
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "orientation": "auto",
+            "textMode": "value_and_name",
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "wideLayout": false,
+            "text": {
+              "valueSize": 30,
+              "titleSize": 14
+            }
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "decimals": 0,
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  }
+                ]
+              },
+              "noValue": "n/a"
+            },
+            "overrides": []
+          }
+        },
+        {
+          "id": 1,
+          "type": "stat",
+          "title": "$image",
+          "description": "Days the newest update has been available, not the release-to-release age gap. Matching digests are current. n/a means lookup failure, invalid upstream version, or no fresh report within two hours. Only the newest collection per image is displayed. Registry failures are included, not hidden.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "victoriametrics"
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 0,
+            "y": 4
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "victoriametrics"
+              },
+              "expr": "(last_over_time(image_update_waiting_days{image=~\"$image\"}[2h]) and on(image,current_version,latest_version) (last_over_time(image_report_timestamp_seconds{image=~\"$image\"}[2h]) == on(image) group_left max by(image) (last_over_time(image_report_timestamp_seconds{image=~\"$image\"}[2h])))) or on(image) label_replace(label_replace(label_replace(max by (image, current_version, latest_version) (version_checker_is_latest_version{image=~\"$image\"}) * 0 - 1, \"current_version\", \"$1\", \"current_version\", \"([^@]+)@.*\"), \"latest_version\", \"$1\", \"latest_version\", \"([^@]+)@.*\"), \"current_version\", \"digest\", \"current_version\", \"sha256:.*\")",
+              "legendFormat": "{{current_version}} \u2192 {{latest_version}}",
               "instant": true,
               "range": false
             }
@@ -120,7 +331,8 @@ data:
                   "options": {
                     "-1": {
                       "index": 0,
-                      "text": "n/a"
+                      "text": "n/a",
+                      "color": "orange"
                     }
                   }
                 }
@@ -138,7 +350,8 @@ data:
                     "gt": true
                   }
                 ]
-              }
+              },
+              "noValue": "n/a"
             },
             "overrides": []
           },

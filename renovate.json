@@ -30,7 +30,7 @@
   },
   "argocd": {
     "managerFilePatterns": [
-      "/^kubernetes/argocd/apps/.+\\.ya?ml$/"
+      "/^kubernetes/argocd/(infrastructure|telemetry|user)-apps/.+\\.ya?ml$/"
     ]
   },
   "packageRules": [
