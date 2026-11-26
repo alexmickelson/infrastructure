@@ -83,6 +83,36 @@ class ImageReportingTests(unittest.TestCase):
         line = next(line for line in result.stdout.splitlines() if line.startswith("image_update_waiting_days"))
         self.assertGreater(int(line.rsplit(" ", 1)[1]), 0)
 
+    def source_rows(self, versions, failures):
+        success = json.dumps({"status": "success", "data": {"result": versions}})
+        failure = json.dumps({"status": "success", "data": {"result": failures}})
+        overrides = 'curl() { case "$*" in *version_checker_image_failures_total*) printf "%s" ' + shlex.quote(failure) + ' ;; *) printf "%s" ' + shlex.quote(success) + ' ;; esac; }'
+        prelude = script().split(': >"$WORK/out"', 1)[0]
+        return subprocess.run(["bash"], input=prelude + "\n" + overrides + "\nseries\n", capture_output=True, text=True)
+
+    def test_failure_of_new_tag_is_not_hidden_by_old_successful_tag(self):
+        result = self.source_rows(
+            [{"metric": {"image": "example/app", "current_version": "1", "latest_version": "1"}, "value": [0, "100"]}],
+            [{"metric": {"image": "example/app:2"}, "value": [0, "200"]}],
+        )
+        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertIn("example/app\t1\t1", result.stdout)
+        self.assertIn("example/app\t2\tunknown", result.stdout)
+
+    def test_recent_failure_replaces_stale_success_for_same_reference(self):
+        result = self.source_rows(
+            [{"metric": {"image": "example/app", "current_version": "1", "latest_version": "1"}, "value": [0, "100"]}],
+            [{"metric": {"image": "example/app:1"}, "value": [0, "200"]}],
+        )
+        self.assertEqual("example/app\t1\tunknown", result.stdout.strip())
+
+    def test_recovery_supersedes_older_failure_for_same_reference(self):
+        result = self.source_rows(
+            [{"metric": {"image": "example/app", "current_version": "1", "latest_version": "1"}, "value": [0, "300"]}],
+            [{"metric": {"image": "example/app:1"}, "value": [0, "200"]}],
+        )
+        self.assertEqual("example/app\t1\t1", result.stdout.strip())
+
     def test_registry_failure_images_are_reported_as_unknown(self):
         overrides = '''curl() {
           case "$*" in

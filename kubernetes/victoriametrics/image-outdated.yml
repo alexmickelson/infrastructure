@@ -14,18 +14,17 @@ data:
     
     series() {
       curl -fsS -m 20 -G "$VM/api/v1/query" \
-        --data-urlencode 'query=count by (image, current_version, latest_version) (version_checker_is_latest_version)' >"$WORK/versions.json" || return 1
+        --data-urlencode 'query=max by (image, current_version, latest_version) (version_checker_is_latest_version * 0 + on(image, exported_namespace, exported_pod, exported_container, container_type) group_left version_checker_last_checked)' >"$WORK/versions.json" || return 1
       curl -fsS -m 20 -G "$VM/api/v1/query" \
-        --data-urlencode 'query=sum by (image) (increase(version_checker_image_failures_total[2h])) > 0' >"$WORK/failures.json" || return 1
+        --data-urlencode 'query=max by(image) (tlast_change_over_time(version_checker_image_failures_total[2h])) and on(image) (sum by(image) (increase(version_checker_image_failures_total[2h])) > 0)' >"$WORK/failures.json" || return 1
       jq -ers '
         if all(.[]; .status == "success" and (.data.result | type == "array")) then
-          (.[0].data.result | map([.metric.image, .metric.current_version, .metric.latest_version])) as $versions |
-          (.[1].data.result | map(.metric.image | . as $ref |
+          (.[0].data.result | map([.metric.image, .metric.current_version, .metric.latest_version, (.value[1] | tonumber), 1])) as $versions |
+          (.[1].data.result | map(. as $failure | .metric.image | . as $ref |
             split("@")[0] as $tagged |
             ($tagged | sub(":[^/:]+$"; "")) as $image |
-            [$image, (if $tagged != $image then $ref[($image | length) + 1:] else ($ref | split("@")[1] // "unknown") end), "unknown"]) |
-            map(select(.[0] as $image | all($versions[]; .[0] != $image)))) as $failures |
-          ($versions + $failures | unique | .[] | @tsv)
+            [$image, (if $tagged != $image then $ref[($image | length) + 1:] else ($ref | split("@")[1] // "unknown") end), "unknown", ($failure.value[1] | tonumber), 0])) as $failures |
+          ($versions + $failures | group_by(.[0:2]) | .[] | max_by(.[3], .[4]) | .[0:3] | @tsv)
         else error("version-checker query failed") end
       ' "$WORK/versions.json" "$WORK/failures.json"
     }
